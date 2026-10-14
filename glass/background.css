@@ -1,0 +1,210 @@
+/*!
+ * 背景系统 —— 四层结构（对齐参考站）
+ * ---------------------------------------------------------------------------
+ * 参考站的结构是四层，而**动的是涂鸦层、不是渐变层**：
+ *
+ *   body::before  z=-3  渐变网格            静止
+ *   html::before  z=-2  细线网格            静止
+ *   body::after   z=-1  涂鸦纹理   <-- 动这一层：g-drift 90s
+ *   html::after   z=-1  颗粒噪点 soft-light  静止
+ *
+ * 位移量必须是图案尺寸的整数倍（400px 的整数倍），否则循环会"跳一下"。
+ * 作者实测：每 160s 跳一次，就是因为写了非整数倍。
+ *
+ * 性能注意（作者原文）：动 transform，不要动 background-position。
+ * 后者是绘制属性，会让铺满视口的图层每帧重绘，逼上面所有 backdrop-filter
+ * 重新采样、重跑折射滤镜 —— 这是他博客上最大的性能问题。
+ * transform 是合成属性，代价低得多。
+ */
+
+html {
+  background-color: var(--g-bg);
+}
+
+/* Butterfly 自己的 #web_bg 要去掉，否则盖住背景 */
+#web_bg {
+  background-image: none !important;
+  background-color: transparent !important;
+}
+
+body {
+  background-color: transparent !important;
+  background-image: none !important;
+  /* 固定定位伪元素的 z-index 需要一个可预测的层叠上下文 */
+  position: relative;
+}
+
+/* ---------- 第一层：渐变网格（静止） ----------
+   ⚠️ 这里的数值是参考站 background.css 的原始值。
+   第 4 批我曾按"平均色相"把它们往金色方向调过（30.6° -> 37.3°），
+   但那次测量采样区域不同（参考站侧栏在右、我的在左），本身不可比，
+   属于追测量假象；用户反馈"偏黄"后已全部还原。 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  background-color: var(--g-bg);
+  background-image:
+    /* 四角压暗 */
+    radial-gradient(120% 100% at 50% 50%, transparent 44%, rgba(150, 86, 44, 0.22) 100%),
+    /* 左上暖金 */
+    radial-gradient(58% 46% at 10% 10%, rgba(246, 190, 96, 0.86), transparent 62%),
+    /* 右上橙 */
+    radial-gradient(52% 42% at 88% 16%, rgba(236, 146, 70, 0.78), transparent 64%),
+    /* 右下赤陶 */
+    radial-gradient(50% 46% at 78% 84%, rgba(214, 98, 74, 0.66), transparent 64%),
+    /* 左下玫瑰 */
+    radial-gradient(46% 40% at 18% 86%, rgba(228, 132, 118, 0.64), transparent 62%),
+    /* 中心奶白高光 */
+    radial-gradient(36% 32% at 50% 50%, rgba(255, 236, 206, 0.70), transparent 66%);
+  background-size: 100% 100%;
+}
+
+/* ---------- 第二层：细线网格（静止） ---------- */
+html::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  opacity: 0.30;
+  background-image: url(/glass/bg-grid.svg);
+  background-size: 24px 24px;
+}
+
+/* ---------- 第三层：涂鸦纹理（这一层在动） ---------- */
+body::after {
+  content: '';
+  position: fixed;
+  /* 比视口大一圈，给漂移留余量 —— 参考站的做法。
+     只用 inset: 0 的话，漂移 -400/-800 之后右下角会露出空隙。 */
+  top: -10%;
+  left: -10%;
+  right: -400px;
+  bottom: -800px;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.78;
+  background-image: url(/glass/bg-pattern.svg);
+  background-size: 400px 400px;
+  animation: g-drift 90s linear infinite;
+}
+
+/* 位移 = 图案尺寸的整数倍 -> 无缝循环 */
+@keyframes g-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-400px, -800px, 0);
+  }
+}
+
+/* ---------- 第四层：颗粒噪点（静止，柔光叠加） ---------- */
+html::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: soft-light;
+  background-image: url(/glass/bg-noise.svg);
+  background-size: 160px 160px;
+}
+
+/* ---------- 深色模式 ---------- */
+:root:not([data-theme='light']) body::before {
+  background-image:
+    radial-gradient(60% 48% at 8% 8%, rgba(226, 126, 48, 0.62), transparent 62%),
+    radial-gradient(54% 44% at 90% 14%, rgba(198, 84, 56, 0.58), transparent 64%),
+    radial-gradient(52% 48% at 80% 88%, rgba(150, 70, 96, 0.48), transparent 64%),
+    radial-gradient(48% 42% at 16% 88%, rgba(206, 112, 56, 0.50), transparent 62%),
+    radial-gradient(38% 34% at 50% 48%, rgba(244, 186, 118, 0.34), transparent 66%);
+}
+
+:root:not([data-theme='light']) body::after {
+  opacity: 0.44;
+}
+
+:root:not([data-theme='light']) html::before {
+  opacity: 0.16;
+}
+
+:root:not([data-theme='light']) html::after {
+  opacity: 0.22;
+  mix-blend-mode: overlay;
+}
+
+[data-theme='dark'] body::before {
+  background-image:
+    radial-gradient(60% 48% at 8% 8%, rgba(226, 126, 48, 0.62), transparent 62%),
+    radial-gradient(54% 44% at 90% 14%, rgba(198, 84, 56, 0.58), transparent 64%),
+    radial-gradient(52% 48% at 80% 88%, rgba(150, 70, 96, 0.48), transparent 64%),
+    radial-gradient(48% 42% at 16% 88%, rgba(206, 112, 56, 0.50), transparent 62%),
+    radial-gradient(38% 34% at 50% 48%, rgba(244, 186, 118, 0.34), transparent 66%);
+}
+
+[data-theme='dark'] body::after {
+  opacity: 0.44;
+}
+
+[data-theme='dark'] html::before {
+  opacity: 0.16;
+}
+
+[data-theme='dark'] html::after {
+  opacity: 0.22;
+  mix-blend-mode: overlay;
+}
+
+/* ---------- 文章页：正文附近降低纹理频率与浓度 ---------- */
+body:has(#body-wrap.post)::after {
+  opacity: 0.34;
+  background-size: 600px 600px;
+  /* 文章页漂移更远（-600/-1200），余量也要相应加大 */
+  right: -600px;
+  bottom: -1200px;
+  animation-name: g-drift-post;
+  animation-duration: 160s;
+}
+
+@keyframes g-drift-post {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-600px, -1200px, 0);
+  }
+}
+
+/* ---------- 文章页：降低两层【纹理】的浓度 ----------
+   注意：渐变层 body::before 与细线网格 html::before 是背景骨架，
+   文章页只压【细线网格】与【颗粒噪点】两层，绝不压渐变。
+
+   这里曾经把参考站的
+     html:has(#body-wrap.post)::before { opacity: 0.12 }   （细线网格）
+   误写成 body:has(...)::before（渐变层），导致文章页发白；
+   删掉之后又漏了补回细线网格那条，于是从"太白"变成"偏黄"。
+   两条现在都在。 */
+html:has(#body-wrap.post)::before {
+  opacity: 0.12;   /* 细线网格：24px 的 #c9713f 暖橙棕网格，文章页压到 0.12 */
+}
+
+html:has(#body-wrap.post)::after {
+  opacity: 0.10;   /* 颗粒噪点 */
+}
+
+/* ---------- 降级与无障碍 ---------- */
+/* 低性能档位可关掉漂移：在 <html> 上加 data-glass-bg="static" */
+[data-glass-bg='static'] body::after {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::after {
+    animation: none !important;
+  }
+}

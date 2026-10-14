@@ -1,0 +1,101 @@
+/*!
+ * 暖色调 token —— 复刻参考站配色
+ * ---------------------------------------------------------------------------
+ * 数值来自参考站公开的 variables.css；这里按作者 glass.css 的块结构重写，
+ * 保证同样的加载顺序下深色/浅色分支都能正确覆盖。
+ *
+ * 说明：--glass-ior 与 --glass-highlight-* 是参考站那套引擎才读的参数，
+ * 便携版 glass.js 不读它们（只读 refraction / bezel-width / edge-depth / chromatic），
+ * 留在这里是为了将来换引擎时不用再改，且不影响当前渲染。
+ */
+
+:root {
+  /* 调色板 */
+  --g-amber:      #e8973c;
+  --g-terracotta: #d2643f;
+  --g-rose:       #e08a72;
+  --g-gold:       #f2c46b;
+  --g-accent:     var(--g-terracotta);
+
+  /* 墨色 */
+  --g-ink:      #2b201a;
+  --g-ink-dim:  #7d6a5c;
+  --g-ink-mute: #a8968a;
+
+  /* 纸色 */
+  --g-bg:      #f7ece0;
+  --g-bg-deep: #efdfcd;
+
+  /* 玻璃材质（参考站非常淡：tint 只有 6%） */
+  --g-tint:       rgba(255, 249, 240, 0.06);
+  --g-tint-hover: rgba(255, 249, 240, 0.13);
+  --g-blur:       0px;
+  --g-saturate:   1.45;
+  --g-brightness: 1.02;
+  --g-contrast:   1.06;
+
+  /* 折射：参考站 :root 默认值 */
+  --glass-refraction:  53;
+  --glass-bezel-width: 57;
+  --glass-edge-depth:  1.8;
+  --glass-ior:         1.485;
+  --glass-chromatic:   0.035;
+  --glass-highlight-intensity: 1;
+  --glass-highlight-width:     2px;
+
+  /* 代码块墨色 */
+  --g-code-ink:     #33261e;
+  --g-code-ink-dim: rgba(51, 38, 30, 0.42);
+  --g-code-edge:    rgba(120, 80, 50, 0.20);
+  --g-code-head:    rgba(90, 62, 42, 0.72);
+  --g-code-head-bg: rgba(120, 80, 50, 0.07);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --g-ink:      #f4e6d8;
+    --g-ink-dim:  #bda694;
+    --g-bg:       #1b120c;
+    --g-bg-deep:  #150e09;
+    --g-tint:       rgba(92, 68, 50, 0.10);
+    --g-tint-hover: rgba(112, 84, 62, 0.18);
+    --g-saturate:   1.35;
+    --g-brightness: 1.05;
+    --g-contrast:   1.05;
+    --g-code-ink:     #f2e7dc;
+    --g-code-ink-dim: rgba(242, 231, 220, 0.38);
+    --g-code-edge:    rgba(255, 226, 196, 0.14);
+    --g-code-head:    #cdb6a2;
+    --g-code-head-bg: rgba(255, 226, 196, 0.08);
+  }
+}
+
+[data-theme='dark'] {
+  --g-ink:      #f4e6d8;
+  --g-ink-dim:  #bda694;
+  --g-bg:       #1b120c;
+  --g-bg-deep:  #150e09;
+  --g-tint:       rgba(92, 68, 50, 0.10);
+  --g-tint-hover: rgba(112, 84, 62, 0.18);
+  --g-saturate:   1.35;
+  --g-brightness: 1.05;
+  --g-contrast:   1.05;
+  --g-code-ink:     #f2e7dc;
+  --g-code-ink-dim: rgba(242, 231, 220, 0.38);
+  --g-code-edge:    rgba(255, 226, 196, 0.14);
+  --g-code-head:    #cdb6a2;
+  --g-code-head-bg: rgba(255, 226, 196, 0.08);
+}
+
+/* 参考站的卡片圆角比便携版略大 */
+:root {
+  --g-gap:  26px;
+  --g-r-pill: 999px;
+  --g-spring: cubic-bezier(0.175, 0.885, 0.32, 1.6);
+  --g-r-sm: 14px;
+  --g-dur:      0.42s;
+  --g-dur-fast: 0.2s;
+  --g-r-md: 20px;
+  --g-r-lg: 26px;
+  --g-r-xl: 32px;
+}

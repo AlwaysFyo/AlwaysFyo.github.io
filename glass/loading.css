@@ -1,0 +1,139 @@
+/*!
+ * 开屏加载动画 —— 暖色分屏 + 玻璃圆珠 + 沿边扫光
+ * ---------------------------------------------------------------------------
+ * Butterfly 自带的 fullpage-loading 是两个反向旋转的方块（鲑红 + 青色），
+ * 观感和这套暖色玻璃不搭。这里按参考站的**设计意图**重做，代码为自行编写。
+ *
+ * 能用的标记是固定的（layout/includes/loading/fullpage-loading.pug）：
+ *   #loading-box
+ *     .loading-left-bg / .loading-right-bg   左右分屏
+ *     .spinner-box
+ *       .configure-border-1 > .configure-core
+ *       .configure-border-2 > .configure-core
+ *       .loading-word
+ *
+ * 做法：
+ *   · 分屏底色换成暖色纸色
+ *   · 第二个方块停用；第一个改造成玻璃圆珠（高光 + 内阴影 + 外投影）
+ *   · 扫光挂在圆珠的 ::after 上：conic-gradient 出扇形光，再用 mask 裁成一圈，
+ *     这样光是"沿珠边跑"而不是"盖一个转盘在珠上"
+ *   · 全部是纯 CSS —— 加载器出现时 JS 还没跑，用不了 backdrop-filter；
+ *     而且它背后是纯色分屏，本来也没有可折射的内容
+ *
+ * 注意 .spinner-box 的子元素都是绝对定位（含 ::after），不参与 flex 布局，
+ * 所以扫光必须锚在圆珠上（inset: 0），不能靠 flex 间距去摆 —— 那样会随字体
+ * 度量漂移。
+ */
+
+#loading-box .loading-left-bg,
+#loading-box .loading-right-bg {
+  background-color: var(--g-bg);
+}
+
+#loading-box .spinner-box {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 第二个方块（青色反向旋转）直接停用 */
+#loading-box .spinner-box .configure-border-2 {
+  display: none;
+}
+
+/* 第一个方块 -> 玻璃圆珠 */
+#loading-box .spinner-box .configure-border-1 {
+  position: absolute;
+  width: 104px;
+  height: 104px;
+  padding: 0;
+  border-radius: 50%;
+  /* 用站内同一套设计 token —— 开屏第一眼看到的就应该是"这个站的材料"，
+     而不是另写一组近似的颜色。上一版手写渐变导致它偏白、和其它玻璃面不像。 */
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.55), transparent 52%),
+    var(--g-tint);
+  box-shadow: var(--g-shine), var(--g-shadow);
+  /* 干掉主题原来的旋转与橙色底 */
+  animation: none;
+  transform: none;
+}
+
+/* .configure-core 是用来填满方块的，圆珠不需要 */
+#loading-box .spinner-box .configure-border-1 .configure-core {
+  display: none;
+}
+
+/* 沿珠边缘跑的一圈光 */
+#loading-box .spinner-box .configure-border-1::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0turn,
+    transparent 0deg,
+    rgba(255, 255, 255, 0) 26deg,
+    rgba(255, 255, 255, 0.66) 74deg,
+    rgba(255, 232, 196, 0.28) 106deg,
+    transparent 156deg,
+    transparent 360deg
+  );
+  -webkit-mask: radial-gradient(circle, transparent 62%, #000 68%, #000 100%);
+  mask: radial-gradient(circle, transparent 62%, #000 68%, #000 100%);
+  animation: glass-loading-sweep 1.4s linear infinite;
+}
+
+@keyframes glass-loading-sweep {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* 文字落在珠子下方 */
+#loading-box .spinner-box .loading-word {
+  position: absolute;
+  transform: translateY(80px);
+  color: var(--g-ink-dim, var(--g-ink));
+  font-size: 0.92rem;
+  letter-spacing: 0.08em;
+  opacity: 0.78;
+}
+
+/* 深色模式：扫光换成暖白偏橙 */
+[data-theme='dark'] #loading-box .spinner-box .configure-border-1::after {
+  background: conic-gradient(
+    from 0turn,
+    transparent 0deg,
+    rgba(255, 236, 212, 0) 26deg,
+    rgba(255, 236, 212, 0.52) 74deg,
+    rgba(255, 190, 130, 0.26) 106deg,
+    transparent 156deg,
+    transparent 360deg
+  );
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) #loading-box .spinner-box .configure-border-1::after {
+    background: conic-gradient(
+      from 0turn,
+      transparent 0deg,
+      rgba(255, 236, 212, 0) 26deg,
+      rgba(255, 236, 212, 0.52) 74deg,
+      rgba(255, 190, 130, 0.26) 106deg,
+      transparent 156deg,
+      transparent 360deg
+    );
+  }
+}
+
+/* 转圈是读者"不滚动也躲不开"的动画，尊重无障碍偏好：留珠子、停扫光 */
+@media (prefers-reduced-motion: reduce) {
+  #loading-box .spinner-box .configure-border-1::after {
+    animation: none;
+    opacity: 0.5;
+  }
+}

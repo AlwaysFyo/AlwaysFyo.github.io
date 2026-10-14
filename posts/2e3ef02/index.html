@@ -1,0 +1,493 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Unittest 单元测试框架 - 上 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="单元测试是一种软件测试方法，主要用于验证软件的最小可测试单元（通常是函数、方法或类）是否按预期工作。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unittest 单元测试框架 - 上">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/2e3ef02/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="单元测试是一种软件测试方法，主要用于验证软件的最小可测试单元（通常是函数、方法或类）是否按预期工作。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2025-06-30T15:10:00.000Z">
+<meta property="article:modified_time" content="2025-07-13T02:38:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="Unittest系列">
+<meta property="article:tag" content="自动化测试">
+<meta property="article:tag" content="软件测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Unittest 单元测试框架 - 上",
+  "url": "https://alwaysfyo.github.io/posts/2e3ef02/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2025-06-30T15:10:00.000Z",
+  "dateModified": "2025-07-13T02:38:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/2e3ef02/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Unittest 单元测试框架 - 上',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Unittest 单元测试框架 - 上</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Unittest 单元测试框架 - 上</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-30T15:10:00.000Z" title="发表于 2025-06-30 23:10:00">2025-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-13T02:38:00.000Z" title="更新于 2025-07-13 10:38:00">2025-07-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/">软件测试</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>14分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="1-单元测试"><a href="#1-单元测试" class="headerlink" title="1. 单元测试"></a>1. 单元测试</h2><h3 id="1-1-什么是单元测试？"><a href="#1-1-什么是单元测试？" class="headerlink" title="1.1 什么是单元测试？"></a>1.1 <strong>什么是单元测试？</strong></h3><p>单元测试是一种软件测试方法，主要用于验证软件的最小可测试单元（通常是函数、方法或类）是否按预期工作。</p>
+<p>最小可测单元：函数、方法、类、文件、模块</p>
+<h3 id="1-2-单元测试落地挑战"><a href="#1-2-单元测试落地挑战" class="headerlink" title="1.2 单元测试落地挑战"></a>1.2 <strong>单元测试落地挑战</strong></h3><ol>
+<li>不知道怎么编写单元测试<ul>
+<li>结对测试：由测试设计提供单元测试用例，由开发编写实现单元测试代码</li>
+</ul>
+</li>
+<li>公司、团队、项目没有要求<ul>
+<li>寻找工作痛点、收集数据、分析问题原因、提出解决方案</li>
+</ul>
+</li>
+<li>单元测试价值不高，写了也是浪费时间</li>
+</ol>
+<h3 id="1-3-单元测试怎么做？"><a href="#1-3-单元测试怎么做？" class="headerlink" title="1.3 单元测试怎么做？"></a>1.3 <strong>单元测试怎么做？</strong></h3><p>首先，需要结合你的团队成员的技能、意愿、当前问题、项目迭代周期等等。</p>
+<p>任何体能增销售端一定是要建立在合适的时机来切入，不能一味的强推！</p>
+<ol>
+<li>试点（找一两个团队试试水，取得效果后再全面推广）</li>
+<li>要有优先级，从 P0 核心模板开始</li>
+<li>要有度量，需要衡量你做这件事的价值</li>
+</ol>
+<h2 id="2-Unittest-基础"><a href="#2-Unittest-基础" class="headerlink" title="2. Unittest 基础"></a>2. Unittest 基础</h2><h3 id="2-1-框架介绍"><a href="#2-1-框架介绍" class="headerlink" title="2.1 框架介绍"></a>2.1 框架介绍</h3><blockquote>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/unittest.html">https://docs.python.org/zh-cn/3/library/unittest.html</a></p>
+<p>Unittest 是 Python 标准库中自带的单元测试框架，Unittest 也被称为 PyUnit，就像 JUnit 是 Java 语言的标准单元测试框架一样，Unittest 则是 Python 语言的标准单元测试框架。</p>
+</blockquote>
+<p>Unittest 单元测试框架不仅可以适用于 Python 项目的单元测试，还可以适用接口测试、Web 自动化测试等，它有一个很重要的特性：它是通过类（class）的方式，将测试用例组织在一起。</p>
+<h3 id="2-2-核心要素及常用属性"><a href="#2-2-核心要素及常用属性" class="headerlink" title="2.2 核心要素及常用属性"></a>2.2 核心要素及常用属性</h3><p><strong>核心要素</strong></p>
+<p>Unittest 框架中最核心的四个概念是：test case、testsuite、test runner 和 test fixture。</p>
+<ul>
+<li>一个 TestCase 的实例就是一个测试用例。什么是测试用例呢？就是一个完整的测试流程，包括测试前准备环境的搭建（setUp），执行测试代码（run），以及测试后环境的还原（tearDown）。元测试（unit test）的本质也就在这里，一个测试用例是一个完整的测试单元，通过运行这个测试单元，可以对某一个问题进行验证。</li>
+<li>而多个测试用例集合在一起，就是 TestSuite，而且 TestSuite 也可以嵌套 TestSuite。</li>
+<li>TestLoader 是用来加载 TestCase 到 TestSuite 中的，其中有几个 loadTestsFrom__() 方法，就是从各个地方寻找 TestCase，创建它们的实例，然后 add 到 TestSuite 中，再返回一个 TestSuite 实例。</li>
+<li>TextTestRunner 是来执行测试用例的，其中的 run(test) 会执行 TestSuite &#x2F; TestCase 中的 run(result) 方法。</li>
+<li>测试的结果会保存到 TextTestResult 实例中，包括运行了多少测试用例，成功了多少，失败了多少等信息。</li>
+<li>而对一个测试用例环境的搭建和销毁，是一个 fixture。</li>
+</ul>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250705235912972.webp"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250705235912973.webp"></p>
+<p>这样整个流程就清楚了，首先是要写好 TestCase，然后由 TestLoader 加载 TestCase 到 TestSuite，然后由 TextTestRunner 来运行 TestSuite，运行的结果保存在 TextTestResult 中，整个过程集成在 unittest.main 模块中。</p>
+<p><strong>常用属性</strong></p>
+<p>uniitest 的属性如下：</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250705235912974.webp"></p>
+<p>说明：</p>
+<ul>
+<li>unittest.TestCase：TestCase 类，所有测试用例类继承的基类。</li>
+<li>unittest.TestSuite()：unittest 框架的 TestSuite() 类是用来创建测试套件的。</li>
+<li>unittest.main()：将一个单元测试模块变为可直接运行的测试脚本，main() 方法使用 TestLoader 类来搜索所有包含在该模块中以 “test” 命名开头的测试方法，并自动执行他们，根据 ASCII 码的顺序加载测试用例，数字与字母的顺序为：0-9，A-Z，a-z。</li>
+<li>unittest.TextTestRunner()：unittest 框架的 TextTestRunner() 类，通过该类下面的 run() 方法来运行 suite 所组装的测试用例，入参为 suite 测试套件。</li>
+</ul>
+<h3 id="2-3-基本使用"><a href="#2-3-基本使用" class="headerlink" title="2.3 基本使用"></a>2.3 基本使用</h3><p>我们用一个基础的计算器的例子来看看 unittest 是如何使用的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 计算器类</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Calculator</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, a, b</span>):</span><br><span class="line">        <span class="variable language_">self</span>.a = a</span><br><span class="line">        <span class="variable language_">self</span>.b= b</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.a + <span class="variable language_">self</span>.b</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">minus</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.a - <span class="variable language_">self</span>.b</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">multip</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.a * <span class="variable language_">self</span>.b</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">divide</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="variable language_">self</span>.a / <span class="variable language_">self</span>.b</span><br></pre></td></tr></table></figure>
+
+<p>我们需要单独创建一个写单元测试的文件出来，并且编写步骤如下：</p>
+<ul>
+<li>导入 unittest 模块、被测文件或者其中的类</li>
+<li>创建一个测试类，并继承 unittest.TestCase</li>
+<li>重写 setUp 和 tearDown 方法（可选，如果有初始化条件和结束条件）</li>
+<li>定义测试函数，函数以 test 开头</li>
+<li>在函数体中使用断言来判断测试结果是否符合预期结果</li>
+<li>调用 unittest.main() 方法来运行测试用例</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># !/usr/bin/python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 导入 unittest 模块</span></span><br><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">from</span> calculator <span class="keyword">import</span> Calculator</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义测试类，父类为 unittest.TestCase</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestCalculator</span>(unittest.TestCase):</span><br><span class="line">    <span class="comment"># 定义 setUp() 方法用于测试用例执行前的初始化工作</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">setUp</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;test start&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.result = Calculator(<span class="number">20</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义测试用例，以 &quot;test_&quot; 开头命名的方法，方法的入参为 self</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_add</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Test method add(a， b)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;测试加法函数&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="variable language_">self</span>.result.add(), <span class="number">25</span>, <span class="string">&#x27;计算错误!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_minus</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Test method minus(a， b)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;测试减法函数&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="variable language_">self</span>.result.minus(), <span class="number">15</span>, <span class="string">&#x27;计算错误!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_multip</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Test method multip(a， b)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;测试乘法函数&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="variable language_">self</span>.result.multip(), <span class="number">100</span>, <span class="string">&#x27;计算错误!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_divide</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Test method divide(a， b)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;测试除法函数&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="variable language_">self</span>.result.divide(), <span class="number">4</span>, <span class="string">&#x27;计算错误!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义 tearDown() 方法用于测试用例执行之后的善后工作</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">tearDown</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;test end&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="comment"># unittest.main() 方法会搜索该模块下所有以 test 开头的测试用例方法，并自动执行它们</span></span><br><span class="line">    unittest.main()</span><br></pre></td></tr></table></figure>
+
+<p>这里执行时需要注意的一个点是，执行测试用例的顺序不是按照文件中定义的顺序，而是根据 ASCII 码的顺序加载测试用例，数字与字母的顺序为：0-9，A-Z，a-z。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250705235912975.webp"></p>
+<p>如果想按照指定的顺序来执行用例，则可以在用例名称中增加一个数字的标识</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">test_001_add</span>(<span class="params">self</span>):...</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test_002_minus</span>(<span class="params">self</span>):...</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test_003_multip</span>(<span class="params">self</span>):...</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test_004_divide</span>(<span class="params">self</span>):...</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-Unittest-常见用法"><a href="#3-Unittest-常见用法" class="headerlink" title="3. Unittest 常见用法"></a>3. Unittest 常见用法</h2><h3 id="3-1-TestSuite-测试套件"><a href="#3-1-TestSuite-测试套件" class="headerlink" title="3.1 TestSuite 测试套件"></a>3.1 TestSuite 测试套件</h3><h4 id="3-1-1-加载单个用例"><a href="#3-1-1-加载单个用例" class="headerlink" title="3.1.1 加载单个用例"></a>3.1.1 加载单个用例</h4><p>除了上面基本使用里的方法可以执行测试用例，我们同样也可以使用 TestSuite 测试套件来执行测试用例。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># !/usr/bin/python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 导入 unittest 模块</span></span><br><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">from</span> calculator <span class="keyword">import</span> Calculator</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义测试类，父类为 unittest.TestCase</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestCalculator</span>(unittest.TestCase):</span><br><span class="line">    <span class="comment"># 定义 setUp() 方法用于测试用例执行前的初始化工作</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">setUp</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;test start&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.result = Calculator(<span class="number">20</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义测试用例，以 &quot;test_&quot; 开头命名的方法，方法的入参为 self</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_add</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Test method add(a， b)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;测试加法函数&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="variable language_">self</span>.result.add(), <span class="number">25</span>, <span class="string">&#x27;计算错误!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_minus</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Test method minus(a， b)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;测试减法函数&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="variable language_">self</span>.result.minus(), <span class="number">15</span>, <span class="string">&#x27;计算错误!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_multip</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Test method multip(a， b)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;测试乘法函数&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="variable language_">self</span>.result.multip(), <span class="number">100</span>, <span class="string">&#x27;计算错误!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_divide</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Test method divide(a， b)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;测试除法函数&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="variable language_">self</span>.result.divide(), <span class="number">4</span>, <span class="string">&#x27;计算错误!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义 tearDown() 方法用于测试用例执行之后的善后工作</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">tearDown</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;test end&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="comment"># 1.定义测试套件，构造测试机</span></span><br><span class="line">    suite = unittest.TestSuite()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2.向测试套件中添加测试用例，添加顺序即为用例执行顺序</span></span><br><span class="line">    <span class="comment"># 写法一：单个添加测试用例</span></span><br><span class="line">    suite.addTest(TestCalculator(<span class="string">&#x27;test_divide&#x27;</span>))</span><br><span class="line">    suite.addTest(TestCalculator(<span class="string">&#x27;test_add&#x27;</span>))</span><br><span class="line">    suite.addTest(TestCalculator(<span class="string">&#x27;test_minus&#x27;</span>))</span><br><span class="line">    suite.addTest(TestCalculator(<span class="string">&#x27;test_multip&#x27;</span>))</span><br><span class="line">    <span class="comment"># 写法二：批量添加测试用例</span></span><br><span class="line">    <span class="comment"># tests = [TestCalculator(&#x27;test_add&#x27;), TestCalculator(&#x27;test_minus&#x27;), TestCalculator(&#x27;test_multip&#x27;)]</span></span><br><span class="line">    <span class="comment"># suite.addTests(tests)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 3.运行容器中的测试用例</span></span><br><span class="line">    runner = unittest.TextTestRunner()</span><br><span class="line">    runner.run(suite)</span><br></pre></td></tr></table></figure>
+<h4 id="3-1-2-加载多个类"><a href="#3-1-2-加载多个类" class="headerlink" title="3.1.2 加载多个类"></a>3.1.2 加载多个类</h4><p>上面这种方式添加测试用例会比较麻烦，当用例很多的时候显然一个个添加就不太合适了。</p>
+<p>因此可以通过 <code>unittest.TestLoader().loadTestsFromTestCase(类名)</code> 可以一次加载某个类下面的所有测试用例，也支持加载多个类。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">import</span> test_myclass1 <span class="keyword">import</span> TestCalculator1</span><br><span class="line"><span class="keyword">import</span> test_myclass2 <span class="keyword">import</span> TestCalculator2</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="comment"># 根据给定的测试类，获取其中所有以 &quot;test&quot; 开头的测试方法，并返回一个测试套件</span></span><br><span class="line">    loader = unittest.TestLoader</span><br><span class="line">    suite1 = loader.loadTestsFromTestCase(TestCalculator1)</span><br><span class="line">    suite2 = loader.loadTestsFromTestCase(TestCalculator2)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将多个测试类加载到测试套件中</span></span><br><span class="line">    <span class="comment"># 通过调整 suit2 和 suite1 的顺序，可以设定执行顺序</span></span><br><span class="line">    suite = unittest.TestSuite([suite2, suite1])</span><br><span class="line">    </span><br><span class="line">    runner = unittest.TextTestRunner()</span><br><span class="line">    runner.run(suite)</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-1-3-匹配目录下的用例"><a href="#3-1-3-匹配目录下的用例" class="headerlink" title="3.1.3 匹配目录下的用例"></a>3.1.3 匹配目录下的用例</h4><p>假如某个目录下存在多个测试模块，test1.py 和 test2.py、test3.py，如果用 addTests 的方法添加用例到测试套件，未免有点麻烦，这时可以用到 TestLoader() 这个类。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250705235912976.webp"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="comment"># 1. 实例化测试套件对象</span></span><br><span class="line">    suite = unittest.TestSuite()</span><br><span class="line">    <span class="comment"># 2. 实例化 TestLoader 对象</span></span><br><span class="line">    loader = unittest.TestLoader()</span><br><span class="line">    <span class="comment"># 3. 使用 addTests 将找到的测试用例放在测试套件下</span></span><br><span class="line">    suite.addTests(loader.discover(os.getcwd()))</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 或者另外一种写法</span></span><br><span class="line">    <span class="comment"># suite = unittest.defaultTestLoader.discover(&#x27;./test&#x27;, pattern=&#x27;test_*.py&#x27;)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 运行</span></span><br><span class="line">    runner = unittest.TextTestRunner()</span><br><span class="line">    runner.run(suite)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-保存用例执行结果"><a href="#3-2-保存用例执行结果" class="headerlink" title="3.2 保存用例执行结果"></a>3.2 保存用例执行结果</h3><p>如果想将用例执行的结果持久化的保存下来，则可以通过下面的方法将结果写入到一个文件中。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    suite = unittest.TestSuite()</span><br><span class="line"></span><br><span class="line">    suite.addTest(TestCalculator(<span class="string">&#x27;test_divide&#x27;</span>))</span><br><span class="line">    suite.addTest(TestCalculator(<span class="string">&#x27;test_add&#x27;</span>))</span><br><span class="line">    suite.addTest(TestCalculator(<span class="string">&#x27;test_minus&#x27;</span>))</span><br><span class="line">    suite.addTest(TestCalculator(<span class="string">&#x27;test_multip&#x27;</span>))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;UnittestTextReport.txt&#x27;</span>, <span class="string">&#x27;a&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        runner = unittest.TextTestRunner(stream=f, verbosity=<span class="number">2</span>)</span><br><span class="line">        runner.run(suite)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Tips：</strong></p>
+<p>如果想要执行的结果更加详细，则可以指定 verbosity 属性为 2。</p>
+</blockquote>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250705235912978.webp"></p>
+<h3 id="3-3-setUp-和-tearDown"><a href="#3-3-setUp-和-tearDown" class="headerlink" title="3.3 setUp() 和 tearDown()"></a>3.3 setUp() 和 tearDown()</h3><p>setUp() 和 tearDown() 这两个方法在每个测试方法执行前以及执行后执行一次，setUp 用来为测试准备环境，tearDown 用来清理环境。</p>
+<p>如果想要在一个类的所有 case 执行之前准备一次环境，并在所有 case 执行纪结束之后再清理环境，我们可以用 setUpClass() 与 tearDownClass()。</p>
+<h3 id="3-4-跳过某个-Case"><a href="#3-4-跳过某个-Case" class="headerlink" title="3.4 跳过某个 Case"></a>3.4 跳过某个 Case</h3><p>如果我们临时想要跳过某个 case 不执行怎么办？unittest 也提供了两种方法：</p>
+<ul>
+<li><strong>skip 装饰器</strong><ul>
+<li><p><code>@unittest.skip(reason)</code>：<code>skip(reason)</code> 装饰器无条件跳过装饰的测试，并说明跳过测试的原因。</p>
+</li>
+<li><p><code>@unittest.skiplf(reason)</code>：<code>skiplf(condition, reason)</code> 装饰器条件为真时，跳过装饰的测试，并说明跳过测试的原因。</p>
+</li>
+<li><p><code>@unittest.skipUnless(reason)</code>：<code>skipUnless(condition, reason)</code> 装饰器条件为假时，跳过装饰的测试，并说明跳过测试的原因。</p>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># !/usr/bin/python3</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">from</span> calculator <span class="keyword">import</span> Calculator</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestCalculator</span>(unittest.TestCase):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">setUp</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;test start&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.result = Calculator(<span class="number">20</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @unittest.skip(<span class="params"><span class="string">&quot;I don&#x27;t want to run this case.&quot;</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_add</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Test method add(a， b)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;测试加法函数&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="variable language_">self</span>.result.add(), <span class="number">25</span>, <span class="string">&#x27;计算错误!&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @unittest.skipIf(<span class="params"><span class="number">3</span> &gt; <span class="number">2</span>, <span class="string">&quot;3 大于 2，此用例不执行&quot;</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_minus</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Test method minus(a， b)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;测试减法函数&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="variable language_">self</span>.result.minus(), <span class="number">15</span>, <span class="string">&#x27;计算错误!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_multip</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Test method multip(a， b)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;测试乘法函数&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="variable language_">self</span>.result.multip(), <span class="number">100</span>, <span class="string">&#x27;计算错误!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 除非是 Linux 平台，否则忽略此方法</span></span><br><span class="line"><span class="meta">    @unittest.skipUnless(<span class="params">sys.platform.startswith(<span class="params"><span class="string">&quot;linux&quot;</span></span>), <span class="string">&quot;requires Linux&quot;</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_divide</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Test method divide(a， b)&quot;&quot;&quot;</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;测试除法函数&#x27;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="variable language_">self</span>.result.divide(), <span class="number">4</span>, <span class="string">&#x27;计算错误!&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">tearDown</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;test end&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    suite = unittest.TestSuite()</span><br><span class="line"></span><br><span class="line">    suite.addTest(TestCalculator(<span class="string">&#x27;test_divide&#x27;</span>))</span><br><span class="line">    suite.addTest(TestCalculator(<span class="string">&#x27;test_add&#x27;</span>))</span><br><span class="line">    suite.addTest(TestCalculator(<span class="string">&#x27;test_minus&#x27;</span>))</span><br><span class="line">    suite.addTest(TestCalculator(<span class="string">&#x27;test_multip&#x27;</span>))</span><br><span class="line"></span><br><span class="line">    runner = unittest.TextTestRunner(verbosity=<span class="number">2</span>)</span><br><span class="line">    runner.run(suite)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250705235912979.webp"></p>
+<ul>
+<li><strong>TestCase.skipTest() 方法</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">test_multip</span>(<span class="params">self</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Test method multip(a， b)&quot;&quot;&quot;</span></span><br><span class="line">    <span class="variable language_">self</span>.skipTest(<span class="string">&#x27;Do not run this.&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;测试乘法函数&#x27;</span>)</span><br><span class="line">    <span class="variable language_">self</span>.assertEqual(<span class="variable language_">self</span>.result.multip(), <span class="number">100</span>, <span class="string">&#x27;计算错误!&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-5-断言方法"><a href="#3-5-断言方法" class="headerlink" title="3.5 断言方法"></a>3.5 断言方法</h3><blockquote>
+<p><strong>一般接口测试断言需要关注的地方：</strong></p>
+<ol>
+<li>HTTP 状态码的验证：查看状态返回是否是 200，即 HTTP 连接是成功的</li>
+<li>业务状态码的验证：当前业务下该接口调用返回的值是否是正常的，例如返回 status &#x3D; 0 表示正常</li>
+<li>数据的验证：对返回的数据进行断言，验证数据是否符合预期</li>
+<li>性能的验证：一个接口的响应时间不能过长</li>
+</ol>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th><strong>断言</strong></th>
+<th><strong>作用</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>assertEqual(a, b, [msg=&#39;失败时打印的信息&#39;)</code></td>
+<td>断言 a，b 是否相等，相等则用例通过。</td>
+</tr>
+<tr>
+<td><code>assertNotEqual(a, b, [msg=&#39;失败时打印的信息&#39;)</code></td>
+<td>断言 a，b 是否相等， 不相等则试用例通过</td>
+</tr>
+<tr>
+<td><code>assertTrue(x, [msg=&#39;失败时打印的信息&#39;])</code></td>
+<td>断言 x 是否 True，是 True 则用例通过。</td>
+</tr>
+<tr>
+<td><code>assertFalse(x, [msg=&#39;失败时打印的信息&#39;)</code></td>
+<td>断言 x 是否 False，是 False 则用例通过。</td>
+</tr>
+<tr>
+<td><code>assertIs(a, b, [msg=&#39;失败时打印的信息&#39;])</code></td>
+<td>断言 a 是否是 b，是则用例通过。</td>
+</tr>
+<tr>
+<td><code>assertNotIs(a, b, [msg=&#39;失败时打印的信息&#39;)</code></td>
+<td>断言 a 是否是 b，不是则用例通过。</td>
+</tr>
+<tr>
+<td><code>assertlsNone(x, [msg=&#39;失败时打印的信息&#39;])</code></td>
+<td>断言 x 是否 None，是 None，是 None 则用例通过。</td>
+</tr>
+<tr>
+<td><code>assertIsNotNone(x, [msg=&#39;失败时打印的信息])</code></td>
+<td>断言 x 是否 None，不是 None 则用例通过。</td>
+</tr>
+<tr>
+<td><code>assertln(a, b, [msg=&#39;失败时打印的信息&#39;)</code></td>
+<td>断言 a 是否在 b 中，在 b 中则用例通过。。</td>
+</tr>
+<tr>
+<td><code>assertNotIn(a, b, [msg=&#39;失败时打印的信息&#39;])</code></td>
+<td>断言 a 是否在 b 中，不在 b 中则用例通过</td>
+</tr>
+<tr>
+<td><code>assertIsInstance(a, b, [msg=&#39;失败时打印的信息&#39;)</code></td>
+<td>断言 a 是 b 的一个实例，是则用例通过。</td>
+</tr>
+<tr>
+<td><code>assertNotIsInstance(a, b, [msg=&#39;失败打印的信息&#39;])</code></td>
+<td>断言 a 不是 b 的一个实例，不是则用例过。</td>
+</tr>
+</tbody></table>
+<h3 id="3-6-命令行执行用例方式"><a href="#3-6-命令行执行用例方式" class="headerlink" title="3.6 命令行执行用例方式"></a>3.6 命令行执行用例方式</h3><p><strong>unittest 支持执行指定用例：</strong></p>
+<ul>
+<li>指定测试模块</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m unittest test_module1 test_module2</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>指定测试类</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m unittest test_module.TestClass</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>指定测试方法</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m unittest test_module.TestClass.test_method</span><br></pre></td></tr></table></figure>
+
+<p><strong>unittest 支持用例自动（递归）发现：</strong></p>
+<ul>
+<li><p>默认发现当前目录下所有符合 test*.py 测试用例</p>
+<p>  使用 <code>python -m unittest</code> 或 <code>python -m unittest discover</code></p>
+</li>
+<li><p>通过 -s 参数指定要自动发现的目录，-p 参数指定用例文件的名称模式</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m unittest discover -s project_directory -p &quot;test_*.py&quot;</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/2e3ef02/">https://alwaysfyo.github.io/posts/2e3ef02/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/">软件测试</a><a class="post-meta__tags" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a><a class="post-meta__tags" href="/tags/Unittest%E7%B3%BB%E5%88%97/">Unittest系列</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/d9924db5/" title="Postman 接口测试工具学习"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Postman 接口测试工具学习</div></div><div class="info-2"><div class="info-item-1">接口的本质，其实就是一种契约，遵循这样一种形式：在发开前期，我们约定接口会接收什么数据；在处理完成后，它又会返回什么数据。</div></div></div></a><a class="pagination-related" href="/posts/5b863cc0/" title="信息系项目管理师教程-第4版"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">信息系项目管理师教程-第4版</div></div><div class="info-2"><div class="info-item-1">信息系项目管理师教程、信息系项目管理师教程（重点标记版）</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/ba7ac85c/" title="Unittest 单元测试框架 - 下"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Unittest 单元测试框架 - 下</div></div><div class="info-2"><div class="info-item-1">参数化测试 是一种 "数据驱动测试" (Data-DrivenTest)，在同一个方法上测试不同的参数，以覆盖所有可能的预期分支的结果。</div></div></div></a><a class="pagination-related" href="/posts/965dc3de/" title="Selenium 框架三部曲 - 上"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Selenium 框架三部曲 - 上</div></div><div class="info-2"><div class="info-item-1">目前互联网企业在 UI 自动化测试上的投入不断减少，原因有下：</div></div></div></a><a class="pagination-related" href="/posts/ce7d32a9/" title="Pytest 测试框架三部曲 - 上"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Pytest 测试框架三部曲 - 上</div></div><div class="info-2"><div class="info-item-1">它是一种用于完成特定的任务的软件或硬件，他们通常是独立的，可以直接使用。</div></div></div></a><a class="pagination-related" href="/posts/68d65074/" title="Selenium 框架三部曲 - 中"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-13</div><div class="info-item-2">Selenium 框架三部曲 - 中</div></div><div class="info-2"><div class="info-item-1">chropath 是一款浏览器插件，用于元素属性识别和自动获取，支持主流浏览器。</div></div></div></a><a class="pagination-related" href="/posts/edd5b4e5/" title="API 接口智能化测试探索与实践"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-01</div><div class="info-item-2">API 接口智能化测试探索与实践</div></div><div class="info-2"><div class="info-item-1">API 接口由于具备良好的可测性，很自然的成为服务端程序自动化测试的首选方案：</div></div></div></a><a class="pagination-related" href="/posts/a262d6ed/" title="接口测试基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-24</div><div class="info-item-2">接口测试基础</div></div><div class="info-2"><div class="info-item-1">接口的本质，其实就是一种契约，遵循这样一种形式：在发开前期，我们约定接口会接收什么数据；在处理完成后，它又会返回什么数据。</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95"><span class="toc-number">1.</span> <span class="toc-text">1. 单元测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 什么是单元测试？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E8%90%BD%E5%9C%B0%E6%8C%91%E6%88%98"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 单元测试落地挑战</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E6%80%8E%E4%B9%88%E5%81%9A%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 单元测试怎么做？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Unittest-%E5%9F%BA%E7%A1%80"><span class="toc-number">2.</span> <span class="toc-text">2. Unittest 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%A1%86%E6%9E%B6%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 框架介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%A0%B8%E5%BF%83%E8%A6%81%E7%B4%A0%E5%8F%8A%E5%B8%B8%E7%94%A8%E5%B1%9E%E6%80%A7"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 核心要素及常用属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 基本使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Unittest-%E5%B8%B8%E8%A7%81%E7%94%A8%E6%B3%95"><span class="toc-number">3.</span> <span class="toc-text">3. Unittest 常见用法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-TestSuite-%E6%B5%8B%E8%AF%95%E5%A5%97%E4%BB%B6"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 TestSuite 测试套件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-1-%E5%8A%A0%E8%BD%BD%E5%8D%95%E4%B8%AA%E7%94%A8%E4%BE%8B"><span class="toc-number">3.1.1.</span> <span class="toc-text">3.1.1 加载单个用例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-2-%E5%8A%A0%E8%BD%BD%E5%A4%9A%E4%B8%AA%E7%B1%BB"><span class="toc-number">3.1.2.</span> <span class="toc-text">3.1.2 加载多个类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-3-%E5%8C%B9%E9%85%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E7%9A%84%E7%94%A8%E4%BE%8B"><span class="toc-number">3.1.3.</span> <span class="toc-text">3.1.3 匹配目录下的用例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E4%BF%9D%E5%AD%98%E7%94%A8%E4%BE%8B%E6%89%A7%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 保存用例执行结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-setUp-%E5%92%8C-tearDown"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 setUp() 和 tearDown()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E8%B7%B3%E8%BF%87%E6%9F%90%E4%B8%AA-Case"><span class="toc-number">3.4.</span> <span class="toc-text">3.4 跳过某个 Case</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E6%96%AD%E8%A8%80%E6%96%B9%E6%B3%95"><span class="toc-number">3.5.</span> <span class="toc-text">3.5 断言方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%89%A7%E8%A1%8C%E7%94%A8%E4%BE%8B%E6%96%B9%E5%BC%8F"><span class="toc-number">3.6.</span> <span class="toc-text">3.6 命令行执行用例方式</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/68d65074/" title="Selenium 框架三部曲 - 中">Selenium 框架三部曲 - 中</a><time datetime="2025-07-13T01:21:00.000Z" title="发表于 2025-07-13 09:21:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/261faf15/" title="Golang Mutex 详解">Golang Mutex 详解</a><time datetime="2025-07-12T17:30:00.000Z" title="发表于 2025-07-13 01:30:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/edd5b4e5/" title="API 接口智能化测试探索与实践">API 接口智能化测试探索与实践</a><time datetime="2025-07-01T13:01:00.000Z" title="发表于 2025-07-01 21:01:00">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/8fe1f36/" title="AI 系列：计算机视觉-给机器装上眼睛">AI 系列：计算机视觉-给机器装上眼睛</a><time datetime="2025-06-30T15:30:00.000Z" title="发表于 2025-06-30 23:30:00">2025-06-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/c9acbf1/" title="AI 系列：搜索-从迷宫求解看人工智能关键技术">AI 系列：搜索-从迷宫求解看人工智能关键技术</a><time datetime="2025-06-30T15:29:00.000Z" title="发表于 2025-06-30 23:29:00">2025-06-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

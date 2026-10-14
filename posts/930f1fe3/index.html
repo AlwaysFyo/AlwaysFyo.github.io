@@ -1,0 +1,551 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>测试系统工程师（TSE）技术大纲 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="测试系统工程师（TSE）技术学习大纲及其重点关注">
+<meta property="og:type" content="article">
+<meta property="og:title" content="测试系统工程师（TSE）技术大纲">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/930f1fe3/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="测试系统工程师（TSE）技术学习大纲及其重点关注">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2025-05-25T05:33:00.000Z">
+<meta property="article:modified_time" content="2025-07-13T01:40:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="软件测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "测试系统工程师（TSE）技术大纲",
+  "url": "https://alwaysfyo.github.io/posts/930f1fe3/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2025-05-25T05:33:00.000Z",
+  "dateModified": "2025-07-13T01:40:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/930f1fe3/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '测试系统工程师（TSE）技术大纲',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">测试系统工程师（TSE）技术大纲</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">测试系统工程师（TSE）技术大纲</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-25T05:33:00.000Z" title="发表于 2025-05-25 13:33:00">2025-05-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-13T01:40:00.000Z" title="更新于 2025-07-13 09:40:00">2025-07-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/">软件测试</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="TSE-业务知识"><a href="#TSE-业务知识" class="headerlink" title="TSE-业务知识"></a>TSE-业务知识</h2><h3 id="技术架构"><a href="#技术架构" class="headerlink" title="技术架构"></a>技术架构</h3><h4 id="前端技术架构（☆）"><a href="#前端技术架构（☆）" class="headerlink" title="前端技术架构（☆）"></a>前端技术架构（☆）</h4><ul>
+<li>html , css javascript</li>
+<li>vue 全家桶： vue, vue-router, vuex, vue-resource</li>
+<li>环境搭建： node.js, npm</li>
+<li>开发工具： vs-code</li>
+</ul>
+<h4 id="服务端架构"><a href="#服务端架构" class="headerlink" title="服务端架构"></a>服务端架构</h4><ul>
+<li>架构模式（☆☆☆）: 分布式， 集群， 冗余， 缓存等</li>
+<li>架构要素（☆☆☆）: 性能， 可用性， 伸缩性， 扩展性， 安全性等</li>
+<li>高性能架构（☆☆☆）: 特点， 应用场景， 当前产品存在问题， 优化方案等</li>
+<li>高可用架构（☆☆☆）: 特点， 应用场景， 当前产品存在问题， 优化方案等</li>
+<li>伸缩性架构（☆☆☆）: 特点， 应用场景， 当前产品存在问题， 优化方案等</li>
+<li>可扩展架构（☆☆☆）: 特点， 应用场景， 当前产品存在问题， 优化方案等</li>
+<li>安全架构（☆）: 特点， 应用场景， 当前产品存在问题， 优化方案等</li>
+<li>主流分布式架构</li>
+<li>Spring Cloud（☆☆☆）</li>
+<li>Dubbo（☆）</li>
+</ul>
+<h3 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h3><h4 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h4><h5 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h5><ul>
+<li>索引： （☆☆☆☆☆） 索引介绍， 原理， 组合索引， 索引分析</li>
+<li>架构： （☆☆☆） 逻辑架构， 物理架构， 执行流程</li>
+<li>锁： （☆☆☆）表的介绍和分类， 表锁， 行锁， 数据锁</li>
+<li>事务： （☆☆☆☆☆）事务的介绍， ACID 特性及原理， 事务并发， 事务隔离， 行锁和死锁原理分析</li>
+<li>SQL 语句：（☆☆☆☆☆）常用增删改查，关键字和内置函数</li>
+<li>集群： （☆☆☆）主从复制， 读写分离的原理和实现</li>
+<li>分库分表（☆☆☆☆☆）分库分表概念， 数据切分概念， 分库分表问题， 分库分表实现方案</li>
+<li>性能分析 &amp; 性能优化（☆☆☆☆☆）</li>
+<li>性能分析： 慢查询日志， profile 分析</li>
+<li>性能优化： 连接池 &amp; 连接数，表设计， SQL 语句优化</li>
+</ul>
+<h5 id="Elasticsearch"><a href="#Elasticsearch" class="headerlink" title="Elasticsearch"></a>Elasticsearch</h5><ul>
+<li>基础认知（☆☆☆☆☆）</li>
+<li>集群部署（☆☆☆）</li>
+<li>查询（☆☆☆☆☆）</li>
+<li>聚集（☆☆☆）</li>
+<li>分析（☆☆☆）</li>
+<li>数据同步（☆）</li>
+<li>JAVA API（☆）</li>
+<li>性能测试（☆☆☆）</li>
+<li>数据迁移（☆）</li>
+<li>应用场景 &amp; 架构设计（☆☆☆☆☆）</li>
+</ul>
+<h4 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h4><blockquote>
+<p>特别关注：</p>
+<ol>
+<li><p>技术选型如何做， 优缺点？</p>
+</li>
+<li><p>消息队列的概念， 目的， 应用场景</p>
+</li>
+</ol>
+</blockquote>
+<h5 id="RabbitMQ"><a href="#RabbitMQ" class="headerlink" title="RabbitMQ"></a>RabbitMQ</h5><ul>
+<li>基础知识（☆☆☆☆☆）生产者，消费者， 队列， 交换器， 运转流程</li>
+<li>Exchange 类型（☆☆☆☆☆）direct, topic, headers, fanout, alternate</li>
+<li>6 种工作模式（☆☆☆） work queues, publish &#x2F; subscribe, route, rpc, topic, publish confirms</li>
+<li>高级特性（☆☆☆）</li>
+<li>生产者： confirms</li>
+<li>消费者： ack, prefetch, concurrency, retry</li>
+<li>队列：死信队列、延迟队列、优先级队列、队列过期 TTL、Length Limit</li>
+<li>集群（☆☆☆）</li>
+<li>队列分片（☆）</li>
+<li>插件运用（☆）</li>
+<li>RabbitMQ-management</li>
+<li>RabbitMQ-tracing</li>
+<li>RabbitMQ-federation</li>
+<li>RabbitMQ-sharding</li>
+<li>思考（☆☆☆☆☆）</li>
+<li>怎么提高吞吐量？</li>
+<li>怎么保证消息顺序性？</li>
+<li>怎么防止消息丢失?</li>
+<li>怎么防止重复消费？</li>
+</ul>
+<h5 id="RocketMQ"><a href="#RocketMQ" class="headerlink" title="RocketMQ"></a>RocketMQ</h5><ul>
+<li>阿里开源的， 参考 RabbitMQ 大纲</li>
+</ul>
+<h5 id="ActiveMQ"><a href="#ActiveMQ" class="headerlink" title="ActiveMQ"></a>ActiveMQ</h5><ul>
+<li>参考 RabbitMQ 大纲， 关注差异点</li>
+</ul>
+<h5 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h5><ul>
+<li>基础知识（☆☆☆☆☆）基本术语、消息引擎基础、角色定位 、版本选择</li>
+<li>生产者（☆☆☆☆☆）分区机制 、压缩算法、无消息丢失配置 、高级功能 、TCP 连接管理、幂等性</li>
+<li>消费者（☆☆☆☆☆）消费者组 、位移主题 、Rebalance 、位移提交、异常处理 、group 监控</li>
+<li>原理（☆☆☆）备份机制、请求处理 、Rebalance 全流程解析 、controller 、高水位</li>
+</ul>
+<h4 id="反向代理-负载均衡"><a href="#反向代理-负载均衡" class="headerlink" title="反向代理&#x2F;负载均衡"></a>反向代理&#x2F;负载均衡</h4><h5 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h5><ul>
+<li>代理（☆☆☆☆☆）代理， 正向代理， 反向代理的概念和区别？</li>
+<li>nginx 是什么？（☆☆☆☆☆）</li>
+<li>为什么用 nginx ?（☆☆☆☆☆）</li>
+<li>nginx 性能为什么高（☆☆☆☆☆）</li>
+<li>nginx 环境搭建（☆☆☆☆☆）nginx 搭建， 热加载， 启动， 停止， 重启等</li>
+<li>nginx 主配置文件（☆☆☆☆☆）</li>
+<li>事件模型（☆）select, poll, epoll, kqueue 等</li>
+<li>nginx 进程（☆☆☆）master 进程， worker 进程</li>
+<li>常见优化（☆☆☆）</li>
+</ul>
+<h4 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h4><h5 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h5><ul>
+<li>基础知识（☆☆☆☆☆）Redis 介绍 、优缺点 、数据结构 、Java 客户端 、管道 、事务</li>
+<li>失效机制（☆☆☆☆☆）</li>
+<li>应用场景</li>
+<li>缓存（☆☆☆☆☆）</li>
+<li>分布式锁（☆）</li>
+<li>发布 &#x2F; 订阅（☆）</li>
+<li>队列（☆）</li>
+<li>排行榜计算（☆）</li>
+<li>持久化（☆）RDB 机制 、AOF 机制 、RDB + AOF 混用机制</li>
+<li>集群 &#x2F; 分布式（☆☆☆）全量复制， 部分复制、主从复制 、哨兵 、集群</li>
+</ul>
+<h2 id="TSE-通用知识"><a href="#TSE-通用知识" class="headerlink" title="TSE-通用知识"></a>TSE-通用知识</h2><h3 id="编码能力"><a href="#编码能力" class="headerlink" title="编码能力"></a>编码能力</h3><h4 id="开发语言-JAVA（☆☆☆☆☆）"><a href="#开发语言-JAVA（☆☆☆☆☆）" class="headerlink" title="开发语言 JAVA（☆☆☆☆☆）"></a>开发语言 JAVA（☆☆☆☆☆）</h4><ol>
+<li>面向对象语言概念</li>
+<li>语法基础</li>
+<li>面向对象的特性：继承、封装、多态</li>
+<li>集合</li>
+<li>异常处理</li>
+<li>IO</li>
+<li>多线程</li>
+<li>网络</li>
+<li>泛型</li>
+<li>JDK 常用类、接口、注解</li>
+</ol>
+<h4 id="开发框架（☆☆☆）"><a href="#开发框架（☆☆☆）" class="headerlink" title="开发框架（☆☆☆）"></a>开发框架（☆☆☆）</h4><p>GitHub 项目练手</p>
+<h5 id="Spring-Boot"><a href="#Spring-Boot" class="headerlink" title="Spring Boot"></a>Spring Boot</h5><ul>
+<li>Spring Boot 介绍</li>
+<li>Spring Boot 、Spring MVC、Spring 的区别</li>
+<li>自动装配</li>
+<li>Spring Boot Starter</li>
+<li>Spring Data</li>
+<li>关键注解</li>
+<li>启动原理分析</li>
+<li>事务原理</li>
+</ul>
+<h5 id="Mybatis"><a href="#Mybatis" class="headerlink" title="Mybatis"></a>Mybatis</h5><ul>
+<li>ORM 框架是什么</li>
+<li>跟 JDBC 的区别</li>
+<li>配置文件</li>
+<li>核心 API</li>
+<li>缓存机制</li>
+<li>插件开发</li>
+<li>逆向工程</li>
+</ul>
+<h5 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h5><ul>
+<li>Maven 是什么</li>
+<li>Maven 的作用是什么</li>
+<li>构建过程： 清理、编译、测试、报告、打包、安装、部署</li>
+<li>POM</li>
+<li>Maven 工程目录结构</li>
+<li>坐标管理</li>
+<li>依赖管理</li>
+<li>仓库管理</li>
+<li>生命周期</li>
+<li>插件和目标</li>
+<li>继承</li>
+<li>聚合</li>
+</ul>
+<h4 id="开发集成工具"><a href="#开发集成工具" class="headerlink" title="开发集成工具"></a>开发集成工具</h4><h5 id="IntelliJ-IDEA（☆☆☆☆☆）"><a href="#IntelliJ-IDEA（☆☆☆☆☆）" class="headerlink" title="IntelliJ IDEA（☆☆☆☆☆）"></a>IntelliJ IDEA（☆☆☆☆☆）</h5><ul>
+<li>常用快捷键</li>
+<li>创建工程</li>
+<li>导入工程</li>
+<li>常用配置</li>
+</ul>
+<h5 id="Eclipse（☆）"><a href="#Eclipse（☆）" class="headerlink" title="Eclipse（☆）"></a>Eclipse（☆）</h5><h4 id="自动化测试"><a href="#自动化测试" class="headerlink" title="自动化测试"></a>自动化测试</h4><ol>
+<li>WEB&#x2F;H5：Selenium、WebDriver、Xpath</li>
+<li>app ： appium</li>
+<li>api： postman、httpclient、json</li>
+<li>TestNG</li>
+</ol>
+<h3 id="测试理论知识"><a href="#测试理论知识" class="headerlink" title="测试理论知识"></a>测试理论知识</h3><h4 id="测试策略（☆☆☆☆☆）"><a href="#测试策略（☆☆☆☆☆）" class="headerlink" title="测试策略（☆☆☆☆☆）"></a>测试策略（☆☆☆☆☆）</h4><ol>
+<li>需求分析</li>
+<li>风险评估</li>
+<li>测试范围评估</li>
+<li>测试方法敲定</li>
+<li>测试准入、准出标准</li>
+</ol>
+<h4 id="用例设计（☆☆☆☆☆）"><a href="#用例设计（☆☆☆☆☆）" class="headerlink" title="用例设计（☆☆☆☆☆）"></a>用例设计（☆☆☆☆☆）</h4><ol>
+<li>常用用例设计方法</li>
+<li>高质量用例设计方法和原则</li>
+</ol>
+<h4 id="性能测试"><a href="#性能测试" class="headerlink" title="性能测试"></a>性能测试</h4><h4 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h4><ul>
+<li>性能测试理论</li>
+<li>性能测试分类</li>
+<li>性能测试常用指标</li>
+<li>性能测试流程</li>
+</ul>
+<h4 id="工具-平台"><a href="#工具-平台" class="headerlink" title="工具&#x2F;平台"></a>工具&#x2F;平台</h4><ul>
+<li>Jmeter（☆☆☆☆☆）</li>
+<li>LoadRunner（☆）</li>
+<li>Locust（☆）</li>
+<li>Gatling（☆）</li>
+<li>nGrinder（☆）</li>
+</ul>
+<h4 id="项目实战（☆☆☆☆☆）"><a href="#项目实战（☆☆☆☆☆）" class="headerlink" title="项目实战（☆☆☆☆☆）"></a>项目实战（☆☆☆☆☆）</h4><ul>
+<li>性能测试需求分析</li>
+<li>性能测试计划</li>
+<li>性能测试方案</li>
+<li>性能测试场景数据建模</li>
+<li>脚本开发</li>
+</ul>
+<h4 id="性能监控（☆☆☆☆☆）"><a href="#性能监控（☆☆☆☆☆）" class="headerlink" title="性能监控（☆☆☆☆☆）"></a>性能监控（☆☆☆☆☆）</h4><h4 id="性能分析（☆☆☆☆☆）"><a href="#性能分析（☆☆☆☆☆）" class="headerlink" title="性能分析（☆☆☆☆☆）"></a>性能分析（☆☆☆☆☆）</h4><h4 id="性能优化（☆☆☆）"><a href="#性能优化（☆☆☆）" class="headerlink" title="性能优化（☆☆☆）"></a>性能优化（☆☆☆）</h4><h4 id="Java-虚拟机（☆☆☆☆☆）"><a href="#Java-虚拟机（☆☆☆☆☆）" class="headerlink" title="Java 虚拟机（☆☆☆☆☆）"></a>Java 虚拟机（☆☆☆☆☆）</h4><h4 id="安全测试（☆）"><a href="#安全测试（☆）" class="headerlink" title="安全测试（☆）"></a>安全测试（☆）</h4><ol>
+<li>基础知识</li>
+<li>Web 安全</li>
+<li>嵌入式安全</li>
+<li>工控安全</li>
+<li>移动安全</li>
+<li>系统安全</li>
+<li>反病毒</li>
+<li>云安全</li>
+</ol>
+<h3 id="开发设计模式-原则"><a href="#开发设计模式-原则" class="headerlink" title="开发设计模式&#x2F;原则"></a>开发设计模式&#x2F;原则</h3><h4 id="开发设计原则（☆☆☆）"><a href="#开发设计原则（☆☆☆）" class="headerlink" title="开发设计原则（☆☆☆）"></a>开发设计原则（☆☆☆）</h4><ol>
+<li>开闭原则</li>
+<li>依赖倒置原则</li>
+<li>单一职责原则</li>
+<li>迪米特法则（最少知道原则）</li>
+<li>接口隔离原则</li>
+<li>里氏替换原则</li>
+<li>合成复用原则</li>
+</ol>
+<h4 id="开发设计模式"><a href="#开发设计模式" class="headerlink" title="开发设计模式"></a>开发设计模式</h4><h5 id="创建型模式"><a href="#创建型模式" class="headerlink" title="创建型模式"></a>创建型模式</h5><ul>
+<li>工厂方法模式（☆☆☆）</li>
+<li>抽象工厂模式（☆☆☆）</li>
+<li>建造者模式（☆）</li>
+<li>原型模式（☆）</li>
+<li>单例模式（☆☆☆）</li>
+</ul>
+<h5 id="结构性模式"><a href="#结构性模式" class="headerlink" title="结构性模式"></a>结构性模式</h5><ul>
+<li>适配器模式（☆☆☆）</li>
+<li>桥接模式（☆）</li>
+<li>组合模式（☆）</li>
+<li>装饰器模式（☆☆☆）</li>
+<li>门面模式（☆）</li>
+<li>亨元模式（☆）</li>
+<li>代理模式（☆☆☆）</li>
+</ul>
+<h5 id="行为型模式"><a href="#行为型模式" class="headerlink" title="行为型模式"></a>行为型模式</h5><ul>
+<li>解释器模式（☆）</li>
+<li>模板方法模式（☆）</li>
+<li>责任链模式（☆）</li>
+<li>命令模式（☆）</li>
+<li>迭代器模式（☆）</li>
+<li>调节者模式（☆）</li>
+<li>备忘录模式（☆）</li>
+<li>观察者模式（☆）</li>
+<li>状态模式（☆）</li>
+<li>策略模式（☆）</li>
+<li>访问者模式（☆☆☆）</li>
+</ul>
+<h3 id="前沿技术"><a href="#前沿技术" class="headerlink" title="前沿技术"></a>前沿技术</h3><ol>
+<li>云原生（☆☆☆）</li>
+<li>DevOps（☆☆☆）</li>
+<li>人工智能（☆）</li>
+<li>敏捷开发模式（☆☆☆）</li>
+<li>持续集成&#x2F;交付（☆☆☆）</li>
+<li>容器化（☆☆☆）</li>
+<li>K8S</li>
+<li>Docker</li>
+</ol>
+<h2 id="TSE-软实力"><a href="#TSE-软实力" class="headerlink" title="TSE-软实力"></a>TSE-软实力</h2><ol>
+<li>TRIZ 创新思维（☆☆☆）</li>
+<li>模型思维（☆）</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/930f1fe3/">https://alwaysfyo.github.io/posts/930f1fe3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/">软件测试</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/fbc7059f/" title="自动化性能压测"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">自动化性能压测</div></div><div class="info-2"><div class="info-item-1">JMeter 脚本示例、JMeter 脚本优化、变量修改、命令行执行脚本</div></div></div></a><a class="pagination-related" href="/posts/e6c7ac9d/" title="软件测试知识架构体系"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">软件测试知识架构体系</div></div><div class="info-2"><div class="info-item-1">了解测试的基础技能，掌握主流缺陷管理工具的使用，熟练测试环境的操作与运维</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/6e329d34/" title="Adb 常用命令"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-06</div><div class="info-item-2">Adb 常用命令</div></div><div class="info-2"><div class="info-item-1">列出所有的连接设备、拷⻉⽂件/⽬录到设备、从设备拷⻉⽂件/⽬录、浏览设备⽇志</div></div></div></a><a class="pagination-related" href="/posts/2e3ef02/" title="Unittest 单元测试框架 - 上"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Unittest 单元测试框架 - 上</div></div><div class="info-2"><div class="info-item-1">单元测试是一种软件测试方法，主要用于验证软件的最小可测试单元（通常是函数、方法或类）是否按预期工作。</div></div></div></a><a class="pagination-related" href="/posts/f3b2887d/" title="软件测试常用网站汇聚"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-25</div><div class="info-item-2">软件测试常用网站汇聚</div></div><div class="info-2"><div class="info-item-1">应用场景：项目功能点参考，写操作手册参考，面试参考</div></div></div></a><a class="pagination-related" href="/posts/965dc3de/" title="Selenium 框架三部曲 - 上"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Selenium 框架三部曲 - 上</div></div><div class="info-2"><div class="info-item-1">目前互联网企业在 UI 自动化测试上的投入不断减少，原因有下：</div></div></div></a><a class="pagination-related" href="/posts/e6c7ac9d/" title="软件测试知识架构体系"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-25</div><div class="info-item-2">软件测试知识架构体系</div></div><div class="info-2"><div class="info-item-1">了解测试的基础技能，掌握主流缺陷管理工具的使用，熟练测试环境的操作与运维</div></div></div></a><a class="pagination-related" href="/posts/edd5b4e5/" title="API 接口智能化测试探索与实践"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-01</div><div class="info-item-2">API 接口智能化测试探索与实践</div></div><div class="info-2"><div class="info-item-1">API 接口由于具备良好的可测性，很自然的成为服务端程序自动化测试的首选方案：</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#TSE-%E4%B8%9A%E5%8A%A1%E7%9F%A5%E8%AF%86"><span class="toc-number">1.</span> <span class="toc-text">TSE-业务知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84"><span class="toc-number">1.1.</span> <span class="toc-text">技术架构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84%EF%BC%88%E2%98%86%EF%BC%89"><span class="toc-number">1.1.1.</span> <span class="toc-text">前端技术架构（☆）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%9E%B6%E6%9E%84"><span class="toc-number">1.1.2.</span> <span class="toc-text">服务端架构</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%AD%E9%97%B4%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text">中间件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.2.1.</span> <span class="toc-text">数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#MySQL"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">MySQL</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Elasticsearch"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">Elasticsearch</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="toc-number">1.2.2.</span> <span class="toc-text">消息队列</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#RabbitMQ"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">RabbitMQ</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#RocketMQ"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">RocketMQ</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#ActiveMQ"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">ActiveMQ</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Kafka"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">Kafka</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="toc-number">1.2.3.</span> <span class="toc-text">反向代理&#x2F;负载均衡</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Nginx"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">Nginx</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%93%E5%AD%98"><span class="toc-number">1.2.4.</span> <span class="toc-text">缓存</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Redis"><span class="toc-number">1.2.4.1.</span> <span class="toc-text">Redis</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TSE-%E9%80%9A%E7%94%A8%E7%9F%A5%E8%AF%86"><span class="toc-number">2.</span> <span class="toc-text">TSE-通用知识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E7%A0%81%E8%83%BD%E5%8A%9B"><span class="toc-number">2.1.</span> <span class="toc-text">编码能力</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E8%AF%AD%E8%A8%80-JAVA%EF%BC%88%E2%98%86%E2%98%86%E2%98%86%E2%98%86%E2%98%86%EF%BC%89"><span class="toc-number">2.1.1.</span> <span class="toc-text">开发语言 JAVA（☆☆☆☆☆）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%EF%BC%88%E2%98%86%E2%98%86%E2%98%86%EF%BC%89"><span class="toc-number">2.1.2.</span> <span class="toc-text">开发框架（☆☆☆）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Spring-Boot"><span class="toc-number">2.1.2.1.</span> <span class="toc-text">Spring Boot</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Mybatis"><span class="toc-number">2.1.2.2.</span> <span class="toc-text">Mybatis</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Maven"><span class="toc-number">2.1.2.3.</span> <span class="toc-text">Maven</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E9%9B%86%E6%88%90%E5%B7%A5%E5%85%B7"><span class="toc-number">2.1.3.</span> <span class="toc-text">开发集成工具</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#IntelliJ-IDEA%EF%BC%88%E2%98%86%E2%98%86%E2%98%86%E2%98%86%E2%98%86%EF%BC%89"><span class="toc-number">2.1.3.1.</span> <span class="toc-text">IntelliJ IDEA（☆☆☆☆☆）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Eclipse%EF%BC%88%E2%98%86%EF%BC%89"><span class="toc-number">2.1.3.2.</span> <span class="toc-text">Eclipse（☆）</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95"><span class="toc-number">2.1.4.</span> <span class="toc-text">自动化测试</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%90%86%E8%AE%BA%E7%9F%A5%E8%AF%86"><span class="toc-number">2.2.</span> <span class="toc-text">测试理论知识</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%AD%96%E7%95%A5%EF%BC%88%E2%98%86%E2%98%86%E2%98%86%E2%98%86%E2%98%86%EF%BC%89"><span class="toc-number">2.2.1.</span> <span class="toc-text">测试策略（☆☆☆☆☆）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%A8%E4%BE%8B%E8%AE%BE%E8%AE%A1%EF%BC%88%E2%98%86%E2%98%86%E2%98%86%E2%98%86%E2%98%86%EF%BC%89"><span class="toc-number">2.2.2.</span> <span class="toc-text">用例设计（☆☆☆☆☆）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95"><span class="toc-number">2.2.3.</span> <span class="toc-text">性能测试</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="toc-number">2.2.4.</span> <span class="toc-text">基础知识</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7-%E5%B9%B3%E5%8F%B0"><span class="toc-number">2.2.5.</span> <span class="toc-text">工具&#x2F;平台</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98%EF%BC%88%E2%98%86%E2%98%86%E2%98%86%E2%98%86%E2%98%86%EF%BC%89"><span class="toc-number">2.2.6.</span> <span class="toc-text">项目实战（☆☆☆☆☆）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%EF%BC%88%E2%98%86%E2%98%86%E2%98%86%E2%98%86%E2%98%86%EF%BC%89"><span class="toc-number">2.2.7.</span> <span class="toc-text">性能监控（☆☆☆☆☆）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%EF%BC%88%E2%98%86%E2%98%86%E2%98%86%E2%98%86%E2%98%86%EF%BC%89"><span class="toc-number">2.2.8.</span> <span class="toc-text">性能分析（☆☆☆☆☆）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%EF%BC%88%E2%98%86%E2%98%86%E2%98%86%EF%BC%89"><span class="toc-number">2.2.9.</span> <span class="toc-text">性能优化（☆☆☆）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Java-%E8%99%9A%E6%8B%9F%E6%9C%BA%EF%BC%88%E2%98%86%E2%98%86%E2%98%86%E2%98%86%E2%98%86%EF%BC%89"><span class="toc-number">2.2.10.</span> <span class="toc-text">Java 虚拟机（☆☆☆☆☆）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%EF%BC%88%E2%98%86%EF%BC%89"><span class="toc-number">2.2.11.</span> <span class="toc-text">安全测试（☆）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8E%9F%E5%88%99"><span class="toc-number">2.3.</span> <span class="toc-text">开发设计模式&#x2F;原则</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99%EF%BC%88%E2%98%86%E2%98%86%E2%98%86%EF%BC%89"><span class="toc-number">2.3.1.</span> <span class="toc-text">开发设计原则（☆☆☆）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.3.2.</span> <span class="toc-text">开发设计模式</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.3.2.1.</span> <span class="toc-text">创建型模式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E6%80%A7%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.3.2.2.</span> <span class="toc-text">结构性模式</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%A1%8C%E4%B8%BA%E5%9E%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.3.2.3.</span> <span class="toc-text">行为型模式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E6%B2%BF%E6%8A%80%E6%9C%AF"><span class="toc-number">2.4.</span> <span class="toc-text">前沿技术</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TSE-%E8%BD%AF%E5%AE%9E%E5%8A%9B"><span class="toc-number">3.</span> <span class="toc-text">TSE-软实力</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/68d65074/" title="Selenium 框架三部曲 - 中">Selenium 框架三部曲 - 中</a><time datetime="2025-07-13T01:21:00.000Z" title="发表于 2025-07-13 09:21:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/261faf15/" title="Golang Mutex 详解">Golang Mutex 详解</a><time datetime="2025-07-12T17:30:00.000Z" title="发表于 2025-07-13 01:30:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/edd5b4e5/" title="API 接口智能化测试探索与实践">API 接口智能化测试探索与实践</a><time datetime="2025-07-01T13:01:00.000Z" title="发表于 2025-07-01 21:01:00">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/8fe1f36/" title="AI 系列：计算机视觉-给机器装上眼睛">AI 系列：计算机视觉-给机器装上眼睛</a><time datetime="2025-06-30T15:30:00.000Z" title="发表于 2025-06-30 23:30:00">2025-06-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/c9acbf1/" title="AI 系列：搜索-从迷宫求解看人工智能关键技术">AI 系列：搜索-从迷宫求解看人工智能关键技术</a><time datetime="2025-06-30T15:29:00.000Z" title="发表于 2025-06-30 23:29:00">2025-06-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

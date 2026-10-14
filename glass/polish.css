@@ -1,0 +1,1257 @@
+/*!
+ * 复刻修补层 —— 只处理 Butterfly 自身特异性压过玻璃、以及作者表里选择器失配的地方
+ * ---------------------------------------------------------------------------
+ * 依据是同源 iframe 读到的计算值，不是猜的：
+ *   #nav    计算值曾是 rgba(255,255,255,0.8)
+ *   #footer 计算值曾是 rgb(73,177,245)（#footer-wrap 在 5.7.0 不存在，没被打标）
+ */
+
+/* ---------- ① 导航栏 ----------
+   Butterfly 用的是 #page-header.not-top-img #nav（特异性 2,1,0），
+   比作者的桥接 #nav.glass（1,1,0）高，所以必须同等或更高特异性。 */
+#page-header.not-top-img #nav.glass,
+#page-header.nav-fixed > #nav.glass,
+#page-header.not-top-img #nav.glass.show,
+#page-header.nav-fixed > #nav.glass.show {
+  background: var(--g-tint) !important;
+  border: 1px solid var(--g-edge);
+  box-shadow: var(--g-shine), var(--g-shadow) !important;
+}
+
+[data-theme='dark'] #page-header.not-top-img #nav.glass,
+[data-theme='dark'] #page-header.nav-fixed > #nav.glass {
+  background: var(--g-tint) !important;
+}
+
+/* 导航里的文字/图标跟着玻璃墨色走 */
+#nav .site-name,
+#nav .site-name a,
+#page-header #nav a,
+#page-header #nav i {
+  color: var(--g-ink) !important;
+}
+
+/* ---------- ② 页脚 ----------
+   #footer 的原底色是 #49b1f5，和暖色完全不搭。
+   #footer.glass（1,1,0）足以压过 #footer（1,0,0），不需要 !important。 */
+/* #footer 已删除，仅作历史保留 */
+#footer.glass {
+  background-color: var(--g-tint);
+  border-top: 1px solid var(--g-edge);
+  box-shadow: var(--g-shine);
+}
+
+/* 页脚文字原本是 var(--light-grey)（#eee），在浅色玻璃上读不出来 */
+#footer.glass,
+#footer.glass > *,
+#footer.glass a {
+  color: var(--g-ink-dim) !important;
+}
+
+#footer.glass a:hover {
+  color: var(--g-accent) !important;
+}
+
+/* ---------- ③ 顺带对齐几个原色 ----------
+   注意：按钮（Follow Me）不在这里处理。之前把它的底色硬编码成 --g-accent，
+   又给 a:hover 上了同样的颜色，结果悬停时赤陶文字压赤陶底 -> 文字"消失"。
+   按钮改用 Butterfly 的运行时变量 + 显式白色文字，见第 ⑩ 节。 */
+/* 分页样式已统一移到第 ⑯ 节 */
+
+#footer .icp-icon {
+  vertical-align: text-bottom;
+}
+
+/* 回到顶部等右下角按钮：交给玻璃的 soft 档，这里只去掉 Butterfly 的蓝底 */
+#rightside > div > button,
+#rightside > button {
+  background-color: transparent !important;
+  color: var(--g-ink-dim) !important;
+}
+
+#rightside > div > button:hover,
+#rightside > button:hover {
+  background-color: var(--g-tint-hover) !important;
+  color: var(--g-accent) !important;
+}
+
+/* 搜索弹窗（floating 档）在 Butterfly 里是 .search-dialog */
+.search-dialog {
+  background: var(--g-tint) !important;
+}
+
+/* ---------- ④ 搜索浮层 / 移动端侧边菜单：修 .glass 夺走定位的根因 ----------
+   作者的 .glass { position: relative } 会把 Butterfly 给这些元素写的
+   position: fixed 顶掉，于是 top/left 全部失效。
+   实测症状：搜索浮层 top=779px（900px 视口）、宽度从 600 变 420，掉到页面底部。
+
+   用 min-width 断点包住，保留 Butterfly 在 <=768px 下的全屏行为。 */
+@media screen and (min-width: 769px) {
+  #local-search .search-dialog.glass,
+  .search-dialog.glass {
+    position: fixed !important;
+    top: 10% !important;
+    left: 50% !important;
+    margin-left: -300px !important;
+    width: 600px !important;
+  }
+}
+
+/* ---------- ⑤ 导航吸顶 ----------
+   Butterfly 靠 #nav { position: fixed; top: -60px } + 可见时 { top: 0 } 实现吸顶，
+   而 .glass 的 position: relative 把 fixed 顶掉了 -> 导航只在页面顶部，一滚就走。
+   这里只还原 position，top/-60px 与 .show 的逻辑仍交给 Butterfly。 */
+#page-header #nav.glass,
+#nav.glass {
+  position: fixed !important;
+}
+
+/* ---------- ⑥ 删除页脚 ----------
+   Butterfly 的 footer.pug 里 .footer-other > .footer-copyright 是无条件渲染的，
+   只关配置会留下一个空的 #footer 壳（还占高度和底色），所以内容与外壳一起处理：
+     · 配置层：footer.owner.enable / footer.copyright.enable 关掉（见 _config.butterfly.yml）
+     · 样式层：这里把外壳也隐藏掉
+   同时把之前给 #footer 加的玻璃规则一并作废。 */
+#footer,
+footer#footer,
+#footer .footer-other,
+#footer .footer-flex {
+  display: none !important;
+}
+
+/* ---------- ⑦ 首页双列卡片网格 ----------
+   Butterfly 默认是一列满宽卡片。参考站把它改成 CSS Grid 双列、卡片转为纵向
+   flex（封面在上、信息在下）。这里自行实现一版。
+   本项目的文章没有封面图，所以 .post_cover 不会渲染，卡片就是纯文字卡 —— 
+   与参考站首页一致。 */
+@media screen and (min-width: 769px) {
+  #recent-posts .recent-post-items {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--g-gap, 16px);
+    align-items: stretch;
+  }
+
+  #recent-posts .recent-post-item.glass {
+    display: flex !important;
+    flex-direction: column !important;
+    width: auto !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 12px !important;
+    overflow: hidden;
+  }
+
+  /* 有封面时：封面置顶，3:2 比例铺满卡宽 */
+  #recent-posts .recent-post-item .post_cover {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 3 / 2;
+    flex: none !important;
+    order: -1 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: calc(var(--g-r-lg) - 12px);
+    overflow: hidden;
+  }
+
+  #recent-posts .recent-post-item .post_cover a,
+  #recent-posts .recent-post-item .post_cover img {
+    border-radius: inherit;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* 信息区撑满卡片高度，让同排卡片底部对齐 */
+  #recent-posts .recent-post-item > .recent-post-info,
+  #recent-posts .recent-post-item > .recent-post-info.no-cover {
+    width: auto !important;
+    padding: 18px 16px 14px !important;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    flex: 1 1 auto;
+  }
+}
+
+/* ---------- ⑧ 悬停色统一为暖色 ----------
+   Butterfly 的主题色是 Stylus 编译期变量，编译后就固化成字面量 #49b1f5，
+   全站 50 处，没有运行时可覆盖的 CSS 变量。所以只能按选择器逐条重述可见的
+   悬停/激活态。
+
+   ⚠️ 结构注意：下面这串长选择器必须**整体只配一个 { color } 块**。
+   之前从中间删行时，注释被剥离后选择器会直接连到下一个块上，
+   导致整串选择器都意外带上了那个块的声明（同时自己的 color 丢失）。
+   所以「边框色」「背景色」都单独成块，绝不要把它们的声明并进这一串。 */
+a:not(#card-info-btn):not(.button):not(.post-meta__tags):hover,
+#page-header.nav-fixed #nav #blog-info:hover,
+#page-header #nav #blog-info:hover,
+#page-header #nav .site-page:hover,
+#page-header #nav #toggle-menu:hover,
+#post-info #post-meta a:hover,
+#recent-posts .recent-post-item > .recent-post-info > .article-title:hover,
+#recent-posts .recent-post-item > .recent-post-info > .article-meta-wrap a:hover,
+#aside-content .card-tag-cloud a:hover,
+#aside-content .aside-list > .aside-list-item .content > .title:hover,
+#aside-content .aside-list > .aside-list-item .content > .comment:hover,
+.category-lists .category-list a:hover,
+.tag-cloud-list a:hover,
+.article-sort-item-title:hover,
+.site-data > a:hover div,
+.search-dialog .search-nav .search-close-button:hover {
+  color: var(--g-accent) !important;
+}
+
+/* 少数是背景/边框色而不是文字色 */
+.article-sort-item.year:hover::before,
+.container .timeline .timeline-item:hover .item-circle::before,
+.container .tabs > .nav-tabs > .tab.active {
+  border-color: var(--g-accent) !important;
+}
+
+.container .tabs > .nav-tabs > .tab.active {
+  background-color: var(--g-accent) !important;
+}
+
+.container .highlight-tools i:hover,
+.container .copy-notice {
+  color: var(--g-accent) !important;
+}
+
+/* ---------- ⑨ 归档页 ----------
+   两个问题：
+   (a) #archive 的原底色是 Butterfly 的 #archive { background: var(--card-bg) }，
+       特异性 (1,0,0) 压过 .glass 的 (0,1,0)，所以整块是不透明白底；
+   (b) 它高 3800+px，而折射贴图最大 192px，被拉伸到这个比例必然失真
+       —— 所以这个超长容器不做折射，只保留玻璃的底色/描边/阴影。
+   (c) 每一行的 padding 是 0，日期和标题直接贴在圆角边上。 */
+#archive.glass {
+  background-color: var(--g-tint) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* 时间轴的轨道与节点：Butterfly 硬编码成蓝色系 */
+.article-sort {
+  border-left-color: color-mix(in srgb, var(--g-accent) 45%, transparent);
+}
+
+.article-sort-title::before,
+.article-sort-item::before,
+.article-sort-item.year::before {
+  border-color: var(--g-accent);
+}
+
+.article-sort-title::after {
+  background: color-mix(in srgb, var(--g-accent) 45%, transparent);
+}
+
+.article-sort-title:hover::before,
+.article-sort-item:hover::before {
+  border-color: var(--g-terracotta);
+}
+
+.article-sort-item-title,
+.article-sort-title {
+  color: var(--g-ink) !important;
+}
+
+.article-sort-item-img {
+  border-radius: var(--g-r-sm);
+}
+
+/* 时间轴每一行都是一块玻璃，而 Butterfly 没给它内边距 */
+#archive .article-sort-item.glass {
+  --g-radius: var(--g-r-md);
+  box-sizing: border-box;
+  padding: 14px 22px;
+  gap: 4px;
+}
+
+/* 无封面行被上游钉死 80px，加了内边距会挤压两行文字，改成最小高度 */
+#archive .article-sort-item.no-article-cover.glass {
+  height: auto;
+  min-height: 78px;
+}
+
+#archive .article-sort-item.glass .article-sort-item-info {
+  padding: 0 0 0 16px;
+}
+
+#archive .article-sort-item.no-article-cover.glass .article-sort-item-info {
+  padding: 0;
+}
+
+/* ---------- ⑩ 暖色强调色：按参考站清单系统应用 ----------
+   Butterfly 的主题色编译后固化为字面量 #49b1f5（全站 50 处），其中两处是
+   运行时变量：--pseudo-hover（7 处）与 --btn-bg（8 处）。先设变量，再按选择器
+   重述其余可见位置 —— 清单与参考站 components.css / article.css 一致。 */
+
+:root {
+  --btn-bg: var(--g-accent);
+  --pseudo-hover: var(--g-accent);
+}
+
+[data-theme='dark'] {
+  --btn-bg: var(--g-accent);
+  --pseudo-hover: var(--g-accent);
+}
+
+/* --- 导航：悬停下划线 + 上浮 1px --- */
+#page-header #nav .site-page:hover,
+#nav .site-page:hover {
+  transform: translateY(-1px);
+}
+
+#page-header #nav .site-page:not(.child)::after {
+  bottom: 2px;
+  left: 0.75em;
+  z-index: 0;
+  width: 0;
+  height: 3px;
+  border-radius: var(--g-r-pill);
+  background-color: var(--g-accent);
+  transition: width var(--g-dur-fast) var(--g-ease);
+}
+
+#page-header #nav .site-page:not(.child):hover::after {
+  width: calc(100% - 1.5em);
+}
+
+/* --- 侧栏 --- */
+#aside-content .card-info #card-info-btn {
+  background: var(--g-accent);
+  border-radius: var(--g-r-pill);
+  color: #fff;
+  transition: transform var(--g-dur-fast) var(--g-spring);
+}
+
+/* 悬停时文字必须保持白色，否则和底色同色会"消失" */
+#card-info-btn,
+#card-info-btn:hover,
+#card-info-btn *,
+.card-info-btn,
+.card-info-btn:hover,
+.card-info-btn * {
+  color: #fff !important;
+}
+
+#aside-content .card-tag-cloud a:hover,
+#aside-content .card-categories .card-category-list-link:hover {
+  color: var(--g-accent) !important;
+}
+
+/* 目录的悬停/选中样式已统一移到第 ⑭ 节（那里补足了特异性） */
+
+/* --- 首页卡片 --- */
+#recent-posts .recent-post-item .article-meta-wrap a {
+  color: var(--g-accent);
+}
+
+/* --- 标签云 --- */
+/* 标签云悬停规则已合并到第 ⑪ 节（去掉 .glass 限制） */
+
+/* --- 移动端抽屉 --- */
+/* 移动端抽屉规则已移到第 ⑪ 节（提升特异性） */
+
+/* --- 正文 --- */
+#article-container a {
+  color: var(--g-accent);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--g-dur-fast) var(--g-ease);
+}
+
+#article-container a:hover {
+  border-bottom-color: var(--g-accent);
+}
+
+#article-container h2 {
+  padding-bottom: 0.32em;
+  border-bottom: 1px solid color-mix(in srgb, var(--g-accent) 32%, transparent);
+}
+
+#article-container hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--g-accent) 45%, transparent),
+    transparent
+  );
+  margin: 2.2em 0;
+}
+
+#article-container li::marker {
+  color: var(--g-accent);
+}
+
+#article-container p code,
+#article-container li code,
+#article-container td code,
+#article-container h1 code,
+#article-container h2 code,
+#article-container h3 code {
+  background: color-mix(in srgb, var(--g-accent) 16%, transparent);
+  color: color-mix(in srgb, var(--g-ink) 88%, var(--g-accent));
+  border-radius: 6px;
+  padding: 0.12em 0.42em;
+  font-size: 0.9em;
+}
+
+#article-container blockquote.glass {
+  border: 1px solid var(--g-edge);
+  border-left: 3px solid var(--g-accent);
+  border-radius: var(--g-r-md);
+  padding: 1.15em 1.5em;
+  margin: 1.6em 0;
+  color: var(--g-code-ink);
+}
+
+/* --- 版权块 --- */
+#post .post-copyright .post-copyright-meta {
+  color: var(--g-accent);
+}
+
+#post .post-copyright .post-copyright-info a:hover {
+  color: var(--g-accent);
+}
+
+/* --- 选中文字与滚动条 --- */
+::selection {
+  background: color-mix(in srgb, var(--g-accent) 34%, transparent);
+  color: var(--g-ink);
+}
+
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--g-accent) 45%, transparent);
+  border-radius: var(--g-r-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--g-accent);
+}
+
+/* --- pace 进度条 --- */
+.pace .pace-progress {
+  background: var(--g-accent) !important;
+}
+
+/* ---------- ⑪ 运行时变量：一次改掉成批的蓝色悬停 ----------
+   Butterfly 的 --text-bg-hover 默认是 rgba(73,177,245,0.7)（70% 不透明的蓝），
+   用在 4 处**悬停底色**上：侧栏"最新文章"列表项、分类列表项、导航下拉项。
+   这是"很多位置悬停也是蓝色"的主因。 */
+:root {
+  --text-bg-hover: var(--g-tint-hover);
+  --scrollbar-color: color-mix(in srgb, var(--g-accent) 45%, transparent);
+}
+
+[data-theme='dark'] {
+  --text-bg-hover: var(--g-tint-hover);
+  --scrollbar-color: color-mix(in srgb, var(--g-accent) 45%, transparent);
+}
+
+/* 移动端抽屉：交给第 ⑬ 节的 --text-bg-hover（半透明赤陶）+ Butterfly 自带的白字，
+   与参考站一致。 */
+
+/* 标签芯片：Butterfly 悬停时把底色换成 --btn-hover-color（橙），
+   配上暖色文字就变成"橙底赤陶字"。统一改成浅色 tint + 暖色文字。 */
+.tag-cloud-list a:hover,
+#article-container .tag-list a:hover,
+/* 标签云悬停规则已合并到第 ⑪ 节（去掉 .glass 限制） */
+
+/* #post / #page / #tag / #category 与 #archive 共用同一条不透明白底规则
+   （特异性 (1,0,0) 压过 .glass 的 (0,1,0)），这里统一改成玻璃底色。
+   同时这些容器都很高（长文可达数千 px），而折射贴图最大 192px，被拉伸后
+   会失真（实测 #archive 出现深灰块），所以统一不做折射。 */
+#post.glass,
+#page.glass,
+#tag.glass,
+#category.glass,
+#archive.glass {
+  background-color: var(--g-tint) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* ---------- ⑫ 细节对齐参考站（第 7 批） ---------- */
+
+/* --- 1) 首页文章标题：加粗 + 墨色 + 两行截断（与参考站同规格） --- */
+#recent-posts .recent-post-item .article-title {
+  font-size: 1.4rem;
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--g-ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* --- 2) Follow Me 按钮 ---
+   与参考站的按钮计算样式逐条对齐：
+     · transition 只含 transform（第 7 批我多加的 background-color 已撤掉）
+     · 基础 transform 是 translateZ(0)（GPU 合成层提示，来自参考站自己的 glass.css）
+   悬停时的底色变化由 Butterfly 的 :hover { background-color: var(--btn-hover-color) }
+   负责，即 #d2643f -> #c85a35。 */
+#aside-content .card-info #card-info-btn {
+  transform: translateZ(0);
+  transition: transform var(--g-dur-fast) var(--g-spring);
+}
+
+/* --- 3) 侧栏分类/归档链接悬停 ---
+   不在选择器层面硬压，交给第 ⑬ 节的 --text-bg-hover（赤陶 70% 透明）+ Butterfly
+   自带的 color: var(--white) —— 这正是参考站的效果。 */
+
+/* --- 4) 导航项：补齐参考站的内边距等属性 ---
+   下划线宽度是 calc(100% - 1.5em)，而 left 是 0.75em：
+   只有当元素左右各有 0.75em 内边距时，条长才正好等于文字宽度。
+   Butterfly 默认左右无内边距，导致条比文字短一截。 */
+#page-header #nav .site-page,
+#page-header #nav #toggle-menu .site-page,
+#nav .site-page {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  border-radius: var(--g-r-sm);
+  padding: 0.32em 0.75em;
+  font-size: 0.86em;
+  line-height: 1.5;
+  transition:
+    background-color var(--g-dur-fast) var(--g-ease),
+    transform var(--g-dur-fast) var(--g-spring);
+}
+
+#page-header #nav #toggle-menu .site-page {
+  display: flex;
+}
+
+/* ---------- ⑬ 参考站 :root 变量对齐（用户从 devtools 导出） ----------
+   这些值在参考站自己的 glass.css 里，属于我此前拿不到的部分。
+   注意 --g-gap 保持 26px：参考站 responsive.css 会在窄屏覆盖成 22/18px，
+   dump 里看到的 22px 是断点值，桌面基准仍是 26px。 */
+:root {
+  /* 悬停底色：赤陶 70% 透明 —— 侧栏分类/归档链接、导航下拉项、移动端抽屉共用 */
+  --text-bg-hover: rgba(210, 100, 63, 0.7);
+  /* 按钮悬停色：比 Butterfly 默认的 #ff7242 更沉 */
+  --btn-hover-color: #c85a35;
+
+  /* 分隔线与元信息 */
+  --hr-border: #f4cb9d;
+  --hr-before-color: #efb676;
+  --card-meta: #7d6a5c;
+
+  /* 引用块 */
+  --blockquote-color: #6a737d;
+  --blockquote-bg: rgba(232, 151, 60, 0.1);
+
+  /* 目录链接 */
+  --toc-link-color: #666261;
+
+  /* 滚动条与默认底色 */
+  --scrollbar-color: #d2643f;
+  --default-bg-color: #d2643f;
+
+  /* 文字高亮与代码块底色（代码块的底色交给玻璃，不要主题的浅灰） */
+  --text-highlight-color: var(--g-ink);
+  --hl-bg: transparent;
+
+  /* 卡片阴影 */
+  --card-box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.05);
+  --card-hover-box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.09);
+
+  --headline-presudo: #a0a0a0;
+}
+
+/* 深色模式下同一套变量（参考站 dump 只给了浅色，这里按深色玻璃调 alpha） */
+[data-theme='dark'] {
+  --text-bg-hover: rgba(210, 100, 63, 0.55);
+  --btn-hover-color: #c85a35;
+  --hr-border: rgba(255, 236, 212, 0.28);
+  --hr-before-color: rgba(255, 236, 212, 0.44);
+  --card-meta: #bda694;
+  --blockquote-color: #bda694;
+  --blockquote-bg: rgba(232, 151, 60, 0.08);
+  --toc-link-color: #bda694;
+  --hl-bg: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --text-bg-hover: rgba(210, 100, 63, 0.55);
+    --btn-hover-color: #c85a35;
+    --hr-border: rgba(255, 236, 212, 0.28);
+    --hr-before-color: rgba(255, 236, 212, 0.44);
+    --card-meta: #bda694;
+    --blockquote-color: #bda694;
+    --blockquote-bg: rgba(232, 151, 60, 0.08);
+    --toc-link-color: #bda694;
+    --hl-bg: transparent;
+  }
+}
+
+/* 有彩色悬停底色的元素，悬停文字必须保持白色。
+   否则我那条全局 :hover { color: var(--g-accent) } 会把文字也染成赤陶，
+   压在 --text-bg-hover（赤陶 70% 透明）上 -> 同色不可见。
+   参考站没有全局 a:hover 规则，所以它的文字是 Butterfly 的 var(--white)。 */
+#aside-content .card-archives ul.card-archive-list > .card-archive-list-item a:hover,
+#aside-content .card-categories ul.card-category-list > .card-category-list-item a:hover,
+#sidebar #sidebar-menus .menus_items .site-page:hover,
+#nav .menus_items .menus_item .menus_item_child li:hover a {
+  color: var(--white, #fff) !important;
+}
+
+/* ---------- ⑭ 内容页目录（TOC）悬停 / 选中样式 ----------
+   为什么必须带 #aside-content：
+   Butterfly 自己的规则带两个 id ——
+     #aside-content #card-toc .toc-content .toc-link:hover  { color: #49b1f5 }
+     #aside-content #card-toc .toc-content .toc-link.active { background: #00c4b6; color: #fff }
+   只写 #card-toc（一个 id）会被压过。实测表现：悬停文字仍是赤陶、
+   选中底色仍是 Butterfly 的青色 #00c4b6。
+
+   样式设计：
+     · 悬停 = var(--text-bg-hover)（与侧栏归档/标签链接同一个变量，赤陶 70% 透明）
+     · 选中 = 不透明 var(--g-accent) + 加粗一档，比"划过"更实，层次清楚
+     · 两者文字都是白色；颜色与背景都走 --g-dur-fast / --g-ease 过渡 */
+#aside-content #card-toc .toc-content .toc-link {
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 6px;
+  transition:
+    color var(--g-dur-fast) var(--g-ease),
+    background-color var(--g-dur-fast) var(--g-ease);
+}
+
+#aside-content #card-toc .toc-content .toc-link:hover {
+  background-color: var(--text-bg-hover);
+  color: var(--white, #fff) !important;
+}
+
+#aside-content #card-toc .toc-content .toc-link.active {
+  background-color: var(--g-accent);
+  color: var(--white, #fff) !important;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+/* 激活/悬停项里的层级装饰也跟着反白 */
+#aside-content #card-toc .toc-content .toc-link.active *,
+#aside-content #card-toc .toc-content .toc-link:hover * {
+  color: inherit !important;
+}
+
+/* ---------- ⑮ 文章底部：标签按钮与版权块 ----------
+   参考站的实测样式（用户 devtools 导出）：
+     #post .tag_share .post-meta__tags {
+       display: inline-block; margin: 8px 8px 8px 0; padding: 0 12px;
+       border: 1px solid #d2643f; border-radius: 12px; color: #d2643f;
+       font-size: 0.85em; background-color: transparent;
+       transition: all 0.2s ease-in-out;
+     }
+   Butterfly 默认把边框和文字都写成主题蓝 #49b1f5，这里改成暖色强调色。
+   注意选择器要与 Butterfly 同级（(1,2,0)），靠后加载取胜。 */
+#post .tag_share .post-meta__tags {
+  background-color: transparent;
+  border: 1px solid var(--g-accent);
+  border-radius: 12px;
+  padding: 0 12px;
+  margin: 8px 8px 8px 0;
+  font-size: 0.85em;
+  /* 注意：这里不能加 !important —— Butterfly 的
+     #post .tag_share .post-meta__tags:hover { background: #49b1f5; color: var(--white) }
+     特异性 (1,3,0) 高于本规则 (1,2,0)，加了 !important 会把悬停的白字也压成 accent，
+     变成"赤陶字压蓝底"。参考站没有 !important，所以它的悬停是蓝底白字。 */
+  color: var(--g-accent);
+  transition:
+    background-color var(--g-dur-fast) var(--g-ease),
+    border-color var(--g-dur-fast) var(--g-ease),
+    color var(--g-dur-fast) var(--g-ease);
+}
+
+/* 悬停：与参考站对齐 —— 参考站没有覆盖这条，用的是 Butterfly 原规则：
+     #post .tag_share .post-meta__tags:hover { background: #49b1f5; color: var(--white) }
+   即"蓝色底 + 白字"。
+   这里显式重述一遍（而不是依赖原规则）：实测原规则里的 color: var(--white)
+   在该元素上不生效（同一块里的 background 却生效了），显式写 #fff 更可靠。
+   特异性与 Butterfly 的悬停规则相同 (1,3,0)，靠后加载取胜。
+   （想改回暖色浅底：把 background-color 换成 var(--g-tint-hover)、color 换成 var(--g-accent)。） */
+#post .tag_share .post-meta__tags:hover {
+  /* 与目录"选中"态同色：都是 var(--g-accent)（实心赤陶）。
+     这里不再用参考站的 Butterfly 蓝 —— 用户要求站内一致。 */
+  background: var(--g-accent);
+  color: #fff;
+}
+
+/* 版权块：边框被 Butterfly 的 #post .post-copyright { border: 1px solid var(--light-grey) }
+   压成 #eee，这里还原成玻璃描边色。 */
+#post .post-copyright.glass {
+  border-color: var(--g-edge);
+}
+
+/* ---------- ⑯ 首页分页按钮：与目录列表统一 ----------
+   规格与第 ⑭ 节（目录）一致：
+     悬停 = var(--text-bg-hover)（赤陶 70% 透明） + 白字
+     选中 = var(--g-accent)（实心） + 白字 + 加粗一档
+   分页按钮本身是玻璃面（glass.js 的 SURFACES 表里有
+   `#pagination .page-number, #pagination .extend` -> glass--soft），
+   桥接规则给的背景是 var(--g-tint)，所以要 !important 才压得住。
+
+   几何保持不变（26px 圆角），只统一颜色与字重。 */
+/* 悬停：只改文字颜色，背景与描边都保持常态（用户要求）。
+   背景：玻璃桥接规则（#pagination .page-number.glass，特异性 (1,2,0)）已经压住了
+        Butterfly 的 .layout .pagination > *:not(.space):hover { background: var(--btn-hover-color) }
+        （(0,3,0)），所以不用管。
+   描边：另有规则会把描边改成赤陶，这里显式钉在常态值 var(--g-edge) 上，谁改都改不动。 */
+#pagination .page-number:hover,
+#pagination .extend:hover {
+  color: var(--g-accent) !important;
+  border-color: var(--g-edge) !important;
+}
+
+#pagination .page-number.current {
+  background-color: var(--g-accent) !important;
+  border-color: var(--g-accent) !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+/* ---------- ⑰ 分类页左侧圆环：颜色与垂直对齐 ----------
+   ① 颜色：Butterfly 的基础态用的是**字面量主题蓝** `border: 0.215em solid #49b1f5`
+      （`var(--pseudo-hover)` 只用在 :hover 上），所以基础态一直是蓝的。
+      改成与归档页时间轴节点一致的暖色强调色。
+   ② 对齐：原规则写死 `top: 0.67em`，**依赖字体度量**——换字体偏移就会变。
+      改成相对 li 垂直居中（`calc(50% - 0.43em)` = 50% 减去半个圆环），
+      这样与字体、字号都无关。
+   实测（修复前）：圆环墨迹中心 245.5px，文字墨迹中心 246.0px，差 0.5px；
+   盒模型上图标中心 15.39px vs 文字盒中心 15.17px。 */
+.list-beauty li:before,
+.category-lists ul li:before {
+  border-color: var(--g-accent);
+  top: calc(50% - 0.43em);
+}
+
+/* ---------- ⑱ 分类页悬停文字右移（与归档页一致） ----------
+   归档页的位移是 Butterfly 自带的：
+     .article-sort-item-title        { transition: all 0.3s }
+     .article-sort-item-title:hover  { transform: translateX(10px) }
+   分类页的链接没有这条，这里补上**同样的位移量与时长**。
+
+   ⚠️ transform 对 display:inline 元素无效，所以链接必须改成 inline-block；
+   计数 span 是它的兄弟节点，保持不动（与归档页"日期不动、标题移动"一致）。 */
+/* 链接与计数一起位移：触发条件放在 li 上，
+   这样鼠标落在行内任意位置（文字或数字）两者都动，且间距保持不变。
+   注意不要把 transform 加到 li 本身 —— 那样绝对定位的圆环 ::before 会跟着跑。 */
+.category-lists .category-list a,
+.category-lists .category-list .category-list-count {
+  display: inline-block;   /* transform 对 display:inline 无效 */
+  transition: all 0.3s;
+}
+
+.category-lists .category-list li:hover a,
+.category-lists .category-list li:hover .category-list-count {
+  transform: translateX(10px);
+}
+
+/* ---------- ⑲ 友链页：每个友链块玻璃化 ----------
+   规格与归档页每篇文章的行（第 ⑨ 节）一致：
+     · glass--soft 提供 background-color: var(--g-tint) /
+       border: 1px solid var(--g-edge) / box-shadow: var(--g-shine), var(--g-shadow) / 折射
+     · 圆角对齐归档行的 --g-r-md（20px，Butterfly 默认是 8px）
+   不加内边距：友链块内部是 float 布局（图标 float: left + margin: 15px 10px），
+   加 padding 会挤乱既有排版；这里只统一"边框样式"。 */
+.container .flink .flink-list-item.glass {
+  --g-radius: var(--g-r-md);
+  border-radius: var(--g-r-md);
+}
+
+/* 悬停填充（::before）已按用户要求移除，见第 ⑳ 节 */
+
+/* ---------- ⑳ 友链块：文字默认用全局字体色，悬停只改文字色 ----------
+   ① 默认色跑偏的根因：
+      第 ⑩ 节为正文链接设的 `#article-container a { color: var(--g-accent) }` 是
+      **1 个 id**，而 Butterfly 的
+      `.container .flink .flink-list > .flink-list-item a` 是 **4 个类**；
+      id 特异性更高，于是友链链接（同样在 #article-container 内）被一起染成赤陶。
+      这里用更高特异性显式重述，把默认色交回全局字体色。
+   ② 悬停只改文字色，不加任何背景 —— 去掉 Butterfly 原来的 ::before 悬停填充
+      （那是一层 --text-bg-hover 的赤陶底，悬停时从 scale(0) 展开到 scale(1)）。 */
+#article-container .flink .flink-list-item a,
+.container .flink .flink-list-item a {
+  /* 与文章标题同色 —— 实测文章标题/正文小标题取 --g-ink = #f4e6d8（深色） */
+  color: var(--g-ink);
+}
+
+/* 描述用弱化色（对应正文的次要文字层级 --g-ink-mute） */
+.container .flink .flink-list-item .flink-item-desc,
+#article-container .flink .flink-list-item .flink-item-desc {
+  color: var(--g-ink-mute);
+}
+
+#article-container .flink .flink-list-item a:hover,
+.container .flink .flink-list-item a:hover {
+  color: var(--g-accent);
+}
+
+.container .flink .flink-list-item::before {
+  background: transparent !important;
+  transform: none !important;
+}
+
+/* ---------- ㉑ 友链块：悬停时文字贴左边框 ----------
+   实测：悬停时图标 width 动画到 0、margin-left: -10px，
+   文字（float 在图标右侧）左移到 left=1px，紧贴左边框。
+   这里给名称/描述补上左内边距；并加与图标同参数的过渡
+   （0.3s ease-out），否则内边距瞬间生效会先"跳"一下。
+   只在悬停态加：常态加会把图标与文字的间距从 10px 撑到 22px。 */
+.container .flink .flink-list-item .flink-item-name,
+.container .flink .flink-list-item .flink-item-desc {
+  transition: padding-left 0.3s ease-out;
+}
+
+.container .flink .flink-list-item:hover .flink-item-name,
+.container .flink .flink-list-item:hover .flink-item-desc {
+  padding-left: 12px;
+}
+
+/* ---------- ⑯ 搜索框：对齐参考站 ---------- */
+
+/* ① 浮层面板：玻璃描边 + 裁掉圆角外的溢出（与参考站 components.css 同）
+   背景浓度：参考站 responsive.css 在桌面端把 .glass 整体调到 0.82~0.96，
+   否则展开结果后底层正文会透上来。我这边默认继承 :root 的 0.06 太透，
+   这里按参考站同一套数值单独调浓这一个面，不动全站其他玻璃面。 */
+#local-search .search-dialog.glass,
+.search-dialog.glass {
+  /* 关键：作者的设计 --g-blur 是 0（"液态玻璃靠折射，不靠磨砂"），
+     所以弹层只靠 34% 半透明底 → 底层文字直接透出。
+     搜索弹层是内容面板，必须不透底，这里单独给它开模糊。
+     不动全局 --g-blur：首页卡片/侧栏的折射感要保留。 */
+  --g-blur: 8px;
+  --g-tint: rgba(255, 249, 240, 0.40);
+  border: 1px solid var(--g-edge);
+  overflow: hidden;
+}
+
+[data-theme='dark'] #local-search .search-dialog.glass,
+[data-theme='dark'] .search-dialog.glass {
+  --g-blur: 8px;
+  --g-tint: rgba(32, 24, 19, 0.78);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) #local-search .search-dialog.glass,
+  :root:not([data-theme='light']) .search-dialog.glass {
+    --g-tint: rgba(32, 24, 19, 0.90);
+  }
+}
+
+/* ② 遮罩：暖棕半透明（参考站是 rgba(24,14,8,0.42)） */
+#search-mask {
+  /* 回到参考站的 0.42 —— 弹层已有 --g-blur: 18px 与 0.55 底色，
+     透字问题不再依赖遮罩，遮罩只需压出层次。 */
+  background: rgba(24, 14, 8, 0.42) !important;
+}
+
+/* ③ 输入框 */
+#local-search-input input,
+.search-dialog input {
+  background: color-mix(in srgb, var(--g-ink) 8%, transparent) !important;
+  border: 1px solid var(--g-edge) !important;
+  border-radius: var(--g-r-pill) !important;
+  color: var(--g-ink) !important;
+  padding: 0.5em 1em !important;
+}
+
+/* ④ 弹层标题（"搜索"字样）用墨色 */
+.search-dialog .search-nav {
+  color: var(--g-ink) !important;
+}
+
+/* ⑤ 关闭按钮：默认灰，悬停转暖色（默认是蓝） */
+.search-dialog .search-nav .search-close-button {
+  color: var(--g-ink-mute) !important;
+}
+
+.search-dialog .search-nav .search-close-button:hover {
+  color: var(--g-accent) !important;
+}
+
+/* ⑥ 结果条目：标题墨色，悬停暖色 */
+.search-dialog .search-result-list .local-search-hit-item a,
+.search-dialog .ais-Hits-list .local-search-hit-item a {
+  color: var(--g-ink) !important;
+}
+
+.search-dialog .search-result-list .local-search-hit-item a:hover,
+.search-dialog .ais-Hits-list .local-search-hit-item a:hover {
+  color: var(--g-accent) !important;
+}
+
+/* ⑦ 结果区翻页：选中项由青色改为暖色 */
+.search-dialog .ais-Pagination .ais-Pagination-item--selected .ais-Pagination-link {
+  background: var(--g-accent) !important;
+}
+
+.search-dialog .ais-Pagination .ais-Pagination-item:not(.ais-Pagination-item--selected):not(.ais-Pagination-item--disabled) .ais-Pagination-link {
+  background: color-mix(in srgb, var(--g-accent) 14%, transparent) !important;
+}
+
+/* ⑧ 窄屏：与参考站 responsive.css 一致 —— 去掉圆角与边框，玻璃底提高不透明度 */
+@media screen and (max-width: 768px) {
+  #local-search .search-dialog.glass,
+  .search-dialog.glass {
+    --g-radius: 0;
+    --g-tint: rgba(255, 250, 243, 0.66);
+    /* 参考站没有给搜索框单独设 --g-blur，它继承
+         @media (max-width: 900px) { .glass--strong, .glass--floating { --g-blur: 2px } }
+       也就是 2px 的 trace（底色 0.66 已经解决了透字，不需要大模糊）。
+       这里显式写出来，覆盖第 ⑯ 节为桌面准备的 8px。
+       参考站注释也明确反对在全屏面板上给大模糊。 */
+    --g-blur: 2px;
+    border: none;
+    border-radius: 0;
+  }
+
+  [data-theme='dark'] #local-search .search-dialog.glass,
+  [data-theme='dark'] .search-dialog.glass {
+    --g-tint: rgba(28, 20, 15, 0.66);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) #local-search .search-dialog.glass,
+    :root:not([data-theme='light']) .search-dialog.glass {
+      --g-tint: rgba(28, 20, 15, 0.66);
+    }
+  }
+}
+
+/* ---------- ㉒ 代码块：对齐参考站 article.css ---------- */
+
+/* ① 代码块外框：玻璃描边 + 圆角 + 裁溢出 */
+#article-container figure.highlight.glass,
+#article-container pre.glass {
+  border: 1px solid var(--g-code-edge);
+  border-radius: var(--g-r-md);
+  overflow: hidden;
+  margin: 1.6em 0;
+}
+
+/* ② 整块再套一层小内边距（参考站 figure.highlight.glass 的 padding: 6px） */
+#article-container figure.highlight.glass {
+  padding: 6px;
+}
+
+/* ③ 带行号的表格内边距 */
+#article-container figure.highlight table {
+  padding: 12px 16px;
+}
+
+/* ④ 无行号的纯 pre 内边距 */
+#article-container pre.glass {
+  padding: 18px 24px;
+}
+
+/* ⑤ 顶部工具条（复制按钮那行）：透明底 + 暖褐色文字 */
+#article-container figure.highlight .highlight-tools {
+  padding: 6px 14px;
+  background: transparent;
+  color: var(--g-code-head);
+}
+
+/* ⑥ 代码区本身：去掉主题默认的深色底，改用玻璃底 + 代码墨色 */
+#article-container figure.highlight table,
+#article-container figure.highlight pre {
+  background: transparent !important;
+  color: var(--g-code-ink);
+}
+
+/* ⑦ 行号列用弱化色 */
+#article-container figure.highlight .gutter pre {
+  color: var(--g-code-ink-dim);
+}
+
+/* ⑧ 行高 */
+#article-container figure.highlight .line {
+  line-height: 1.7;
+}
+
+/* ⑨ 折叠按钮：底部渐变遮罩，跟随玻璃底色 */
+#article-container figure.highlight .code-expand-btn {
+  left: 0;
+  right: 0;
+  width: auto;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--g-tint) 55%, transparent) 42%,
+    var(--g-tint) 100%
+  );
+  border-radius: 0 0 calc(var(--g-r-md) - 6px) calc(var(--g-r-md) - 6px);
+}
+
+#article-container figure.highlight .code-expand-btn i {
+  color: var(--g-code-ink-dim);
+}
+
+#article-container figure.highlight .code-expand-btn.expand-done {
+  background: none;
+}
+
+#article-container figure.highlight .code-expand-btn i {
+  animation: none;
+  opacity: 0.7;
+}
+
+/* ---------- ㉓ 移动端侧边栏：玻璃化（对齐参考站 components.css） ----------
+   原来只有 glass--floating 的 0.12 半透明底、没有模糊，
+   看起来像"发白的蒙版"而不是玻璃。
+   参考站给这一个面单独提高了不透明度（0.62）并加了内侧高光/左侧圆角。 */
+
+#sidebar #sidebar-menus.glass,
+#sidebar-menus.glass {
+  --g-tint: rgba(255, 250, 243, 0.62);
+  --g-radius: var(--g-r-xl) 0 0 var(--g-r-xl);
+  border-radius: var(--g-r-xl) 0 0 var(--g-r-xl);
+  background: var(--g-tint);
+  background-image: none;
+  border: 1px solid var(--g-edge);
+  border-right: none;
+  box-shadow: var(--g-shine), var(--g-shadow-lift);
+}
+
+:root:not([data-theme='light']) #sidebar #sidebar-menus.glass {
+  --g-tint: rgba(34, 24, 18, 0.62);
+}
+
+[data-theme='dark'] #sidebar #sidebar-menus.glass {
+  --g-tint: rgba(34, 24, 18, 0.62);
+}
+
+/* 菜单区自己再套一层半透明块（参考站也是这么做的） */
+#sidebar #sidebar-menus .menus_items {
+  background: rgba(255, 255, 255, 0.34);
+  border: 1px solid var(--g-edge);
+  border-radius: var(--g-r-md);
+  box-shadow: var(--g-shine);
+}
+
+:root:not([data-theme='light']) #sidebar #sidebar-menus .menus_items {
+  background: rgba(255, 246, 235, 0.10);
+}
+
+[data-theme='dark'] #sidebar #sidebar-menus .menus_items {
+  background: rgba(255, 246, 235, 0.10);
+}
+
+/* 文字与站点数据用墨色 */
+#sidebar-menus .sidebar-menu-item a,
+#sidebar-menus .site-data a,
+#sidebar-menus .menus_items .site-page {
+  color: var(--g-ink);
+}
+
+/* 悬停：底色用 tint-hover，文字转暖色（去掉主题自带的阴影） */
+#sidebar-menus .menus_items .site-page:hover {
+  background: var(--g-tint-hover);
+  color: var(--g-accent);
+  box-shadow: none;
+}
+
+/* 侧栏遮罩：参考站是 0.55（与搜索遮罩的 0.42 是两个不同的值） */
+#sidebar #menu-mask {
+  background: rgba(24, 14, 8, 0.55);
+}
+
+/* ---------- ㉔ 移动端：导航图标对齐 + 搜索弹层定位 ---------- */
+
+@media screen and (max-width: 768px) {
+  /* ① 搜索图标与菜单图标对齐
+     实测原来差 5px，因为两个容器的 display 不同：
+       搜索 span 的父容器 #search-button 是 flex   -> 子项 inline-flex 被块级化成 flex
+       菜单 span 的父容器 #toggle-menu 是 inline-block
+                                （#nav.hide-menu #toggle-menu 特异性 (2,1,0) 压过了我的规则）
+     修法：用 #page-header #nav 前缀（(3,0,0)，参考站自己也这么写），
+     把两个容器统一成同高、同对齐的 inline-flex。 */
+  #page-header #nav #search-button,
+  #page-header #nav #toggle-menu {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 36px !important;
+    /* 左右保留 14px 间距（与参考站 PC 端一致，避免两个图标贴太近）；
+       上下必须为 0 —— #toggle-menu 自带 padding-top: 2px，而 #search-button 是 0，
+       两者 height 都是 36px(border-box)，子元素居中时会差出 1px。 */
+    padding: 0 0 0 14px !important;
+    /* 用 top 而非 middle：两个等高盒子锚定同一行盒顶端 */
+    vertical-align: top !important;
+  }
+
+  #page-header #nav #search-button .site-page,
+  #page-header #nav #toggle-menu .site-page {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 36px !important;
+    padding: 0 !important;
+    vertical-align: top !important;
+  }
+
+  /* 移动端只留图标，隐藏「搜索」文字，避免宽度撑开影响居中 */
+  #page-header #nav #search-button .site-page > span,
+  #page-header #nav #toggle-menu .site-page > span {
+    display: none !important;
+  }
+
+  /* ② 搜索弹层：恢复 fixed 全屏
+     .glass 的 position: relative 会盖掉主题的 .search-dialog { position: fixed }，
+     弹层于是落回文档流、被推到页面底部（实测 top=739 / 视口 860）。
+     第 ④ 节那条 fixed 修复写在 @media (min-width: 769px) 里，移动端不生效。 */
+  #local-search .search-dialog.glass,
+  .search-dialog.glass {
+    position: fixed !important;
+    /* 与 PC 一致：先只显示搜索框那一条，结果出来后再向下展开 */
+    top: 10% !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+    width: calc(100vw - 28px) !important;
+    max-width: 560px !important;
+    height: auto !important;
+    max-height: 78vh !important;
+    border-radius: var(--g-r-lg) !important;
+  }
+
+  /* 结果区在移动端要能滚动，别把弹层撑出屏幕 */
+  #local-search .search-dialog .search-result-list,
+  .search-dialog .search-result-list {
+    max-height: calc(78vh - 150px) !important;
+  }
+}
+
+/* ---------- ㉕ 移动端：给玻璃面补一点模糊（对齐参考站 responsive.css） ----------
+   参考站 responsive.css 的 @media (max-width: 900px) 原文：
+
+     /* Phones drop the SVG displacement (glass-core.js treats a coarse pointer
+        as a reduced profile), so a trace of blur is all that is left to suggest
+        optical thickness. Keep it a trace: blur is fill-rate bound, and a
+        double-digit radius over a full-screen card is both the most expensive
+        thing on the page and the "everything is equally frosted" look §54
+        rules out. *\/
+     .glass                           { --g-blur: 1.5px }
+     .glass--strong, .glass--floating { --g-blur: 2px }
+     .glass--dense                    { --g-blur: 3px }
+
+   两个要点：
+     ① 丢 SVG 位移是**他们的 JS（glass-core.js）**按指针类型做的，
+        CSS 完全不碰 backdrop-filter。这里照做 —— 只设 --g-blur，
+        折射滤镜交给 glass.js，别去覆盖 backdrop-filter。
+        （踩过的坑：用 !important 覆盖 backdrop-filter 会把全部玻璃面的
+          SVG 折射干掉；卡片底色只有 9% 不透明，纯模糊就是"一片糊"，
+          正是上面注释里反对的 "everything is equally frosted"。）
+     ② 只给一个"trace"量级的小模糊，全屏卡片上不要上大半径。 */
+
+@media screen and (max-width: 900px) {
+  .glass {
+    --g-blur: 1.5px;
+  }
+
+  .glass--strong,
+  .glass--floating {
+    --g-blur: 2px;
+  }
+
+  .glass--dense {
+    --g-blur: 3px;
+  }
+}
+
+/* ---------- ㉖ 标签页色块：钉住文字色 ----------
+   标签的底色由 scripts/tag-colors.js 从 Catppuccin Mocha 暖色偏置子集里随机取
+   （色板与对比度校验见该脚本注释）。这里只解决**文字色**问题：
+
+   色块的文字色原本继承主题的 --font-color ——
+     浅色模式 #2b201a，在浅粉彩底上最低对比度 6.85 ✓
+     深色模式 #f4e6d8，在同样的浅粉彩底上最低只有 1.03 ✗✗ 完全看不清
+     （主题深色模式还会给 chip 加 filter: brightness(.8)，压暗后也只有 1.65 ✗）
+   因为 Mocha 是深色主题的色板，它的强调色全是浅粉彩，不适合配浅色文字。
+
+   钉成 Mocha 的 base 色（也是 Catppuccin 自己的标准搭配：彩色面上用 Base 色文字）：
+     浅色模式最低 7.08 ✓   深色模式（底色 ×0.8）最低 4.62 ✓   全部达标 */
+
+.tag-cloud-list a {
+  color: #1e1e2e !important;   /* Mocha base */
+}
+
+/* 悬停时主题把底色换成 --btn-hover-color（本站是赤陶 #c85a35），
+   深字在上面对比度约 3.1，改用白字约 4.7 ✓
+
+   加 #page / #tag 前缀是为了提高特异性到 (1,2,1) ——
+   文件前面另有一条很广的规则，它的选择器列表里也含 .tag-cloud-list a:hover
+   且同为 !important，特异性 (0,2,1)，只靠先后顺序不够稳。
+   标签云在标签页里嵌于 #page（article-sort 版式下嵌于 #tag），两个都写。 */
+#page .tag-cloud-list a:hover,
+#tag .tag-cloud-list a:hover,
+.tag-cloud-list a:hover {
+  color: #fff !important;
+}
+
+/* ---------- ㉗ 标签云：去掉「区域悬停联动变暗」 ----------
+   主题规则：
+     .tag-cloud-list:hover a:not(:hover) { opacity: .7; transform: scale(.98); transition: all .3s }
+   只要指针落在标签云这片区域（含色块之间的空隙），没被悬停的标签就一起变暗缩小，
+   观感像给整片区域盖了层蒙板。
+
+   注意**不要动 filter**：深色模式靠
+     [data-theme='dark'] .tag-cloud-list > a { filter: brightness(.8) }
+   把浅粉彩压暗；主题那条里的 alpha(opacity=70) 是 IE 遗留写法、
+   现代浏览器解析期就丢弃，两者本来不冲突。在这里写 filter: none 反而会
+   把深色模式的压暗一起干掉。 */
+
+.tag-cloud-list:hover a:not(:hover) {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* ---------- ㉘ 标签云：去掉悬停位移（消除边缘抖动） ----------
+   主题有两条悬停位移：
+     .tag-cloud-list a:hover  { transform: translateY(-2px) scale(1.02) }   桌面
+     .tag-cloud-list a:hover  { transform: translateY(-1px) scale(1.01) }   <=768px
+     .tag-cloud-list a:active { transform: translateY(0) scale(0.99) }
+
+   抖动机制：指针停在色块**下边缘**时 ——
+     悬停 -> 色块上移 2px -> 下边缘升到指针之上 -> 指针落到元素外
+     -> 取消悬停 -> 落回原位 -> 指针又进来 -> 再悬停……
+   于是来回振荡，看起来就是"跳动"。
+
+   修法：hover / active 都不做几何变化，只保留底色与文字色的变化
+   （与本站其它位置"悬停只改颜色"的习惯一致）。
+   主题那两条都没有 !important，这里加 !important 足以稳压，
+   同时也压得住 <=768px 媒体查询里的那条。 */
+
+.tag-cloud-list a:hover,
+.tag-cloud-list a:active {
+  transform: none !important;
+}
+
+/* ---------- ㉙ 导航栏：宽度 98% 且居中 ----------
+   主题里 #nav 只有 position: absolute/fixed + top: 0（满宽），没有宽度规则。
+   居中用「left: 0 + right: 0 + width + margin: auto」这套标准技巧
+   （参考站自己的窄导航栏也是这么写的：
+
+        #nav.glass { position: fixed !important; top: 0 !important;
+                     left: 0 !important; right: 0 !important; margin: ... }
+        #nav.glass { width: calc(100% - 20px) !important; ... }
+
+   注意必须**同时**给 left 与 right：绝对/固定定位元素如果只给 left，
+   是"过度约束"状态，margin: auto 不会生效（margin-right: auto 会被解成 0），
+   结果就是贴左边而不是居中。 */
+
+#nav.glass {
+  left: 0 !important;
+  right: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 98% !important;
+  max-width: none !important;
+}

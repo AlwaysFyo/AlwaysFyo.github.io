@@ -1,0 +1,375 @@
+/*!
+ * Butterfly Liquid Glass — portable edition
+ * ---------------------------------------------------------------------------
+ * 配合 glass.js 使用。授权 MIT。
+ *
+ * 结构：
+ *   ① 设计令牌      颜色、光效、圆角、时长
+ *   ② .glass 材质   着色 + backdrop-filter + 边缘光
+ *   ③ 特异性桥接    Butterfly 用 id 选择器，必须按同等特异性重述
+ *   ④ 五档权重      每档一组光学参数
+ *   ⑤ 文章内元素    代码块 / 表格 / 引用
+ *   ⑥ 降级          无 backdrop-filter / 低动效 / 低透明度
+ */
+
+/* ==========================================================================
+   ① 设计令牌
+   ========================================================================== */
+:root {
+  --g-bg:       #f7e6cf;
+  --g-ink:      #2b201a;
+  --g-ink-dim:  #7d6a5c;
+  --g-accent:   #e8973c;
+
+  --g-tint:       rgba(255, 249, 240, 0.07);
+  --g-tint-hover: rgba(255, 249, 240, 0.14);
+  --g-blur:       0px;          /* 液态玻璃靠折射，不靠磨砂 */
+  --g-saturate:   1.45;
+  --g-brightness: 1.02;
+  --g-contrast:   1.06;
+
+  /* 边缘光。前两层是方向性光照（光从左上来），不是描边：
+     模糊半径为 0 的 box-shadow 是一条硬线，绕四边一圈就成了「画出来的边框」。
+     第四层是菲涅尔——掠射角反射，整圈提亮向内衰减，「厚度感」主要靠它。 */
+  --g-shine:
+    inset 1px 1px 1.5px -0.5px rgba(255, 255, 255, 0.50),
+    inset -1px -1px 2px -1px   rgba(255, 255, 255, 0.30),
+    inset 0 0 0 1px            rgba(255, 255, 255, 0.07),
+    inset 0 0 22px -11px       rgba(255, 255, 255, 0.44),
+    inset 0 0 12px -7px        rgba(120, 62, 24, 0.18);
+  --g-shadow-lift: 0 20px 46px rgba(96, 50, 20, 0.30), 0 3px 10px rgba(96, 50, 20, 0.18);
+  --g-edge: rgba(255, 255, 255, 0.50);
+
+  --g-shadow:
+    0 6px 18px rgba(96, 50, 20, 0.14),
+    0 1px 3px  rgba(96, 50, 20, 0.10);
+
+  /* 代码块 / 表格 / 引用的墨色。单独一组，因为这些面在深浅主题下
+     是浅玻璃深字 / 深玻璃浅字两种完全相反的配置。 */
+  --g-code-ink:     #33261e;
+  --g-code-ink-dim: rgba(51, 38, 30, 0.42);
+  --g-code-edge:    rgba(120, 80, 50, 0.20);
+
+  --g-r-md: 20px;
+  --g-r-lg: 26px;
+  --g-r-xl: 32px;
+
+  --g-dur:  0.42s;
+  --g-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --g-bg:      #1b120c;
+    --g-ink:     #f4e6d8;
+    --g-ink-dim: #bda694;
+
+    --g-tint:       rgba(92, 68, 50, 0.14);
+    --g-tint-hover: rgba(112, 84, 62, 0.26);
+    --g-saturate:   1.35;
+    --g-brightness: 1.05;
+    --g-contrast:   1.05;
+
+    --g-shine:
+      inset 1px 1px 1.5px -0.5px rgba(255, 236, 212, 0.38),
+      inset -1px -1px 2px -1px   rgba(255, 236, 212, 0.19),
+      inset 0 0 0 1px            rgba(255, 236, 212, 0.05),
+      inset 0 0 22px -11px       rgba(255, 236, 212, 0.26),
+      inset 0 0 12px -7px        rgba(0, 0, 0, 0.32);
+    --g-edge: rgba(255, 236, 212, 0.34);
+
+    --g-shadow:
+      0 6px 18px rgba(0, 0, 0, 0.45),
+      0 1px 3px  rgba(0, 0, 0, 0.30);
+
+    --g-code-ink:     #f2e7dc;
+    --g-code-ink-dim: rgba(242, 231, 220, 0.38);
+    --g-code-edge:    rgba(255, 226, 196, 0.14);
+  }
+}
+
+/* [data-theme="dark"] 是 Butterfly 的手动切换，要和上面保持一致 */
+[data-theme="dark"] {
+  --g-bg:      #1b120c;
+  --g-ink:     #f4e6d8;
+  --g-ink-dim: #bda694;
+  --g-tint:       rgba(92, 68, 50, 0.14);
+  --g-tint-hover: rgba(112, 84, 62, 0.26);
+  --g-saturate:   1.35;
+  --g-brightness: 1.05;
+  --g-contrast:   1.05;
+  --g-shine:
+    inset 1px 1px 1.5px -0.5px rgba(255, 236, 212, 0.38),
+    inset -1px -1px 2px -1px   rgba(255, 236, 212, 0.19),
+    inset 0 0 0 1px            rgba(255, 236, 212, 0.05),
+    inset 0 0 22px -11px       rgba(255, 236, 212, 0.26),
+    inset 0 0 12px -7px        rgba(0, 0, 0, 0.32);
+  --g-edge: rgba(255, 236, 212, 0.34);
+  --g-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.45),
+    0 1px 3px  rgba(0, 0, 0, 0.30);
+  --g-code-ink:     #f2e7dc;
+  --g-code-ink-dim: rgba(242, 231, 220, 0.38);
+  --g-code-edge:    rgba(255, 226, 196, 0.14);
+  --g-shadow-lift: 0 16px 38px rgba(0, 0, 0, 0.58), 0 2px 8px rgba(0, 0, 0, 0.40);
+}
+
+/* ==========================================================================
+   ② 材质
+   ========================================================================== */
+.glass {
+  /* 自定义属性会继承，嵌套的玻璃面会悄悄用上父级的滤镜（尺寸不对）。
+     在每个面上声明为空，就把继承断在了边界上。 */
+  --g-filter: ;
+
+  position: relative;
+  border-radius: var(--g-radius, var(--g-r-lg));
+  background-color: var(--g-tint);
+  border: 1px solid var(--g-edge);
+  box-shadow: var(--g-shine), var(--g-shadow);
+  color: var(--g-ink);
+
+  -webkit-backdrop-filter:
+    var(--g-filter, ) blur(var(--g-blur)) saturate(var(--g-saturate))
+    brightness(var(--g-brightness)) contrast(var(--g-contrast));
+  backdrop-filter:
+    var(--g-filter, ) blur(var(--g-blur)) saturate(var(--g-saturate))
+    brightness(var(--g-brightness)) contrast(var(--g-contrast));
+
+  transition:
+    background-color var(--g-dur) var(--g-ease),
+    box-shadow       var(--g-dur) var(--g-ease);
+}
+
+/* ==========================================================================
+   ③ 特异性桥接
+   --------------------------------------------------------------------------
+   Butterfly 用 id 选择器给外壳上样式（#recent-posts .recent-post-item），
+   id 特异性碾压类，所以 .glass 的材质属性会被压掉。这里按同等特异性重述一遍。
+
+   顺带把 Butterfly 的 `transition: all .3s` 换成显式列表：`all` 会给每一个
+   可动画长属性注册过渡，包括 height / padding / margin / border-width，
+   于是任何无关的样式变化都会在几十个 backdrop-filter 面上同时动画布局属性。
+   ========================================================================== */
+#nav.glass,
+#recent-posts .recent-post-item.glass,
+#aside-content .card-widget.glass,
+#card-toc.glass,
+#post.glass, #page.glass, #archive.glass, #tag.glass, #category.glass,
+#rightside button.glass,
+#pagination .page-number.glass, #pagination .extend.glass,
+#tag .tag-cloud-list a.glass,
+.tag-cloud-list a.glass,
+#article-container .tag-list a.glass,
+#article-container figure.highlight.glass,
+#article-container pre.glass,
+#article-container blockquote.glass,
+#article-container .table-wrap.glass,
+#article-container .note.glass,
+#local-search .search-dialog.glass,
+#sidebar-menus.glass {
+  background-color: var(--g-tint);
+  background-image: none;
+  border: 1px solid var(--g-edge);
+  border-radius: var(--g-radius, var(--g-r-lg));
+  box-shadow: var(--g-shine), var(--g-shadow);
+  transition:
+    background-color var(--g-dur) var(--g-ease),
+    box-shadow       var(--g-dur) var(--g-ease);
+}
+
+/* Butterfly 有些地方读 --card-bg，一并接管 */
+.glass { --card-bg: var(--g-tint); }
+
+/* ==========================================================================
+   ④ 五档权重
+   --------------------------------------------------------------------------
+   refraction  边缘位移峰值(px)   bezel  折射带宽度(px)
+   edge-depth  倒角转折锐度        chromatic  色散强度
+   ========================================================================== */
+.glass--soft {
+  --g-radius: var(--g-r-lg);
+  --glass-refraction: 34;
+  --glass-bezel-width: 20;
+  --glass-edge-depth: 2.2;
+  --glass-chromatic: 0.030;
+}
+
+.glass--medium {
+  --g-radius: var(--g-r-lg);
+  --glass-refraction: 60;
+  --glass-bezel-width: 74;
+  --glass-edge-depth: 1.65;
+  --glass-chromatic: 0.028;
+  --g-tint: rgba(255, 250, 243, 0.08);
+}
+
+.glass--strong {
+  --g-radius: var(--g-r-xl);
+  --glass-refraction: 94;
+  --glass-bezel-width: 100;
+  --glass-edge-depth: 1.55;
+  --glass-chromatic: 0.026;
+  --g-tint: rgba(255, 250, 243, 0.09);
+  --g-tint-hover: rgba(255, 250, 243, 0.18);
+}
+
+/* 代码 / 表格 / 引用。浅色下是浅玻璃 + 深字，深色下反过来。
+   做成深色实心板是这类面「永远不像玻璃」的根源：浅色文字需要
+   不透明的深底才能读，而不透明就不是玻璃。 */
+.glass--dense {
+  --g-radius: var(--g-r-md);
+  --glass-refraction: 58;
+  --glass-bezel-width: 48;
+  --glass-edge-depth: 1.9;
+  --glass-chromatic: 0.024;
+  --g-tint: rgba(255, 252, 246, 0.44);
+  --g-saturate: 1.2;
+  color: var(--g-code-ink);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .glass--dense { --g-tint: rgba(24, 17, 13, 0.56); }
+}
+[data-theme="dark"] .glass--dense { --g-tint: rgba(24, 17, 13, 0.56); }
+
+.glass--floating {
+  --g-radius: var(--g-r-xl);
+  --glass-refraction: 84;
+  --glass-bezel-width: 88;
+  --glass-edge-depth: 1.6;
+  --glass-chromatic: 0.030;
+  --g-tint: rgba(255, 250, 243, 0.12);
+}
+
+/* ==========================================================================
+   ⑤ 文章内元素
+   --------------------------------------------------------------------------
+   20px 的圆角配 Butterfly 原本 10px 的纵向内边距，首末行会顶在圆弧上。
+   这些面比主题设计时更圆，内容要往里缩到大约半个半径才不挤。
+   ========================================================================== */
+#article-container figure.highlight.glass { padding: 6px; }
+#article-container figure.highlight table { padding: 12px 16px; }
+#article-container pre.glass              { padding: 18px 24px; }
+#article-container figure.highlight .highlight-tools { padding: 6px 14px; }
+
+#article-container figure.highlight table,
+#article-container figure.highlight pre {
+  background: transparent !important;
+  color: var(--g-code-ink);
+}
+#article-container figure.highlight .gutter pre { color: var(--g-code-ink-dim); }
+
+/* 长代码块的展开按钮（需要 code_blocks.height_limit）。
+   主题原本给它 var(--hlexpand-bg)——代码主题背景色的实心渐变，那是为不透明
+   代码块画的，压在半透明玻璃上是一条颜色对不上的实心条。改成从透明渐到玻璃
+   自己的着色，读起来是代码在薄雾下淡出。
+
+   这里不能用 backdrop-filter：如果你给 .glass 加了 isolation: isolate，
+   它就是一个 backdrop root，子元素的 backdrop-filter 什么也采样不到。 */
+#article-container figure.highlight .code-expand-btn {
+  /* 外层 6px padding 会让 width:100% 算到 padding box 上而右溢，显式拉两端 */
+  left: 0; right: 0; width: auto;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--g-tint) 55%, transparent) 42%,
+    var(--g-tint) 100%);
+  border-radius: 0 0 calc(var(--g-r-md) - 6px) calc(var(--g-r-md) - 6px);
+}
+#article-container figure.highlight .code-expand-btn i { color: var(--g-code-ink-dim); }
+#article-container figure.highlight .code-expand-btn.expand-done { background: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  #article-container figure.highlight .code-expand-btn i { animation: none; opacity: .7; }
+}
+
+#article-container .table-wrap.glass { padding: 10px 14px; overflow-x: auto; }
+#article-container .table-wrap table { background: transparent; border: none; margin: 0; }
+#article-container .table-wrap th,
+#article-container .table-wrap td    { border-color: var(--g-code-edge); background: transparent; }
+
+#article-container blockquote.glass {
+  border-left: 3px solid var(--g-accent);
+  padding: 1.15em 1.5em;
+  color: var(--g-code-ink);
+}
+
+/* Butterfly 在版权块上盖了第二个版权图标，和每行已有的图标重复 */
+#post .post-copyright::before { content: none; }
+#post .post-copyright {
+  --g-tint: rgba(255, 250, 243, 0.30);   /* 小字压在背景上，需要一点底 */
+  padding: 14px 20px;
+}
+
+/* ==========================================================================
+   ⑥ 降级
+   ========================================================================== */
+
+/* 拿不到折射（Safari / Firefox）时，用一点模糊补上厚度感 */
+.glass-plain .glass { --g-blur: 8px; }
+
+/* 完全没有 backdrop-filter：着色必须自己扛起对比度 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background-color: color-mix(in srgb, var(--g-bg) 82%, transparent);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    --g-filter: ;
+    background-color: var(--g-bg);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass { transition: none; }
+}
+
+/* ---------- 深色模式下补齐各档位的 tint ----------
+   实测（探针 data-theme=dark）：
+     glass--soft   仍是 rgba(255,250,243,0.09)  <- 浅色奶油底 ✗
+     glass--strong 仍是 rgba(255,250,243,0.09)  <- 浅色奶油底 ✗
+   原因：原本只有 .glass 和 .glass--dense 写了深色覆盖，
+   soft/medium/strong/floating 继承的仍是浅色 --g-tint，
+   在深色底上表现为"发白的浅色块"。
+   这里按各档位浅色值的等比关系补深色（沿用 .glass 的 rgba(92,68,50,x) 体系）。 */
+
+[data-theme='dark'] .glass--soft {
+  --g-tint: rgba(92, 68, 50, 0.13);
+}
+
+[data-theme='dark'] .glass--medium {
+  --g-tint: rgba(92, 68, 50, 0.12);
+}
+
+[data-theme='dark'] .glass--strong {
+  --g-tint: rgba(92, 68, 50, 0.13);
+}
+
+[data-theme='dark'] .glass--floating {
+  --g-tint: rgba(92, 68, 50, 0.16);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .glass--soft {
+    --g-tint: rgba(92, 68, 50, 0.13);
+  }
+
+  :root:not([data-theme='light']) .glass--medium {
+    --g-tint: rgba(92, 68, 50, 0.12);
+  }
+
+  :root:not([data-theme='light']) .glass--strong {
+    --g-tint: rgba(92, 68, 50, 0.13);
+  }
+
+  :root:not([data-theme='light']) .glass--floating {
+    --g-tint: rgba(92, 68, 50, 0.16);
+  }
+}

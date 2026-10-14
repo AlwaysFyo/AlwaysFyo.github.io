@@ -1,0 +1,410 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Docker 部署方法总结 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="（2）设置稳定版docker的存储库，使用下面的存储库在下载 docker 的时候可能会比较慢，可以按需修改为国内的存储库。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker 部署方法总结">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/72707e30/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="（2）设置稳定版docker的存储库，使用下面的存储库在下载 docker 的时候可能会比较慢，可以按需修改为国内的存储库。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2024-04-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-04-22T16:00:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="工具相关">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Docker 部署方法总结",
+  "url": "https://alwaysfyo.github.io/posts/72707e30/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2024-04-22T16:00:00.000Z",
+  "dateModified": "2024-04-22T16:00:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/72707e30/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Docker 部署方法总结',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Docker 部署方法总结</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Docker 部署方法总结</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-04-22T16:00:00.000Z" title="发表于 2024-04-23 00:00:00">2024-04-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-04-22T16:00:00.000Z" title="更新于 2024-04-23 00:00:00">2024-04-23</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/">开发工具</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="Docker-简介"><a href="#Docker-简介" class="headerlink" title="Docker 简介"></a>Docker 简介</h2><p><strong>Docker 是什么？</strong></p>
+<p>基本概念</p>
+<ul>
+<li>镜像（image）： 相当于一个 root 文件系统</li>
+<li>容器（container）： 是镜像运行的实体（镜像和容器的关系就像是面向对象编程中的类和实例一样）</li>
+<li>仓库（repository）:  可看作是一个代码控制中心， 用来保存镜像</li>
+</ul>
+<h2 id="Docker-安装"><a href="#Docker-安装" class="headerlink" title="Docker 安装"></a>Docker 安装</h2><h3 id="Docker-在线安装"><a href="#Docker-在线安装" class="headerlink" title="Docker 在线安装"></a>Docker 在线安装</h3><ol>
+<li>通过 uname -r 命令查看你当前的内核版本</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -r</span><br></pre></td></tr></table></figure>
+
+
+<ol start="2">
+<li>root权限更新Yum包</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum update</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>卸载旧版本：（如果安装过旧版本的话，旧版名称是 docker , 最新社区版 docker-engine， 目前已改名为 docker-ce )</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y remove docker docker-common docker-selinux docker-engine</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>要设置一个稳定的存储库</li>
+</ol>
+<p>（1）设置存储库的命令<code>yum-config-manager</code>，该命令是在 yum-utils 包下，所以要先安装yum-utils</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils</span><br></pre></td></tr></table></figure>
+
+<p>（2）设置稳定版docker的存储库，使用下面的存储库在下载 docker 的时候可能会比较慢，可以按需修改为国内的存储库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">官方默认的存储库</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">此处可能会报错 （原因是国内访问不到 docker 官方镜像的缘故）</span></span><br><span class="line">Loaded plugins: fastestmirror（镜像）</span><br><span class="line">adding repo from: https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line">grabbing file https://download.docker.com/linux/centos/docker-ce.repo to /etc/yum.repos.d/docker-ce.repo</span><br><span class="line">Could not fetch/save url https://download.docker.com/linux/centos/docker-ce.repo to file /etc/yum.repos.d/docker-ce.repo: </span><br><span class="line">[Errno 14] curl#35 - &quot;TCP connection reset by peer</span><br></pre></td></tr></table></figure>
+
+<p>设置为阿里的存储库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
+
+<p>开启每夜更新源，好像是每天晚上更新存储库的，可以不设置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum-config-manager --enable docker-ce-nightly</span><br></pre></td></tr></table></figure>
+
+<p>开启测试版的源，可以不设置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum-config-manager --enable docker-ce-test</span><br></pre></td></tr></table></figure>
+
+<p>一般情况下使用第一条命名设置稳定版的存储库就可以了，docker-ce-nightly和docker-ce-test默认是关闭的。后续也可以按需开启或关闭。</p>
+<ol start="6">
+<li>配置镜像加速器（必须要配置，否则会出现访问镜像并不稳定 ，而且下载缓慢等问题）</li>
+</ol>
+<ul>
+<li>注册阿里云账号 ，登陆该网址自行注册 ( <a target="_blank" rel="noopener" href="https://www.aliyun.com/?utm_content=se_1010377">https://www.aliyun.com/?utm_content=se_1010377</a> )</li>
+<li>进入阿里云控制台( <a target="_blank" rel="noopener" href="https://cr.console.aliyun.com/#/accelerator">https://cr.console.aliyun.com/#/accelerator</a> )</li>
+<li>执行命令 :</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">mkdir</span> -p /etc/docker</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"><span class="built_in">tee</span> /etc/docker/daemon.json &lt;&lt;-<span class="string">&#x27;EOF&#x27;</span></span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">&#123;</span> </span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">   <span class="string">&quot;registry-mirrors&quot;</span>: [<span class="string">&quot;输入你自己控制台此处的地址&quot;</span>]</span></span><br><span class="line"><span class="meta prompt_">&gt; </span><span class="language-bash">&#125;</span></span><br><span class="line">EOF</span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash"> systemctl daemon-reload    （导入操作）</span></span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>安装 docker 引擎</li>
+</ol>
+<ul>
+<li>安装最新 docker 引擎</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install docker-ce docker-ce-cli containerd.io</span><br></pre></td></tr></table></figure>
+
+<p>  yum 单独安装<a href="https://link.zhihu.com/?target=http://container.io">http://container.io</a>程序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y https://mirrors.aliyun.com/docker-ce/linux/centos/7/x86_64/edge/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>选择特定版本安装</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum list docker-ce --showduplicates | sort -r</span><br></pre></td></tr></table></figure>
+
+<pre><code>	使用以下命令安装
+</code></pre>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install docker-ce-&lt;VERSION_STRING&gt; docker-ce-cli-&lt;VERSION_STRING&gt; containerd.io</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>启动并加入开机启动</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl start docker       (重启命令  $  systemctl restart docker ) </span><br><span class="line">systemctl enable docker   开机启动</span><br><span class="line">docker version  查看 docker 版本号</span><br></pre></td></tr></table></figure>
+
+<ol start="8">
+<li>验证是否安装成功</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
+
+<h3 id="Docker-离线安装"><a href="#Docker-离线安装" class="headerlink" title="Docker 离线安装"></a>Docker 离线安装</h3><ol>
+<li><strong>从官方下载 Docke r安装包并上传至虚拟机</strong></li>
+</ol>
+<p> <a target="_blank" rel="noopener" href="https://download.docker.com/linux/static/stable/x86_64/">https://download.docker.com/linux/static/stable/x86_64/</a></p>
+<ol start="2">
+<li><strong>解压安装包</strong></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xvf docker-19.03.9.tgz</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><strong>将解压出来的docker文件内容移动到 &#x2F;usr&#x2F;bin&#x2F; 目录下</strong></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">移动命令 复制命令请用<span class="built_in">cp</span></span></span><br><span class="line">mv docker/* /usr/bin/ </span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>将 docker 注册为 service 服务</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/systemd/system/docker.service</span><br></pre></td></tr></table></figure>
+
+<p> docker.service 编辑的内容</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Docker Application Container Engine</span><br><span class="line">Documentation=https://docs.docker.com</span><br><span class="line">After=network-online.target firewalld.service</span><br><span class="line">Wants=network-online.target</span><br><span class="line">[Service] b&#x27;s</span><br><span class="line">Type=notify</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">the default is not to use systemd <span class="keyword">for</span> cgroups because the delegate issues still</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">exists and systemd currently does not support the cgroup feature <span class="built_in">set</span> required</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="keyword">for</span> containers run by docker</span></span><br><span class="line">ExecStart=/usr/bin/dockerd</span><br><span class="line">ExecReload=/bin/kill -s HUP $MAINPID</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Having non-zero Limit*s causes performance problems due to accounting overhead</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="keyword">in</span> the kernel. We recommend using cgroups to <span class="keyword">do</span> container-local accounting.</span></span><br><span class="line">LimitNOFILE=infinity</span><br><span class="line">LimitNPROC=infinity</span><br><span class="line">LimitCORE=infinity</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Uncomment TasksMax <span class="keyword">if</span> your systemd version supports it.</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Only systemd 226 and above support this version.</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">TasksMax=infinity</span></span><br><span class="line">TimeoutStartSec=0</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">set</span> delegate <span class="built_in">yes</span> so that systemd does not reset the cgroups of docker containers</span></span><br><span class="line">Delegate=yes</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="built_in">kill</span> only the docker process, not all processes <span class="keyword">in</span> the cgroup</span></span><br><span class="line">KillMode=process</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">restart the docker process <span class="keyword">if</span> it exits prematurely</span></span><br><span class="line">Restart=on-failure</span><br><span class="line">StartLimitBurst=3</span><br><span class="line">StartLimitInterval=60s</span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li><strong>启动docker</strong></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">chmod +x /etc/systemd/system/docker.service #设置权限</span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl start docker            #启动Docker</span><br><span class="line">systemctl enable docker.service   #设置开机自启</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li><strong>验证</strong></li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl status docker  #查看Docker状态</span><br><span class="line">docker -v                #查看Docker版本</span><br></pre></td></tr></table></figure>
+
+<p><strong>Tips:</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">忽略证书配置</span></span><br><span class="line">ExecStart=/usr/bin/dockerd --insecure-registry Docker仓库IP:Docker端口号</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">启动容器报错：</span></span><br><span class="line">/usr/bin/docker-current: Error response from daemon: shim error: docker-runc not installed on system.</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">解决：</span></span><br><span class="line">ln -s /usr/libexec/docker/docker-runc-current /usr/bin/docker-runc</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">docker离线安装时出的问题</span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">在服务器上使用docker run启动容器时报错：docker: Error response from daemon: OCI runtime create failed: container_linux.go:449；container init caused <span class="string">&quot;write /proc/self/attr/keycreate: permission denied&quot;</span><span class="string">&quot;: unknown.</span></span></span><br><span class="line">[https://www.cnblogs.com/jamyxu/p/12641453.html](https://www.cnblogs.com/jamyxu/p/12641453.html)</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/72707e30/">https://alwaysfyo.github.io/posts/72707e30/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%B7%A5%E5%85%B7%E7%9B%B8%E5%85%B3/">工具相关</a><a class="post-meta__tags" href="/tags/Docker/">Docker</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/6b7ef836/" title="Windows 常用 DOS 命令"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Windows 常用 DOS 命令</div></div><div class="info-2"><div class="info-item-1">查看以太网物理地址（MAC）、IP 地址与物理地址的对应关系、目标主机的连通状态、清屏</div></div></div></a><a class="pagination-related" href="/posts/4cdf4da5/" title="流量录制与回放"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">流量录制与回放</div></div><div class="info-2"><div class="info-item-1">前言、工具分类、web服务器录制、应用层录制</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/70e86ce8/" title="Docker 命令总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-11</div><div class="info-item-2">Docker 命令总结</div></div><div class="info-2"><div class="info-item-1">Docker 基本命令、镜像相关命令、本地镜像查看、远端镜像查看</div></div></div></a><a class="pagination-related" href="/posts/f31aa9d5/" title="Git 日志"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-01</div><div class="info-item-2">Git 日志</div></div><div class="info-2"><div class="info-item-1">Git 日志：日志、查看、简化版日志、查看前N条</div></div></div></a><a class="pagination-related" href="/posts/d3e29627/" title="Git 标签"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-01</div><div class="info-item-2">Git 标签</div></div><div class="info-2"><div class="info-item-1">tag就是一个让人容易记住的有意义的名字，它跟某个commit绑在一起。</div></div></div></a><a class="pagination-related" href="/posts/3fab784d/" title="Git 其他"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-01</div><div class="info-item-2">Git 其他</div></div><div class="info-2"><div class="info-item-1">其他操作、常用忽略文件、配置别名、显示颜色</div></div></div></a><a class="pagination-related" href="/posts/226ce186/" title="Git 远程仓库"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-01</div><div class="info-item-2">Git 远程仓库</div></div><div class="info-2"><div class="info-item-1">-u 意同 --set-upstream，用以将本地库分支与远程库分支关联</div></div></div></a><a class="pagination-related" href="/posts/31339bdc/" title="Xmind Copilot"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-06</div><div class="info-item-2">Xmind Copilot</div></div><div class="info-2"><div class="info-item-1">很多人通宵达旦只为写出一份逻辑清晰的思维脑图，现在只需要一键，XC就可以为你生成一份逻辑清晰的脑图。这里我输入'什么是AIGC?</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">Docker 简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E5%AE%89%E8%A3%85"><span class="toc-number">2.</span> <span class="toc-text">Docker 安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Docker-%E5%9C%A8%E7%BA%BF%E5%AE%89%E8%A3%85"><span class="toc-number">2.1.</span> <span class="toc-text">Docker 在线安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Docker-%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85"><span class="toc-number">2.2.</span> <span class="toc-text">Docker 离线安装</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/68d65074/" title="Selenium 框架三部曲 - 中">Selenium 框架三部曲 - 中</a><time datetime="2025-07-13T01:21:00.000Z" title="发表于 2025-07-13 09:21:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/261faf15/" title="Golang Mutex 详解">Golang Mutex 详解</a><time datetime="2025-07-12T17:30:00.000Z" title="发表于 2025-07-13 01:30:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/edd5b4e5/" title="API 接口智能化测试探索与实践">API 接口智能化测试探索与实践</a><time datetime="2025-07-01T13:01:00.000Z" title="发表于 2025-07-01 21:01:00">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/8fe1f36/" title="AI 系列：计算机视觉-给机器装上眼睛">AI 系列：计算机视觉-给机器装上眼睛</a><time datetime="2025-06-30T15:30:00.000Z" title="发表于 2025-06-30 23:30:00">2025-06-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/c9acbf1/" title="AI 系列：搜索-从迷宫求解看人工智能关键技术">AI 系列：搜索-从迷宫求解看人工智能关键技术</a><time datetime="2025-06-30T15:29:00.000Z" title="发表于 2025-06-30 23:29:00">2025-06-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

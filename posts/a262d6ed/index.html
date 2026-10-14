@@ -1,0 +1,649 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>接口测试基础 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="接口的本质，其实就是一种契约，遵循这样一种形式：在发开前期，我们约定接口会接收什么数据；在处理完成后，它又会返回什么数据。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="接口测试基础">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/a262d6ed/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="接口的本质，其实就是一种契约，遵循这样一种形式：在发开前期，我们约定接口会接收什么数据；在处理完成后，它又会返回什么数据。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2025-06-24T03:45:00.000Z">
+<meta property="article:modified_time" content="2025-07-13T03:50:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="自动化测试">
+<meta property="article:tag" content="软件测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "接口测试基础",
+  "url": "https://alwaysfyo.github.io/posts/a262d6ed/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2025-06-24T03:45:00.000Z",
+  "dateModified": "2025-07-13T03:50:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/a262d6ed/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '接口测试基础',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">接口测试基础</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">接口测试基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-24T03:45:00.000Z" title="发表于 2025-06-24 11:45:00">2025-06-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-13T03:50:00.000Z" title="更新于 2025-07-13 11:50:00">2025-07-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/">软件测试</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">4.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>15分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><blockquote>
+<p><strong>接口测试的本质</strong>：测试接口是否能够正常的进行数据交互、权限控制以及异常管理。</p>
+</blockquote>
+<h2 id="1-测试策略"><a href="#1-测试策略" class="headerlink" title="1. 测试策略"></a>1. 测试策略</h2><ol>
+<li>传统软件产品测试策略<ul>
+<li>测试周期长</li>
+<li>强调文档驱动</li>
+<li>注重质量保障</li>
+<li>较少考虑快速迭代</li>
+</ul>
+</li>
+<li>互联网产品测试策略<ul>
+<li>快速迭代</li>
+<li>用户体验至上</li>
+<li>大数据和性能测试</li>
+<li>持续监控和反馈</li>
+</ul>
+</li>
+</ol>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706005041342.webp" alt="传统软件产品的金字塔测试策略"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706005041343.webp" alt="互联网产品的菱形测试策略"></p>
+<blockquote>
+<p><strong>Tips：</strong><br>UI 方面的功能测试属于<strong>黑盒测试</strong>，单元测试属于<strong>白盒测试</strong>，而 API 接口测试则属于<strong>灰盒测试</strong>。</p>
+</blockquote>
+<p>因此，互联网产品测试策略大概可以总结为如下几点：</p>
+<ul>
+<li>以中间层的 API 测试为重点做全面的测试。</li>
+<li>轻量级的 GUI 测试，只覆盖最核心直接影响主营业务流程的 E2E 场景。</li>
+<li>最上层的 GUI 测试通常利用探索式测试思维，以人工测试的方式发现尽可能多的潜在问题。</li>
+<li>单元测试只对那些相对稳定并且核心的服务和模块开展全面的单元测试，而应用层或者上层业务只会做少量的单元测试。</li>
+</ul>
+<h2 id="2-接口介绍"><a href="#2-接口介绍" class="headerlink" title="2. 接口介绍"></a>2. 接口介绍</h2><h3 id="2-1-什么是接口？"><a href="#2-1-什么是接口？" class="headerlink" title="2.1 什么是接口？"></a>2.1 什么是接口？</h3><p><strong>接口的本质</strong>，其实就是一种契约，遵循这样一种形式：在发开前期，我们约定接口会接收什么数据；在处理完成后，它又会返回什么数据。</p>
+<ol>
+<li>硬件：电脑 - USB、投影机等<ul>
+<li>用于数据传输</li>
+</ul>
+</li>
+<li>软件：统称 API（application program interface)<ul>
+<li>通过调用接口来实现例如微信提现和充值、支付宝支付等功能</li>
+<li>接口的调用可能需要鉴权，鉴权码一般称为 token&#x2F;key&#x2F;appkey</li>
+</ul>
+</li>
+<li>接口包含了内部接口和外部接口<ul>
+<li>内部接口<ul>
+<li>内部接口只提供给内部系统使用，例如预算系统（只需要测试正例即可）</li>
+<li>内部接口提供给外部系统使用（测试必须非常全面，正例、异常和权限控制等场景都需要覆盖）</li>
+</ul>
+</li>
+<li>外部接口<ul>
+<li>开发系统调用外部的接口，例如微信、支付宝等对外接口（只需要测试正例即可）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><strong>总结</strong>：接口就是软件提供给外部的一种服务，用于数据的传输。</p>
+<h3 id="2-2-软件为什么需要接口？"><a href="#2-2-软件为什么需要接口？" class="headerlink" title="2.2 软件为什么需要接口？"></a>2.2 软件为什么需要接口？</h3><p>因为接口能够让内部的数据被外部进行修改。比如，微信支付后银行卡中的余额需要修改，这时候就需要银行提供对外的接口，用于支付后对银行卡金额数据的修改。</p>
+<h2 id="3-接口返回数据和-JSON-详解"><a href="#3-接口返回数据和-JSON-详解" class="headerlink" title="3. 接口返回数据和 JSON 详解"></a>3. 接口返回数据和 JSON 详解</h2><h3 id="3-1-常见数据格式"><a href="#3-1-常见数据格式" class="headerlink" title="3.1 常见数据格式"></a>3.1 常见数据格式</h3><ol>
+<li><strong>json 格式（最常用）</strong> 常见返回数据：<ul>
+<li>error_code：错误码，0 代表成功</li>
+<li>msg：对错误码的中文说明</li>
+<li>data：真正返回的数据</li>
+</ul>
+</li>
+</ol>
+ <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span>error_code<span class="punctuation">:</span><span class="number">0</span><span class="punctuation">,</span> mas<span class="punctuation">:</span><span class="string">&quot;提现成功&quot;</span><span class="punctuation">,</span> data<span class="punctuation">:</span><span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p><strong>html 格式</strong> 常见返回数据:</p>
+  <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span><span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">error_code</span>&gt;</span>0<span class="tag">&lt;/<span class="name">error_code</span>&gt;</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>xml 格式</strong> 常见返回数据:</p>
+  <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml?version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>&gt;</span></span><br><span class="line"><span class="meta">    &lt;error_code&gt;0&lt;/error_code&gt;</span></span><br><span class="line"><span class="meta">    ...</span></span><br><span class="line"><span class="meta">&lt;/xml&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="3-2-JSON-详解"><a href="#3-2-JSON-详解" class="headerlink" title="3.2 JSON 详解"></a>3.2 JSON 详解</h3><blockquote>
+<p>推荐格式化工具：<a target="_blank" rel="noopener" href="https://github.com/zxlie/FeHelper">https://github.com/zxlie/FeHelper</a></p>
+</blockquote>
+<p>关于 JSON：</p>
+<ol>
+<li>JSON 就是一种数据类型</li>
+<li>JSON 由两种数据组成：<ul>
+<li>Map 对象&#x2F;键值对：<code>{key:value, key:value}</code></li>
+<li>数组：<code>[value1, value2, value3]</code></li>
+</ul>
+</li>
+<li>合法的 JSON 示例：</li>
+</ol>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;a&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span><span class="attr">&quot;b&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="number">1</span><span class="punctuation">,</span> <span class="number">2</span><span class="punctuation">,</span> <span class="number">3</span><span class="punctuation">]</span><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="punctuation">[</span><span class="number">1</span><span class="punctuation">,</span> <span class="number">2</span><span class="punctuation">,</span> <span class="string">&quot;3&quot;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span><span class="attr">&quot;a&quot;</span><span class="punctuation">:</span> <span class="number">4</span><span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line"></span><br><span class="line"><span class="number">3.14</span></span><br><span class="line"></span><br><span class="line"><span class="string">&quot;plain_text&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;prople&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;firstName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Brett&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;lastName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;McLaughlin&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;firstName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Jason&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;lastName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Hunter&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="4-接口测试介绍"><a href="#4-接口测试介绍" class="headerlink" title="4. 接口测试介绍"></a>4. 接口测试介绍</h2><h3 id="4-1-什么是接口测试？"><a href="#4-1-什么是接口测试？" class="headerlink" title="4.1 什么是接口测试？"></a>4.1 什么是接口测试？</h3><p>接口测试其实就是模拟调用方，通过接口通信来检测接口的正确性和容错性。</p>
+<p>接口测试也是功能测试，和 UI 界面测试不同的地方，仅仅是和我们交互的，不再是开发工程师设计的界面，而是测试工具或者代码。</p>
+<h3 id="4-2-为什么要做接口测试？"><a href="#4-2-为什么要做接口测试？" class="headerlink" title="4.2 为什么要做接口测试？"></a>4.2 为什么要做接口测试？</h3><ol>
+<li>现在很多系统都是前后端分离，开发进度可能会不一样，不需要等前后端都开发完再介入测试，而是在接口开发完后就可以开始介入测试了。<ul>
+<li>如果前端开发好，但后端还没有开发好，那么可以 mock 数据进行测试。</li>
+<li>如果后端开发好，但前端还没开发好，那么可以直接调用后端接口进行测试。</li>
+</ul>
+</li>
+<li>基于安全考虑，前端有些验证是很容易被绕过去从而直接调用接口，因此要针对此场景进行测试。</li>
+<li>测试推崇的是测试左移，而接口测试可以尽早的介入测试。</li>
+</ol>
+<blockquote>
+<p><strong>Tips：</strong><br>测试要尽早的介入这句话不仅仅只是指 QA 这个角色要尽早介入，而是指测试这个活动要尽早介入到质量保障当中，也可以是研发通过某些手段在开发阶段，即问题出现的早期就能被发现。</p>
+</blockquote>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706005041345.webp" alt="简单的接口调用视图"></p>
+<p>另外，从个人方面来说来说作为一名测试工程师，掌握接口测试，并能熟练完成接口测试，无疑对你在求职时和作中都有很多好处，比如：</p>
+<ul>
+<li>增加自己的技能，在找工作时获得更多机会。</li>
+<li>通过接口自动化完成接口回归测试，让自己的工作更轻松、更高效。</li>
+<li>通过持续集成平台调用接口自动化测试，为流水线提供质量保障方法和手段，赋能研发过程。</li>
+</ul>
+<h3 id="4-3-接口测试分类"><a href="#4-3-接口测试分类" class="headerlink" title="4.3 接口测试分类"></a>4.3 接口测试分类</h3><ol>
+<li><strong>按测试粒度方面</strong><ul>
+<li><strong>单接口验证</strong>：验证接口参数、返回值是否正确，更多只是为了验证接口是否能用</li>
+<li><strong>业务场景逻辑验证</strong>：以用户场景、业务场景为基础，验证接口与接口之间参数传递及业务流程能不能使用，更多是为了验证业务接口链路正不正常（这个是接口测试最核心的价值）</li>
+<li><strong>异常验证</strong>：验证参数异常、逻辑异常等情况，接口是否能处理并给出友好的错误提示信息。</li>
+</ul>
+</li>
+<li><strong>按测试类型方面</strong><ul>
+<li><strong>功能测试</strong>：单接口功能测试、多接口的业务场景</li>
+<li><strong>性能测试</strong>：并发、大数据量等</li>
+<li><strong>安全测试</strong>：认证、数据加密、脱敏、SQL 注入等</li>
+</ul>
+</li>
+</ol>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706005041346.webp"></p>
+<h3 id="4-4-接口断言设计"><a href="#4-4-接口断言设计" class="headerlink" title="4.4 接口断言设计"></a>4.4 接口断言设计</h3><ol>
+<li>请求协议的连通性，2XX，HTTP，判断状态码是不是 200</li>
+<li>接口业务的状态码是否正确</li>
+<li>验证返回的数据接口是否和事先定义的一致</li>
+<li>验证数据的值是否符合预期</li>
+<li>验证异常</li>
+</ol>
+<h3 id="4-5-接口测试-自动化测试误区"><a href="#4-5-接口测试-自动化测试误区" class="headerlink" title="4.5 接口测试 &#x2F; 自动化测试误区"></a>4.5 接口测试 &#x2F; 自动化测试误区</h3><ol>
+<li>所有的接口都可以做接口测试，但并不是所有接口都适合做接口测试</li>
+<li>接口测试 &#x2F; 自动化测试它解决的是效率问题，而不是单纯为了去发现 BUG</li>
+<li>接口测试 &#x2F; 自动化测试是可以提升效率，但并不是立刻见效，这是一个长期的过程，从 0 到 1 的过程所花费的时间可能比单独手工测试还要多，但从长期来看一旦搭建起来，带来的成效是十分可观的</li>
+</ol>
+<h3 id="4-6-接口测试效果度量"><a href="#4-6-接口测试效果度量" class="headerlink" title="4.6 接口测试效果度量"></a>4.6 接口测试效果度量</h3><ul>
+<li><strong>线上质量</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>服务端</strong></th>
+<th><strong>移动端</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. 流量<br>2. 故障 &#x2F; 缺陷<br>3. 性能<br>4. 饱和度<br>5. 线上告警</td>
+<td>1. 可靠性<br>2. 性能效率<br>3. 兼容性<br>4. 易用性<br>5. 可维护性<br>6. 安全性</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>过程质量</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>需求质量</strong></th>
+<th><strong>代码质量</strong></th>
+<th><strong>测试质量</strong></th>
+<th><strong>发布质量</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1. 需求 Bug 数<br>2. 需求打回次数</td>
+<td>1. 圈复杂度<br>2. 类内聚度<br>3. 构建成功率<br>4. 千行代码 Bug 率<br>5. PR decline 率</td>
+<td>1. 测试覆盖率<br>2. 漏测率<br>3. CI 拦截问题数<br>4. 缺陷分析<br>5. 自动化覆盖率</td>
+<td>1. 发布成功率<br>2. 发布回滚率<br>3. 发布失败恢复时</td>
+</tr>
+</tbody></table>
+<h2 id="5-接口测试协议"><a href="#5-接口测试协议" class="headerlink" title="5. 接口测试协议"></a>5. 接口测试协议</h2><h3 id="5-1-常见协议"><a href="#5-1-常见协议" class="headerlink" title="5.1 常见协议"></a>5.1 常见协议</h3><ol>
+<li><strong>WebService 协议</strong><ul>
+<li>接口地址以 <strong>HTTP</strong> 开头，?wsdl 结尾</li>
+<li>RESTful 规则：GET 获取数据，POST 提交数据，PUT 修改数据，DELETE 删除数据<ul>
+<li>早期接口：通过定义不同的接口名字来区分功能<ul>
+<li><a target="_blank" rel="noopener" href="http://192.168.12.1:8080/addUser">http://192.168.12.1:8080/addUser</a></li>
+<li><a target="_blank" rel="noopener" href="http://192.168.12.1:8080/delUser">http://192.168.12.1:8080/delUser</a></li>
+</ul>
+</li>
+<li>RESTful 规则：地址可以一样，但是通过 GET、POST、PUT、DELETE 类型来区分功能<ul>
+<li><a target="_blank" rel="noopener" href="http://192.168.12.1:8080/user">http://192.168.12.1:8080/user</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Dubbo 协议</strong><ul>
+<li>接口地址以 Dubbo 开头</li>
+<li>适用于少量数据的传输，高并发场景；但不适用于传输大文件、视频等数据</li>
+</ul>
+</li>
+<li><strong>HTTP 协议（最常用）</strong><ul>
+<li>接口地址以 HTTP 开头</li>
+<li>HTTPS &#x3D; HTTP + SSL 安全传输协议</li>
+<li>HTTP 端口为 80，HTTPS 端口为 443</li>
+</ul>
+</li>
+</ol>
+<h3 id="5-2-什么是-RESTful-规则？"><a href="#5-2-什么是-RESTful-规则？" class="headerlink" title="5.2 什么是 RESTful 规则？"></a>5.2 什么是 RESTful 规则？</h3><p>RESTful 是一种网络应用程序的设计风格和开发方式，基于 HTTP 协议可以使用 XML 格式定义或 JSON 格式定义，适用于移动互联网厂商作为业务使能接口的场景。通过 RESTful API 可以对互联网资源进行操作，所谓 “资源”，就是网络上的一个实体，或者说是网络上的一个具体信息。</p>
+<p><strong>示例：</strong></p>
+<ul>
+<li><code>GET /order/1</code>：返回订单编号为 1 的订单</li>
+<li><code>POST /orders</code>：增加一个订单</li>
+<li><code>DELETE /orders/1</code>：删除一个订单编号为 1 的订单</li>
+<li><code>PUT /orders/1</code>：更新订单编号为 1 的订单</li>
+</ul>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706005041347.webp"></p>
+<p><strong>URL 和 URI 的区别</strong></p>
+<ul>
+<li>URI &#x3D; Universal Resource Identifier 统一资源标志符，是一个更通用的概念，用于标识一个资源。它可以是一个名称、一个地址或者任何可以唯一标识资源的字符串。URI 是一种抽象的标识符，不涉及如何访问资源的具体方式。</li>
+<li>URL &#x3D; Universal Resource Locator 统一资源定位符，是 URI 的一个具体实现，它不仅标识了资源，还指定了如何访问这个资源的具体方式，通常包括协议（如 HTTP、HTTPS、FTP 等）、服务器地址、端口号、路径和查询参数等。</li>
+<li>URN &#x3D; Universal Resource Name 统一资源名称，它不提供资源的位置信息，而是通过一个持久的、独立于位置的名称来标识资源。</li>
+</ul>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706005041348.webp"></p>
+<p>URI 包括 URL 和 URN 两个类别，URL 是 URI 的子集，URL 一定可以标识出一个唯一的资源，所以 URL 一定是 URI；而 URI 包括范围更广，因此不一定是 URL。</p>
+<p>URN 由于可能会存在同名的情况，因此不能等于 URI，所以目前一般都直接用 URL 来标识唯一的资源（前提是要按照标准规范进行设定）。</p>
+<h3 id="5-3-什么是-HTTP-协议？"><a href="#5-3-什么是-HTTP-协议？" class="headerlink" title="5.3 什么是 HTTP 协议？"></a>5.3 什么是 HTTP 协议？</h3><p>HTTP 是超文本传输协议，主要用于浏览器和服务器之间数据的交互</p>
+<ul>
+<li><strong>请求体</strong><ul>
+<li><strong>请求方法</strong>: GET，POST，PUT，DELETE<br>  请求报文格式：</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">请求行     &#123;     请求方法（get/post等）+     URL     +     协议版本号     &#125;     </span><br><span class="line">+ 头部       &#123;     按照规范，根据自己需要来选择性添加     &#125;</span><br><span class="line">+ 包体       &#123;     即数据内容，post请求时，这部分才有数据；get请求时，数据附在URL参数里，格式为【URL?参数名=参数值】     &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>响应体</strong><ul>
+<li><strong>响应状态码</strong>： 1XX 提示信息，2XX 成功，3XX 重定向（跳转不传值），4XX 客户端错误，5XX 服务端错误<br> 响应报文格式：</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><figcaption><span>text</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">状态行     &#123;     协议版本号     +     状态码     +     状态码说明     &#125;     </span><br><span class="line">+ 头部       &#123;     按照规范，根据自己需要来选择性添加     &#125;</span><br><span class="line">+ 包体       &#123;     一般为服务端返回给客户端的数据     &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>HTTP 请求中 params 与 data 的区别</strong></p>
+<p>requests 模块发送请求有 params、data 两种携带参数的方法。</p>
+<ul>
+<li><strong>params</strong><ul>
+<li>params 常用在 GET、HEAD 请求方法中，通常用于向服务器传递查询信息，以获取特定资源或执行特定操作。</li>
+<li>例如，在一个搜索功能中，可以使用<code>params</code>来传递搜索关键词、页码、每页显示的数量等参数。</li>
+<li>这些参数会附加在 URL 的末尾，以<code>?key=value&amp;another_key=another_value</code>的形式呈现。</li>
+</ul>
+</li>
+<li><strong>data</strong><ul>
+<li>data 常用在 POST、PUT、PATCH 等请求方法中，通常用于在请求中向服务器发送数据。</li>
+<li>可以发送各种类型的数据，如表单数据、JSON 数据等。数据被包含在请求体中，而不是在 URL 中。</li>
+<li>例如，当提交一个表单或创建一个新的资源时，可以使用 <code>data</code> 来发送表单数据或 JSON 格式的资源数据。</li>
+</ul>
+</li>
+</ul>
+<p>在 requests 库中，两者使用方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 params 发送 GET 请求</span></span><br><span class="line">response1 = requests.get(<span class="string">&#x27;https://example.com/api/search&#x27;</span>, params=&#123;<span class="string">&#x27;keyword&#x27;</span>: <span class="string">&#x27;example&#x27;</span>, <span class="string">&#x27;page&#x27;</span>: <span class="number">1</span>&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 data 发送 POST 请求</span></span><br><span class="line">data = &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;John&#x27;</span>, <span class="string">&#x27;age&#x27;</span>: <span class="number">30</span>&#125;</span><br><span class="line">response2 = requests.post(<span class="string">&#x27;https://example.com/api/create&#x27;</span>, data=data)</span><br></pre></td></tr></table></figure>
+
+<p><strong>HTTP 与 HTTPS 的区别</strong></p>
+<ul>
+<li>HTTP 是超文本传输协议，信息是明文传输，存在安全风险的问题。HTTPS 则解决 HTTP 不安全的缺陷，在 TCP 和 HTTP 网络层之间加入了 SSL&#x2F;TLS 安全协议，使得报文能够加密传输。</li>
+<li>HTTP 连接建立相对简单， TCP 三次握手之后便可进行 HTTP 的报文传输。而 HTTPS 在 TCP 三次握手之后，还需进行 SSL&#x2F;TLS 的握手过程，才可进入加密报文传输。</li>
+<li>两者的默认端口不一样，HTTP 默认端口号是 80，HTTPS 默认端口号是 443。</li>
+<li>HTTPS 协议需要向 CA（证书权威机构）申请数字证书，来保证服务器的身份是可信的。</li>
+</ul>
+<h3 id="5-4-常见的请求头"><a href="#5-4-常见的请求头" class="headerlink" title="5.4 常见的请求头"></a>5.4 常见的请求头</h3><ul>
+<li>Host：请求的主机地址</li>
+<li>Connection：连接方式</li>
+<li>Accept：客户端接收到的数据格式</li>
+<li>X-Requested-With：异步请求</li>
+<li>User-Agent：客户端的用户类型</li>
+<li>Referer：来源</li>
+<li>Cookie：cookie 信息</li>
+<li>Content-Tpye：请求内容的格式</li>
+</ul>
+<h2 id="6-如何开展接口测试？"><a href="#6-如何开展接口测试？" class="headerlink" title="6. 如何开展接口测试？"></a>6. 如何开展接口测试？</h2><h3 id="6-1-接口测试基本流程"><a href="#6-1-接口测试基本流程" class="headerlink" title="6.1 接口测试基本流程"></a>6.1 接口测试基本流程</h3><blockquote>
+<p><strong>Tips：</strong></p>
+<p>无论你引入了一个多么强大的自动化测试框架，你首先都要会用最原始的方式完成这件事情：<strong>关注输入和预期是否一致、接口内部实现的处理逻辑是否合理、是否健壮。</strong></p>
+</blockquote>
+<p>通常来讲，无论采用什么 API 测试工具，API 测试的基本步骤主要包括以下三大步骤：</p>
+<ul>
+<li>准备测试数据（这是可选步骤，不一定所有 API 测试都需要要这一步）</li>
+<li>通过 API 测试工具，发起对被测 API 的 request</li>
+<li>验证返回结果的 response</li>
+</ul>
+<p>理想情况，提测后，开展测试的必要输入内容：</p>
+<ul>
+<li><strong>产品需求</strong>:描述了系统的业务逻辑，通过这个文档，你才能知道怎么来设计测试用例。</li>
+<li><strong>原型设计</strong>:会更加直观地告诉你系统的使用逻辑，这对测试用例的设计、对系统的前期认知都是有辅助作用的。</li>
+<li><strong>接口文档</strong>:详细地描述了后端接口的访问方式和参数说明，使用这个输入项才能开展接口测试用例的设计、测试脚本的准备和测试数据的构建。</li>
+<li><strong>单元测试脚本</strong>:是保障提测质量的必要环节，是研发工程师自测的一个有效手段，可以保障提测项目的提测质量。</li>
+</ul>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706005041349.webp"></p>
+<p>现实却往往并不总如人意，我相信你多少也遇见过下面这些情况：</p>
+<ul>
+<li>根据产品经理的一句话需求，开发工程师便开始任意发挥，”所见系统即需求” 的情况普遍存在，这就更别说后续的单元测试和接口文档了。</li>
+<li>开发工程师从来不写单元测试脚本，提测项目质量无法保障，接口文档更无从谈起，你不知道如何开始完成接口测试。</li>
+<li>你在拿到提测项目后，从部署测试环境到开始测试，一直都是摸黑前进，由于接口测试没有充分的输入条件，只能从 UI 层开始测试，结果导致交付质量大打折扣。</li>
+</ul>
+<h3 id="6-2-三步闭环法"><a href="#6-2-三步闭环法" class="headerlink" title="6.2 三步闭环法"></a>6.2 三步闭环法</h3><p>但这些事情的核心还是取决于 QA 人员的自驱力，可以通过如下的三步闭环法快速了解接口的信息：</p>
+<ul>
+<li>借助一些工具的辅助来完成接口分析。</li>
+<li>通过工具截获一些接口信息。</li>
+<li>通过分析接口的访问方式、参数等信息整理出一些问题，和研发工程师沟通这些问题，将一些不知道的参数含义、参数取值范围等问题问清楚。</li>
+</ul>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706005041350.webp"></p>
+<ol>
+<li><p><strong>工具辅助</strong></p>
+<p> 抓包工具推荐：Fiddler 或 Charles</p>
+<p> Fiddler 既支持 Windows 操作系统，也支持 MacOS 操作系统，但是在 MacOs 上的版本并不好用，这是因为 Fiddler 使用了 .Net 开发。如果你是一个 MacOS 深度用户，那么推荐两款工具，一款是 Charles，另外一款是 mitmproxy。</p>
+</li>
+<li><p><strong>分析问题</strong></p>
+<ul>
+<li><strong>请求体</strong>:重点关注请求方法、请求 URL、请求参数、客户端接收内容类型 Accept、Cookie 等。</li>
+<li><strong>响应体</strong>:看请求的 Response 响应信息、响应体结构，重点关注接口返回值有哪些内容，该接口的返回值是否是另外接口的入参，即串联业务逻辑上下文的参数。</li>
+</ul>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706005041351.webp"></p>
+<p> 通过上面的请求分析，你就可以自己绘制类似如下的表格，通过颜色标注哪些是自己已知内容、哪些是未知信息。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706005041352.webp"></p>
+</li>
+<li><p><strong>询问解惑</strong></p>
+<p> 针对每一个参数，你都要从下面的几点详细询问，并保证你已经真的理解了这些内容。</p>
+<ul>
+<li>参数的含义以及来源</li>
+<li>参数的作用域</li>
+<li>返回值的含义</li>
+</ul>
+</li>
+</ol>
+<h3 id="6-3-业务流程多接口串行分析"><a href="#6-3-业务流程多接口串行分析" class="headerlink" title="6.3 业务流程多接口串行分析"></a>6.3 业务流程多接口串行分析</h3><ol>
+<li>通常一个测试的业务逻辑是由多个接口的串行完成的，而多个接口的串行逻辑是由业务逻辑规定的。因此多个接口之间并不是随意组合的，而是按照业务逻辑、通过数据传递来完成的。</li>
+<li>要想使用接口测试完成业务逻辑，你就要制作一个流程中所有接口的接口信息表。同时还要理清每一个流程的数据流程，数据流程驱动了业务流处理，这样才能开始业务逻辑的接口测试。</li>
+</ol>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706005041353.webp"></p>
+<h3 id="6-4-企业接口测试的流程和方案"><a href="#6-4-企业接口测试的流程和方案" class="headerlink" title="6.4 企业接口测试的流程和方案"></a>6.4 企业接口测试的流程和方案</h3><ol>
+<li><p>拿到 api 接口文档，熟悉接口的业务、接口地址、鉴权、出入参数和错误码等</p>
+</li>
+<li><p>编写接口用例及评审，思路如下：</p>
+<ul>
+<li>正例：输入正常的入参，查看接口是否返回成功</li>
+<li>反例：<ul>
+<li>鉴权反例：鉴权为空、鉴权码错误、鉴权码已过期</li>
+<li>参数反对：参数为空、参数类型异常、参数长度异常</li>
+<li>错误码覆盖：根据业务而定</li>
+<li>其它场景：接口黑名单、接口调用次数限制、分页场景</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>使用 Postman 接口测试工具执行接口测试。到目前为止，你还处在手动测试的阶段，虽然已经和以前基于界面的业务测经有了很大区别，但是距离自动化的接口测试还有有一定的差距</p>
+</li>
+<li><p>因此我们可以通过 Postman + Newman + Jenkins 实现持续集成，并输出接口测试报告和发送邮件</p>
+</li>
+</ol>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706005041354.webp"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/a262d6ed/">https://alwaysfyo.github.io/posts/a262d6ed/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/">软件测试</a><a class="post-meta__tags" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/9b394d56/" title="Python 开源项目"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Python 开源项目</div></div><div class="info-2"><div class="info-item-1">Python 开源项目：Python - 100天从新手到大师</div></div></div></a><a class="pagination-related" href="/posts/9b21ba2c/" title="ChatGPT 指令大全"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">ChatGPT 指令大全</div></div><div class="info-2"><div class="info-item-1">产生 数字 个具有说服力和描述性的文章主题想法，主题为"某个主题"</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/68d65074/" title="Selenium 框架三部曲 - 中"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-13</div><div class="info-item-2">Selenium 框架三部曲 - 中</div></div><div class="info-2"><div class="info-item-1">chropath 是一款浏览器插件，用于元素属性识别和自动获取，支持主流浏览器。</div></div></div></a><a class="pagination-related" href="/posts/fe075357/" title="Pytest 测试框架三部曲 - 中"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Pytest 测试框架三部曲 - 中</div></div><div class="info-2"><div class="info-item-1">初始化/清除功能对于自动化测试框架而言非常重要，假设现在先测试了一个注册功能，如果测试完该功能没有进行清除操作，则测试产生的数据可能会影响到…</div></div></div></a><a class="pagination-related" href="/posts/ba7ac85c/" title="Unittest 单元测试框架 - 下"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Unittest 单元测试框架 - 下</div></div><div class="info-2"><div class="info-item-1">参数化测试 是一种 "数据驱动测试" (Data-DrivenTest)，在同一个方法上测试不同的参数，以覆盖所有可能的预期分支的结果。</div></div></div></a><a class="pagination-related" href="/posts/edd5b4e5/" title="API 接口智能化测试探索与实践"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-01</div><div class="info-item-2">API 接口智能化测试探索与实践</div></div><div class="info-2"><div class="info-item-1">API 接口由于具备良好的可测性，很自然的成为服务端程序自动化测试的首选方案：</div></div></div></a><a class="pagination-related" href="/posts/48eaad54/" title="Pytest 测试框架三部曲 - 下"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Pytest 测试框架三部曲 - 下</div></div><div class="info-2"><div class="info-item-1">测试的主要工作目标就是验证实际结果与预期结果是否一致，在接口自动化测试中，通过断言来实现这一目标。</div></div></div></a><a class="pagination-related" href="/posts/2e3ef02/" title="Unittest 单元测试框架 - 上"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Unittest 单元测试框架 - 上</div></div><div class="info-2"><div class="info-item-1">单元测试是一种软件测试方法，主要用于验证软件的最小可测试单元（通常是函数、方法或类）是否按预期工作。</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%B5%8B%E8%AF%95%E7%AD%96%E7%95%A5"><span class="toc-number">1.</span> <span class="toc-text">1. 测试策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%8E%A5%E5%8F%A3%E4%BB%8B%E7%BB%8D"><span class="toc-number">2.</span> <span class="toc-text">2. 接口介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E4%BB%80%E4%B9%88%E6%98%AF%E6%8E%A5%E5%8F%A3%EF%BC%9F"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 什么是接口？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E8%BD%AF%E4%BB%B6%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%8E%A5%E5%8F%A3%EF%BC%9F"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 软件为什么需要接口？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%8E%A5%E5%8F%A3%E8%BF%94%E5%9B%9E%E6%95%B0%E6%8D%AE%E5%92%8C-JSON-%E8%AF%A6%E8%A7%A3"><span class="toc-number">3.</span> <span class="toc-text">3. 接口返回数据和 JSON 详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 常见数据格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-JSON-%E8%AF%A6%E8%A7%A3"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 JSON 详解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E4%BB%8B%E7%BB%8D"><span class="toc-number">4.</span> <span class="toc-text">4. 接口测试介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E4%BB%80%E4%B9%88%E6%98%AF%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%EF%BC%9F"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 什么是接口测试？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%81%9A%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%EF%BC%9F"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 为什么要做接口测试？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E5%88%86%E7%B1%BB"><span class="toc-number">4.3.</span> <span class="toc-text">4.3 接口测试分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E6%8E%A5%E5%8F%A3%E6%96%AD%E8%A8%80%E8%AE%BE%E8%AE%A1"><span class="toc-number">4.4.</span> <span class="toc-text">4.4 接口断言设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95-%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E8%AF%AF%E5%8C%BA"><span class="toc-number">4.5.</span> <span class="toc-text">4.5 接口测试 &#x2F; 自动化测试误区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E6%95%88%E6%9E%9C%E5%BA%A6%E9%87%8F"><span class="toc-number">4.6.</span> <span class="toc-text">4.6 接口测试效果度量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E5%8D%8F%E8%AE%AE"><span class="toc-number">5.</span> <span class="toc-text">5. 接口测试协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 常见协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E4%BB%80%E4%B9%88%E6%98%AF-RESTful-%E8%A7%84%E5%88%99%EF%BC%9F"><span class="toc-number">5.2.</span> <span class="toc-text">5.2 什么是 RESTful 规则？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E4%BB%80%E4%B9%88%E6%98%AF-HTTP-%E5%8D%8F%E8%AE%AE%EF%BC%9F"><span class="toc-number">5.3.</span> <span class="toc-text">5.3 什么是 HTTP 协议？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-%E5%B8%B8%E8%A7%81%E7%9A%84%E8%AF%B7%E6%B1%82%E5%A4%B4"><span class="toc-number">5.4.</span> <span class="toc-text">5.4 常见的请求头</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%A6%82%E4%BD%95%E5%BC%80%E5%B1%95%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%EF%BC%9F"><span class="toc-number">6.</span> <span class="toc-text">6. 如何开展接口测试？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">6.1.</span> <span class="toc-text">6.1 接口测试基本流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E4%B8%89%E6%AD%A5%E9%97%AD%E7%8E%AF%E6%B3%95"><span class="toc-number">6.2.</span> <span class="toc-text">6.2 三步闭环法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E5%A4%9A%E6%8E%A5%E5%8F%A3%E4%B8%B2%E8%A1%8C%E5%88%86%E6%9E%90"><span class="toc-number">6.3.</span> <span class="toc-text">6.3 业务流程多接口串行分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4-%E4%BC%81%E4%B8%9A%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E7%9A%84%E6%B5%81%E7%A8%8B%E5%92%8C%E6%96%B9%E6%A1%88"><span class="toc-number">6.4.</span> <span class="toc-text">6.4 企业接口测试的流程和方案</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/68d65074/" title="Selenium 框架三部曲 - 中">Selenium 框架三部曲 - 中</a><time datetime="2025-07-13T01:21:00.000Z" title="发表于 2025-07-13 09:21:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/261faf15/" title="Golang Mutex 详解">Golang Mutex 详解</a><time datetime="2025-07-12T17:30:00.000Z" title="发表于 2025-07-13 01:30:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/edd5b4e5/" title="API 接口智能化测试探索与实践">API 接口智能化测试探索与实践</a><time datetime="2025-07-01T13:01:00.000Z" title="发表于 2025-07-01 21:01:00">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/8fe1f36/" title="AI 系列：计算机视觉-给机器装上眼睛">AI 系列：计算机视觉-给机器装上眼睛</a><time datetime="2025-06-30T15:30:00.000Z" title="发表于 2025-06-30 23:30:00">2025-06-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/c9acbf1/" title="AI 系列：搜索-从迷宫求解看人工智能关键技术">AI 系列：搜索-从迷宫求解看人工智能关键技术</a><time datetime="2025-06-30T15:29:00.000Z" title="发表于 2025-06-30 23:29:00">2025-06-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

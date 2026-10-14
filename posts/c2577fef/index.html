@@ -1,0 +1,737 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>软件测试基础 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="在规定的条件下，对程序进行操作，从而发现错误，对软件质量进行评估的过程。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="软件测试基础">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/c2577fef/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="在规定的条件下，对程序进行操作，从而发现错误，对软件质量进行评估的过程。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2023-01-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-01-04T16:00:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="软件测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "软件测试基础",
+  "url": "https://alwaysfyo.github.io/posts/c2577fef/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2023-01-04T16:00:00.000Z",
+  "dateModified": "2023-01-04T16:00:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/c2577fef/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '软件测试基础',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">软件测试基础</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">软件测试基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-01-04T16:00:00.000Z" title="发表于 2023-01-05 00:00:00">2023-01-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-01-04T16:00:00.000Z" title="更新于 2023-01-05 00:00:00">2023-01-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/">软件测试</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>11分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="什么是软件测试"><a href="#什么是软件测试" class="headerlink" title="什么是软件测试"></a>什么是软件测试</h2><p>在规定的条件下，对程序进行操作，从而发现错误，对软件质量进行评估的过程。</p>
+<h2 id="软件测试的目的"><a href="#软件测试的目的" class="headerlink" title="软件测试的目的"></a>软件测试的目的</h2><p>以最少的人力、物力、时间找到软件的缺陷，并修改从而规避商业风险。</p>
+<h2 id="软件测试的定义"><a href="#软件测试的定义" class="headerlink" title="软件测试的定义"></a>软件测试的定义</h2><p>使用人工和自动手段来运行和测试某个系统的过程，目的在于检验是否满足了需求。</p>
+<h2 id="软件测试的原则"><a href="#软件测试的原则" class="headerlink" title="软件测试的原则"></a>软件测试的原则</h2><ul>
+<li>所有的测试都应该追朔到用户需求</li>
+<li>尽早和不断的测试</li>
+<li>测试工作都应该由独立的专业的软件测试机构来完成</li>
+<li>pareto 原则，测试发现的错误中 80% 很可能起源于 20% 的模块中（20% 指的是应用中出现的新模块，开发人员第一次开发，故会出现较多错误）</li>
+<li>设计测试用例时，应该考虑各种情况<ul>
+<li>测试用例： 测什么？怎么测？</li>
+</ul>
+</li>
+<li><strong>对测试出的错误结果一定要有一个确认的过程（描述缺陷报告）</strong><ul>
+<li>书写错误文档</li>
+</ul>
+</li>
+<li>指定严格的测试计划</li>
+<li><strong>完全测试是不可能的，测试需要终止</strong></li>
+<li>注意回归测试的的关联性<ul>
+<li>回归测试：指开发人员修改了旧代码后，我们需要重新进行测试，以确认修改没有有引入新的错误，或导致其他代码产生错误。</li>
+</ul>
+</li>
+<li>妥善保存一切测试过程文档</li>
+</ul>
+<h2 id="软件产品质量模型（ISO-IEC-9126）"><a href="#软件产品质量模型（ISO-IEC-9126）" class="headerlink" title="软件产品质量模型（ISO &#x2F; IEC 9126）"></a>软件产品质量模型（ISO &#x2F; IEC 9126）</h2><ul>
+<li>功能性：提供满足明确和隐含要求的功能的能力</li>
+<li>可靠性：在特定条件下使用时，软件产品呢维持规定的性能级别能力<ul>
+<li>设备最好不要出故障</li>
+<li>社保出故障了，不要影响主要的功能和业务</li>
+<li>如果影响了主要功能和业务，系统可以尽快定位并恢复</li>
+</ul>
+</li>
+<li>易用性：易懂、易学、易用、漂亮好看（用户体验好）</li>
+<li>效率：软件产品可提供适当的性能的能力，也就是产品的性能（单选、多选、全选）</li>
+<li>可维持性：产品可以被修改的能力。可以增加功能，可以更新。</li>
+<li>可移植性：跨越不同系统平台</li>
+</ul>
+<h2 id="软件质量模型保证（SQA）"><a href="#软件质量模型保证（SQA）" class="headerlink" title="软件质量模型保证（SQA）"></a>软件质量模型保证（SQA）</h2><p>[ 目的 ]</p>
+<pre><code>使软件制作的过程对于领导层是可见的。
+</code></pre>
+<p>[ 目标 ]</p>
+<ul>
+<li>保证工作是有计划进行的</li>
+<li>客观的验证软件项目产品和工作是否遵循恰当的标准，步骤和需求。</li>
+<li>保证工作及结果及时通知给相关人员</li>
+<li>高管可以接触到项目内部</li>
+<li>软件质量需要测试工作来保证</li>
+</ul>
+<p>[ QC（检验产品的质量）]</p>
+<p>找出产品存在的问题，进行质量控制，向管理层反馈质量信息。</p>
+<p>[ QA（审计产品过程的质量）]</p>
+<p>来确认项目按照要求进行，审计的内容主要是过程； QA 则确保 QC 按照过程进行质量控制活动，按照过程将检查结果向管理层汇报。</p>
+<h2 id="软件测试的基本流程"><a href="#软件测试的基本流程" class="headerlink" title="软件测试的基本流程"></a>软件测试的基本流程</h2><ul>
+<li>需求分析</li>
+<li>编写测试用例（测什么？怎么测？）</li>
+<li>评审测试用例</li>
+<li>搭建测试环境</li>
+<li>等待开发提供测试包</li>
+<li>部署测试包</li>
+<li>冒烟测试（对软件主体的基本功能进行基本测试）</li>
+<li>执行测试用例</li>
+<li>BUG 跟踪处理（提交及回归 BUG）</li>
+<li>N 轮之后符合需求</li>
+<li>测试结束</li>
+</ul>
+<h2 id="测试用例编写"><a href="#测试用例编写" class="headerlink" title="测试用例编写"></a>测试用例编写</h2><h4 id="测试需求"><a href="#测试需求" class="headerlink" title="测试需求"></a>测试需求</h4><div align="center">
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://ftp.bmp.ovh/imgs/2020/04/44d5789a21365530.png" alt="测试需求"></p>
+</div>
+
+<h4 id="测试要点和测试点"><a href="#测试要点和测试点" class="headerlink" title="测试要点和测试点"></a>测试要点和测试点</h4><div align="center">
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://ftp.bmp.ovh/imgs/2020/04/4a83c3b61ceeafa8.png" alt="测试要点和测试点"></p>
+</div>
+
+<h2 id="开发模型"><a href="#开发模型" class="headerlink" title="开发模型"></a>开发模型</h2><h3 id="瀑布模型"><a href="#瀑布模型" class="headerlink" title="瀑布模型"></a>瀑布模型</h3><h3 id="快速原型模型"><a href="#快速原型模型" class="headerlink" title="快速原型模型"></a>快速原型模型</h3><h3 id="V-模型"><a href="#V-模型" class="headerlink" title="V 模型"></a>V 模型</h3><div align="center">
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://ftp.bmp.ovh/imgs/2020/05/0d7cbc216f388880.png" alt="V模型"></p>
+</div>
+
+<p><strong>开发和测试阶段划分比较清晰</strong></p>
+<ul>
+<li>需求分析</li>
+<li>概要设计</li>
+<li>详细设计</li>
+<li>编码</li>
+<li>单元测试（独立的模块测试）</li>
+<li>集成测试（模块联调）</li>
+<li>系统测试（整体流程）</li>
+<li>验收测试（验证是否满足需求）</li>
+</ul>
+<p>[ 优点 ]</p>
+<ul>
+<li>包含底层测试（单元测试）和高层测试（系统测试）</li>
+<li>阶段划分清晰，方便工作的整体把控</li>
+</ul>
+<p>[ 缺点 ]</p>
+<ul>
+<li>测试阶段比较靠后，之前的问题已经产生，修改不方便</li>
+<li>V 模型就是瀑布模型的变种，如果需求发生变化必然返工</li>
+</ul>
+<h3 id="W-模型（双-V-模型）"><a href="#W-模型（双-V-模型）" class="headerlink" title="W 模型（双 V 模型）"></a>W 模型（双 V 模型）</h3><div align="center">
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://ftp.bmp.ovh/imgs/2020/05/7d4ee17a2197ece6.png" alt="W 模型"></p>
+</div>
+
+<p><strong>开发一个 V, 测试一个 V，开发和测试并行</strong></p>
+<ul>
+<li>开发 V (需求分析、概要设计、详细设计、编码、集成、实施、交付)</li>
+<li>测试 V (系统测试设计、集成测试设计、单元测试设计、单元测试、集成测试、系统测试、验收测试)</li>
+</ul>
+<p>[ 优点 ]</p>
+<ul>
+<li>开发伴随着测试并行，需求和设计一样要进行测试</li>
+<li>尽早的介入测试，会更早的发现问题，降低修复成本</li>
+<li>阶段依然明显，方便整体流程把控</li>
+</ul>
+<p>[ 缺点 ]</p>
+<ul>
+<li>代码依然在测试之前，不方便代码的测试工作</li>
+<li>如果没有文档，根本无法进行 W 模型，对人员要求较高</li>
+</ul>
+<h2 id="软件测试分类"><a href="#软件测试分类" class="headerlink" title="软件测试分类"></a>软件测试分类</h2><div align="center">
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://ftp.bmp.ovh/imgs/2020/05/c3f48210f76d2c81.png" alt="软件测试分类"></p>
+</div>
+
+<h2 id="系统测试"><a href="#系统测试" class="headerlink" title="系统测试"></a>系统测试</h2><h3 id="什么是系统测试"><a href="#什么是系统测试" class="headerlink" title="什么是系统测试"></a>什么是系统测试</h3><p>  系统测试是一个全面的测试，包括单元、集成测试，</p>
+<h3 id="系统测试的方法是什么"><a href="#系统测试的方法是什么" class="headerlink" title="系统测试的方法是什么"></a>系统测试的方法是什么</h3><ul>
+<li>功能测试<ul>
+<li>概念：根据产品的需求说明书和测试需求列表，验证产品的功能实现是否符合产品的需求规格</li>
+<li>考察特性： 功能是否有遗漏，功能是否准确</li>
+<li>测试思路&#x2F;步骤：<ol>
+<li>确定功能需求列表</li>
+<li>分析功能测试得出测试子项</li>
+<li>根据测试子项分析</li>
+<li>采用测试用例方法设计用例</li>
+</ol>
+</li>
+<li>测试点： 根据产品的需求说明书和测试需求列表，验证产品的功能实现是否符合产品的需求规格，满足用户显性和隐形的需求</li>
+</ul>
+</li>
+<li>性能测试<ul>
+<li>概念：验证系统在不同的业务场景下的响应时间和资源利用率等性能指标是否符合预期的标准</li>
+<li>测试思路：<ol>
+<li>压力测试：调查系统在其资源超负荷的情况下的表现，尤其是这些对系统的处理时间有什么影响</li>
+<li>容量测试：面向与数据。使系统承受超额的数据容量来发现它是否可以处理数据容量</li>
+<li>负载测试：在一定负载的情况下系统的性能表现（不关注稳定性，也就是说不关注长时间运行，只是得到不同负载相关性能指标即可）</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>安全性测试:<ul>
+<li>概念：用来验证集成在系统内的保护机制是否能够在实际的情况中不受到非法的侵入</li>
+<li>测试点：<ol>
+<li>权限管理（注册登录才可以查看、注册信息符合要求、密码后台加密）</li>
+<li>信息保存（log、日志、cookie）</li>
+<li>数据库（默认的用户名和密码）</li>
+<li>协议(http协议)</li>
+</ol>
+</li>
+<li>安全性测试策略：层层剥离法</li>
+<li>工具：</li>
+<li>书籍：白帽子讲 web 安全</li>
+</ul>
+</li>
+<li>异常测试：<ul>
+<li>概念：又叫系统容错和可恢复性测试</li>
+<li>可靠性：指标</li>
+<li>可靠性设计方法：<ol>
+<li>避开错误（主动避开错误，针对可以预见的错误进行主动处理。试点：故意构测造无效数据、边界条件、压力测试）</li>
+<li>容错技术（主动断电强制进入新的设备、构造数据库瘫痪、构造数据死锁、构造数据的不完整事物、构造出错的时间点：断网、短信号）</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>GUI 测试内容<ul>
+<li>界面实现与界面设计的吻合情况</li>
+<li>确认界面处理的正确性</li>
+</ul>
+</li>
+<li>易用性测试</li>
+<li>安装测试</li>
+<li>配置测试</li>
+<li>兼容测试</li>
+</ul>
+<h2 id="测试用例设计方法"><a href="#测试用例设计方法" class="headerlink" title="测试用例设计方法"></a>测试用例设计方法</h2><h3 id="等价类划分法"><a href="#等价类划分法" class="headerlink" title="等价类划分法"></a>等价类划分法</h3><p><strong>把无法穷举的数据分类书写</strong></p>
+<ul>
+<li>按需求写出有效等价类</li>
+<li>按需求取反无效等价类</li>
+<li>找到特殊情况的无效等价类（中文、英文、空格、空、符号等）</li>
+</ul>
+<p>[ 细节 ]</p>
+<ul>
+<li>输入长度</li>
+<li>组成规则</li>
+<li>输入类型</li>
+<li>是否为空</li>
+<li>是否去除空格</li>
+<li>是否区分大小写</li>
+</ul>
+<h3 id="边界值测试"><a href="#边界值测试" class="headerlink" title="边界值测试"></a>边界值测试</h3><ul>
+<li>找到测试数据的边界点进行测试，也就是有效等价类和无效等价类的边界点</li>
+<li>一般情况下需要对边界值以及边界值两边的的值分别进行测试（如：0-100，需要测试 0， 100， -1，1，99，101）</li>
+</ul>
+<h3 id="因果图制作判定表"><a href="#因果图制作判定表" class="headerlink" title="因果图制作判定表"></a>因果图制作判定表</h3><ul>
+<li>找到所有的输入条件和预期结果，把所有的输入条件和输出条件填写进去</li>
+<li>得到初始表格，根据实际需求进行简化</li>
+</ul>
+<h3 id="场景法"><a href="#场景法" class="headerlink" title="场景法"></a>场景法</h3><ul>
+<li>基本流：正确的业务流程</li>
+<li>备选流：有问题的业务流程</li>
+</ul>
+<p>测试用例书写：需求文档的每一个需求</p>
+<h3 id="流程法"><a href="#流程法" class="headerlink" title="流程法"></a>流程法</h3><p>测试用例必须包含所有的分支条件，每一个分支条件就是一条测试用例。</p>
+<h3 id="错误推测法"><a href="#错误推测法" class="headerlink" title="错误推测法"></a>错误推测法</h3><ul>
+<li>时间急，任务紧，测试时间少，考虑使用错误推断法，根据测试人员以往的项目经验进行设计</li>
+<li>已经经过几轮测试后，可以使用错误推测法进行测试用例的补充</li>
+</ul>
+<h3 id="正交排列法"><a href="#正交排列法" class="headerlink" title="正交排列法"></a>正交排列法</h3><p>当要测试的内容，需要排列组合的情况非常多的时候，我们考虑使用科学的方法来减少测试用例的个数，即正交表。</p>
+<p><strong>特点：均匀分散，齐整可比，所有的情况都应该被均匀的测试过一次</strong></p>
+<ul>
+<li>因素：控件的个数</li>
+<li>水平：控件里面的可选项个数</li>
+</ul>
+<p>[ 步骤 ]</p>
+<ul>
+<li>先确定几因素，几水平</li>
+<li>在“常用正交表”中找到合适的表格</li>
+<li>复制找到的表格到自己的表格中</li>
+<li>写一个对照表（所有的控件和对应的选项列出来）</li>
+<li>把复制过来的表格和对照表实现映射关系</li>
+</ul>
+<p><strong>如果没有找到合适的正交表，选用多一些的正交表，把多余的内容删除</strong></p>
+<h3 id="混合正交表"><a href="#混合正交表" class="headerlink" title="混合正交表"></a>混合正交表</h3><p>步骤：</p>
+<ul>
+<li><p>制作取值表</p>
+</li>
+<li><p>复制取值表的数据，放到文本文档中保存</p>
+</li>
+<li><p>把文本文档放在 allpairs.文件夹中</p>
+</li>
+<li><p>WIN+R 键进入 cmd 控制台</p>
+</li>
+<li><p>进入 allpairs 文件夹</p>
+</li>
+<li><p>在制台中入 allpairs 的文件路径如 F:allpairs&#x2F;allpairs.exe test1.txt&gt;test2.txt(其中 test1 是你放进 allpairs 文件夹中的文件，test2 填你要生成的文件名)</p>
+</li>
+</ul>
+<p>[ 获取方式 ]</p>
+<ul>
+<li><p>链接: <a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1yQ7lrZSeR6lnvyYeXLzEdw?pwd=tap5">https://pan.baidu.com/s/1yQ7lrZSeR6lnvyYeXLzEdw?pwd=tap5</a></p>
+</li>
+<li><p>提取码: tap5</p>
+</li>
+</ul>
+<h2 id="测试用例的设计"><a href="#测试用例的设计" class="headerlink" title="测试用例的设计"></a>测试用例的设计</h2><h3 id="测试用例设计综合策略"><a href="#测试用例设计综合策略" class="headerlink" title="测试用例设计综合策略"></a>测试用例设计综合策略</h3><ol>
+<li><p>在任何情况下都必须使用边界值分析方法，经验表明用这种方法设计出测试用例发现程序错误的能力最强。</p>
+</li>
+<li><p>必要时用等价类划分方法补充一些测试用例。</p>
+</li>
+<li><p>用错误推测法再追加一些测试用例。</p>
+</li>
+<li><p>对照程序逻辑，检查已设计出的测试用例的逻辑覆盖程度，如果没有达到要求的覆盖标准，应当再补充足够的测试用例。</p>
+</li>
+<li><p>如果程序的功能说明中含有输入条件的组合情况，则一开始就可选用因果图法。</p>
+</li>
+</ol>
+<h3 id="测试用例的设计步骤"><a href="#测试用例的设计步骤" class="headerlink" title="测试用例的设计步骤"></a>测试用例的设计步骤</h3><ol>
+<li><p>构造根据设计规格得出的基本功能测试用例。</p>
+</li>
+<li><p>边界值测试用例</p>
+</li>
+<li><p>状态转换测试用例。</p>
+</li>
+<li><p>错误猜测测试用例。</p>
+</li>
+<li><p>异常测试用例。</p>
+</li>
+</ol>
+<h2 id="软件缺陷"><a href="#软件缺陷" class="headerlink" title="软件缺陷"></a>软件缺陷</h2><h3 id="缺陷状态"><a href="#缺陷状态" class="headerlink" title="缺陷状态"></a>缺陷状态</h3><table>
+<thead>
+<tr>
+<th>编号</th>
+<th>缺陷状态</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>提交</td>
+<td>已提交的缺陷</td>
+</tr>
+<tr>
+<td>2</td>
+<td>打开</td>
+<td>确认提交的缺陷，等待处理</td>
+</tr>
+<tr>
+<td>3</td>
+<td>拒绝</td>
+<td>拒绝提交的缺陷，不需要修复或不是缺陷、重复缺陷、无法重现</td>
+</tr>
+<tr>
+<td>4</td>
+<td>修复</td>
+<td>缺陷被修复（开发人员自认为修改对了）</td>
+</tr>
+<tr>
+<td>5</td>
+<td>关闭</td>
+<td>确认修复的缺陷，将其关闭（测试人员进行回归复测，确认已经没问题）</td>
+</tr>
+<tr>
+<td>6</td>
+<td>推迟</td>
+<td>可在以后解决，但要确定修复日期和版本</td>
+</tr>
+</tbody></table>
+<p>[ 禅道 ]</p>
+<ul>
+<li>激活</li>
+<li>已解决</li>
+<li>已关闭</li>
+</ul>
+<h3 id="缺陷程度划分"><a href="#缺陷程度划分" class="headerlink" title="缺陷程度划分"></a>缺陷程度划分</h3><ol>
+<li>表面错误</li>
+<li>影响独立模块、断断续续的问题、特定条件下发生、与产品要求不一致。</li>
+<li>功能点没有实现、数据丢失</li>
+<li>影响了系统或者出现了严重的计算错误</li>
+</ol>
+<h3 id="缺陷的优先级"><a href="#缺陷的优先级" class="headerlink" title="缺陷的优先级"></a>缺陷的优先级</h3><table>
+<thead>
+<tr>
+<th>优先级别</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>5-urgent</td>
+<td>最高优先级 在这个错误影响下，系统几乎不可用</td>
+</tr>
+<tr>
+<td>4-veryHigh</td>
+<td>高优先级 错误对系统的功能产生严重的影响</td>
+</tr>
+<tr>
+<td>3-high</td>
+<td>中优先级 错误会制约开发和测试的活动进行，如果先前没有修复他，那么需要在发布前修复他</td>
+</tr>
+<tr>
+<td>2-medium</td>
+<td>低优先级 不会延迟发布，但是会在以后修正这个错误</td>
+</tr>
+<tr>
+<td>1-low</td>
+<td>最低优先级 时间和资源允许时修正</td>
+</tr>
+</tbody></table>
+<p><strong>优先级和严重程度不是绝对的正比关系</strong></p>
+<h3 id="缺陷类型"><a href="#缺陷类型" class="headerlink" title="缺陷类型"></a>缺陷类型</h3><ul>
+<li>系统缺陷</li>
+<li>数据缺陷</li>
+<li>数据库缺陷</li>
+<li>接口缺陷</li>
+<li>功能缺陷</li>
+<li>安全性缺陷</li>
+<li>兼容性缺陷</li>
+<li>性能缺陷</li>
+<li>界面缺陷（删除操作未给出提示）</li>
+<li>建议（功能建议、操作建议）</li>
+</ul>
+<h3 id="缺陷报告注意事项"><a href="#缺陷报告注意事项" class="headerlink" title="缺陷报告注意事项"></a>缺陷报告注意事项</h3><ul>
+<li>尽量确保缺陷可以重现</li>
+<li>简洁、准确、完整</li>
+<li>一个缺陷一个报告</li>
+<li>复现缺陷的步骤清晰（一个编号一个步骤）</li>
+<li>描述结果和期望结果（结果就是 BUG 出现结果）</li>
+<li>使用术语描述问题</li>
+</ul>
+<h3 id="缺陷统计"><a href="#缺陷统计" class="headerlink" title="缺陷统计"></a>缺陷统计</h3><ul>
+<li>对软件问题的功能域分布进行分析，找出系统的薄弱环节<ul>
+<li>要详细采集每个功能模块或系统构件的缺陷数据，并按功能、错误类型、严重程度等分类</li>
+<li>二八定理：80% 的软件问题总发生在大约 20% 的功能模块中</li>
+</ul>
+</li>
+<li>对缺陷的注入阶段进行分析，并于历史数据相比较</li>
+<li>应对软件缺陷类型进行分析，以便针对各自特点，先修复严重缺陷</li>
+<li>动态采集每个测试周期中发现的缺陷数，并有效的控制缺陷的修复率</li>
+<li>密切观察缺陷的状态，并及时跟踪其状态的变化，以检查测试和开发人员的工作情况</li>
+</ul>
+<h2 id="SVN-使用"><a href="#SVN-使用" class="headerlink" title="SVN 使用"></a>SVN 使用</h2><ul>
+<li>创建版本库</li>
+<li>检出 （获取版本库最新版本，只有检出操作后才能提交更新操作）</li>
+<li>提交（把此文件夹中的内容提交到版本库）</li>
+<li>更新（把最新的版本库中的内容，更新到此文件夹中）</li>
+</ul>
+<h2 id="接口测试"><a href="#接口测试" class="headerlink" title="接口测试"></a>接口测试</h2><h3 id="接口优点"><a href="#接口优点" class="headerlink" title="接口优点"></a>接口优点</h3><ul>
+<li>责任划分清晰</li>
+<li>缩短研发周期</li>
+<li>可扩展性强</li>
+</ul>
+<h3 id="接口测试流程"><a href="#接口测试流程" class="headerlink" title="接口测试流程"></a>接口测试流程</h3><ul>
+<li>接口的功能测试（先保证接口是正确的）</li>
+<li>测试接口的数据（传递一些特殊的数据，保证接口没有问题）</li>
+<li>自动化测试脚本的编辑</li>
+<li>接口的性能、压力测试</li>
+</ul>
+<blockquote>
+<ul>
+<li>HTTP: 超文本传输协议，浏览器和服务器之间通信的规则</li>
+<li>URL: 统一资源定位符，协议:&#x2F;&#x2F;主机地址&#x2F;路径</li>
+<li>GET: 提交的数据显示在地址栏，不安全，提交的数据量有限制，不重要的数据使用 GET</li>
+<li>POST: 隐式提交数据，更安全，没有数据量大小的限制，重要数据使用 POST</li>
+</ul>
+</blockquote>
+<h3 id="restful-风格（API-文档规则，非强制要求，软要求）"><a href="#restful-风格（API-文档规则，非强制要求，软要求）" class="headerlink" title="restful 风格（API 文档规则，非强制要求，软要求）"></a>restful 风格（API 文档规则，非强制要求，软要求）</h3><ul>
+<li>查<ul>
+<li>方法: GET</li>
+<li>响应码: 200 + 查询数据</li>
+</ul>
+</li>
+<li>增<ul>
+<li>方法: POST</li>
+<li>响应码: 201 + 新增的数据</li>
+</ul>
+</li>
+<li>改<ul>
+<li>方法: PUT</li>
+<li>响应码: 200&#x2F;201 + 修改后的数据</li>
+</ul>
+</li>
+<li>删<ul>
+<li>方法: DELETE</li>
+<li>响应码: 204 + 无</li>
+</ul>
+</li>
+</ul>
+<h3 id="接口请求的四大要素"><a href="#接口请求的四大要素" class="headerlink" title="接口请求的四大要素"></a>接口请求的四大要素</h3><ul>
+<li>接口 URL 地址</li>
+<li>请求方法</li>
+<li>请求头</li>
+<li>请求参数</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/c2577fef/">https://alwaysfyo.github.io/posts/c2577fef/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/">软件测试</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/7ba9c9/" title="Linux 命令总结"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Linux 命令总结</div></div><div class="info-2"><div class="info-item-1">目录处理命令、显示目录文件、参数： 路径（非必填）、切换目录</div></div></div></a><a class="pagination-related" href="/posts/e903d239/" title="Shell 编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Shell 编程</div></div><div class="info-2"><div class="info-item-1">Shell 实例、echo 用于向窗口输出文本、脚本运行、变量</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/6e329d34/" title="Adb 常用命令"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-06</div><div class="info-item-2">Adb 常用命令</div></div><div class="info-2"><div class="info-item-1">列出所有的连接设备、拷⻉⽂件/⽬录到设备、从设备拷⻉⽂件/⽬录、浏览设备⽇志</div></div></div></a><a class="pagination-related" href="/posts/b996b679/" title="性能测试基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-06</div><div class="info-item-2">性能测试基础</div></div><div class="info-2"><div class="info-item-1">性能测试理论知识、负载测试、压力测试、并发测试</div></div></div></a><a class="pagination-related" href="/posts/ce7d32a9/" title="Pytest 测试框架三部曲 - 上"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Pytest 测试框架三部曲 - 上</div></div><div class="info-2"><div class="info-item-1">它是一种用于完成特定的任务的软件或硬件，他们通常是独立的，可以直接使用。</div></div></div></a><a class="pagination-related" href="/posts/5d0c8add/" title="Mock 测试"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-06</div><div class="info-item-2">Mock 测试</div></div><div class="info-2"><div class="info-item-1">它一定不是我们所测试的对象，而是 SUT 的依赖(dependency)。换句话说，mock 的作用是模拟 SUT 依赖对象的行为。</div></div></div></a><a class="pagination-related" href="/posts/ba7ac85c/" title="Unittest 单元测试框架 - 下"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Unittest 单元测试框架 - 下</div></div><div class="info-2"><div class="info-item-1">参数化测试 是一种 "数据驱动测试" (Data-DrivenTest)，在同一个方法上测试不同的参数，以覆盖所有可能的预期分支的结果。</div></div></div></a><a class="pagination-related" href="/posts/d78a8ddc/" title="软件测试工具开发"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-06</div><div class="info-item-2">软件测试工具开发</div></div><div class="info-2"><div class="info-item-1">自动化测试、支持导入功能、导入的接口支持 mock （可自定义勾选）、支持导出功能 （可自定义勾选）</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95"><span class="toc-number">1.</span> <span class="toc-text">什么是软件测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E7%9A%84%E7%9B%AE%E7%9A%84"><span class="toc-number">2.</span> <span class="toc-text">软件测试的目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">3.</span> <span class="toc-text">软件测试的定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E7%9A%84%E5%8E%9F%E5%88%99"><span class="toc-number">4.</span> <span class="toc-text">软件测试的原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E4%BA%A7%E5%93%81%E8%B4%A8%E9%87%8F%E6%A8%A1%E5%9E%8B%EF%BC%88ISO-IEC-9126%EF%BC%89"><span class="toc-number">5.</span> <span class="toc-text">软件产品质量模型（ISO &#x2F; IEC 9126）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E8%B4%A8%E9%87%8F%E6%A8%A1%E5%9E%8B%E4%BF%9D%E8%AF%81%EF%BC%88SQA%EF%BC%89"><span class="toc-number">6.</span> <span class="toc-text">软件质量模型保证（SQA）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="toc-number">7.</span> <span class="toc-text">软件测试的基本流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E7%BC%96%E5%86%99"><span class="toc-number">8.</span> <span class="toc-text">测试用例编写</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E9%9C%80%E6%B1%82"><span class="toc-number">8.1.</span> <span class="toc-text">测试需求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E8%A6%81%E7%82%B9%E5%92%8C%E6%B5%8B%E8%AF%95%E7%82%B9"><span class="toc-number">8.2.</span> <span class="toc-text">测试要点和测试点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E6%A8%A1%E5%9E%8B"><span class="toc-number">9.</span> <span class="toc-text">开发模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%80%91%E5%B8%83%E6%A8%A1%E5%9E%8B"><span class="toc-number">9.1.</span> <span class="toc-text">瀑布模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%9E%8B"><span class="toc-number">9.2.</span> <span class="toc-text">快速原型模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#V-%E6%A8%A1%E5%9E%8B"><span class="toc-number">9.3.</span> <span class="toc-text">V 模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#W-%E6%A8%A1%E5%9E%8B%EF%BC%88%E5%8F%8C-V-%E6%A8%A1%E5%9E%8B%EF%BC%89"><span class="toc-number">9.4.</span> <span class="toc-text">W 模型（双 V 模型）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95%E5%88%86%E7%B1%BB"><span class="toc-number">10.</span> <span class="toc-text">软件测试分类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E6%B5%8B%E8%AF%95"><span class="toc-number">11.</span> <span class="toc-text">系统测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%B3%BB%E7%BB%9F%E6%B5%8B%E8%AF%95"><span class="toc-number">11.1.</span> <span class="toc-text">什么是系统测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E6%B5%8B%E8%AF%95%E7%9A%84%E6%96%B9%E6%B3%95%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">11.2.</span> <span class="toc-text">系统测试的方法是什么</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95"><span class="toc-number">12.</span> <span class="toc-text">测试用例设计方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AD%89%E4%BB%B7%E7%B1%BB%E5%88%92%E5%88%86%E6%B3%95"><span class="toc-number">12.1.</span> <span class="toc-text">等价类划分法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BE%B9%E7%95%8C%E5%80%BC%E6%B5%8B%E8%AF%95"><span class="toc-number">12.2.</span> <span class="toc-text">边界值测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%A0%E6%9E%9C%E5%9B%BE%E5%88%B6%E4%BD%9C%E5%88%A4%E5%AE%9A%E8%A1%A8"><span class="toc-number">12.3.</span> <span class="toc-text">因果图制作判定表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E6%B3%95"><span class="toc-number">12.4.</span> <span class="toc-text">场景法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E6%B3%95"><span class="toc-number">12.5.</span> <span class="toc-text">流程法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%99%E8%AF%AF%E6%8E%A8%E6%B5%8B%E6%B3%95"><span class="toc-number">12.6.</span> <span class="toc-text">错误推测法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E4%BA%A4%E6%8E%92%E5%88%97%E6%B3%95"><span class="toc-number">12.7.</span> <span class="toc-text">正交排列法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B7%E5%90%88%E6%AD%A3%E4%BA%A4%E8%A1%A8"><span class="toc-number">12.8.</span> <span class="toc-text">混合正交表</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="toc-number">13.</span> <span class="toc-text">测试用例的设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E8%AE%BE%E8%AE%A1%E7%BB%BC%E5%90%88%E7%AD%96%E7%95%A5"><span class="toc-number">13.1.</span> <span class="toc-text">测试用例设计综合策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%AD%A5%E9%AA%A4"><span class="toc-number">13.2.</span> <span class="toc-text">测试用例的设计步骤</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E7%BC%BA%E9%99%B7"><span class="toc-number">14.</span> <span class="toc-text">软件缺陷</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E9%99%B7%E7%8A%B6%E6%80%81"><span class="toc-number">14.1.</span> <span class="toc-text">缺陷状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E9%99%B7%E7%A8%8B%E5%BA%A6%E5%88%92%E5%88%86"><span class="toc-number">14.2.</span> <span class="toc-text">缺陷程度划分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E9%99%B7%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-number">14.3.</span> <span class="toc-text">缺陷的优先级</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E9%99%B7%E7%B1%BB%E5%9E%8B"><span class="toc-number">14.4.</span> <span class="toc-text">缺陷类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E9%99%B7%E6%8A%A5%E5%91%8A%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">14.5.</span> <span class="toc-text">缺陷报告注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%BA%E9%99%B7%E7%BB%9F%E8%AE%A1"><span class="toc-number">14.6.</span> <span class="toc-text">缺陷统计</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SVN-%E4%BD%BF%E7%94%A8"><span class="toc-number">15.</span> <span class="toc-text">SVN 使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95"><span class="toc-number">16.</span> <span class="toc-text">接口测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E4%BC%98%E7%82%B9"><span class="toc-number">16.1.</span> <span class="toc-text">接口优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B"><span class="toc-number">16.2.</span> <span class="toc-text">接口测试流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#restful-%E9%A3%8E%E6%A0%BC%EF%BC%88API-%E6%96%87%E6%A1%A3%E8%A7%84%E5%88%99%EF%BC%8C%E9%9D%9E%E5%BC%BA%E5%88%B6%E8%A6%81%E6%B1%82%EF%BC%8C%E8%BD%AF%E8%A6%81%E6%B1%82%EF%BC%89"><span class="toc-number">16.3.</span> <span class="toc-text">restful 风格（API 文档规则，非强制要求，软要求）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E8%AF%B7%E6%B1%82%E7%9A%84%E5%9B%9B%E5%A4%A7%E8%A6%81%E7%B4%A0"><span class="toc-number">16.4.</span> <span class="toc-text">接口请求的四大要素</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/68d65074/" title="Selenium 框架三部曲 - 中">Selenium 框架三部曲 - 中</a><time datetime="2025-07-13T01:21:00.000Z" title="发表于 2025-07-13 09:21:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/261faf15/" title="Golang Mutex 详解">Golang Mutex 详解</a><time datetime="2025-07-12T17:30:00.000Z" title="发表于 2025-07-13 01:30:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/edd5b4e5/" title="API 接口智能化测试探索与实践">API 接口智能化测试探索与实践</a><time datetime="2025-07-01T13:01:00.000Z" title="发表于 2025-07-01 21:01:00">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/8fe1f36/" title="AI 系列：计算机视觉-给机器装上眼睛">AI 系列：计算机视觉-给机器装上眼睛</a><time datetime="2025-06-30T15:30:00.000Z" title="发表于 2025-06-30 23:30:00">2025-06-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/c9acbf1/" title="AI 系列：搜索-从迷宫求解看人工智能关键技术">AI 系列：搜索-从迷宫求解看人工智能关键技术</a><time datetime="2025-06-30T15:29:00.000Z" title="发表于 2025-06-30 23:29:00">2025-06-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

@@ -1,0 +1,786 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>AI 系列：揭秘 LLM 大语言模型 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="2022 年 11 月 30 日：OpenAI 公司通过一篇博客向大众推出了名为 ChatGPT 的 AI 聊天机器人。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI 系列：揭秘 LLM 大语言模型">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/70918e5/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="2022 年 11 月 30 日：OpenAI 公司通过一篇博客向大众推出了名为 ChatGPT 的 AI 聊天机器人。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2025-06-30T15:28:00.000Z">
+<meta property="article:modified_time" content="2025-07-13T03:53:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="AIGC系列">
+<meta property="article:tag" content="ChatGPT">
+<meta property="article:tag" content="人工智能">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "AI 系列：揭秘 LLM 大语言模型",
+  "url": "https://alwaysfyo.github.io/posts/70918e5/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2025-06-30T15:28:00.000Z",
+  "dateModified": "2025-07-13T03:53:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/70918e5/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'AI 系列：揭秘 LLM 大语言模型',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">AI 系列：揭秘 LLM 大语言模型</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">AI 系列：揭秘 LLM 大语言模型</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-30T15:28:00.000Z" title="发表于 2025-06-30 23:28:00">2025-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-13T03:53:00.000Z" title="更新于 2025-07-13 11:53:00">2025-07-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">10.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>31分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="ChatGPT"><a href="#ChatGPT" class="headerlink" title="ChatGPT"></a>ChatGPT</h2><h3 id="ChatGPT-火爆出圈"><a href="#ChatGPT-火爆出圈" class="headerlink" title="ChatGPT 火爆出圈"></a>ChatGPT 火爆出圈</h3><blockquote>
+<p>ChatGPT 官网：<a target="_blank" rel="noopener" href="https://openai.com/blog/chatgpt/">https://openai.com/blog/chatgpt/</a></p>
+</blockquote>
+<p>2022 年 11 月 30 日：OpenAI 公司通过一篇博客向大众推出了名为 ChatGPT 的 AI 聊天机器人。人们登录 OpenAI 官网，向 ChatGPT 提出问题，就能获得答案。OpenAI 公司这样介绍自己的新产品：​”我们训练了一个名为 ChatGPT 的 AI 模型，你可以通过对话的方式与它交互，它能够回答后续的问题、修正之前回答中的错误、质疑不正确的前提条件以及拒绝不当的请求。”介绍中所说的AI模型指的是采用深度学习技术的人工神经网络，OpenAI 公司称之为 GPT。</p>
+<p>ChatGPT 聊天机器人一经推出，立刻成为互联网用户追捧的热门产品，更多 AI 聊天助手雨后春笋一般出现在大家的视野里。</p>
+<p>2022 年 12 月 5 日：OpenAI 公司创始人山姆·奥特曼 (Sam Altman）发布了一条推特（Twitter)：​”今天，ChatGPT 的用户数量超过了 100 万。”</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013014.webp"></p>
+<p>面对新浪潮，我们关心的不再只是过去那种过于宏大的问题。比如，如果机器会思考，人类的命运将会如何发展？现在，我们所关心的问题还与自身紧密相关：别人在用这些新推出的 AI 工具做什么？我们如何快速掌握和熟练运用这些新技术？一些危言耸听的媒体报道甚至让人们陷入对未来的担忧：我会被 AI 取代吗？</p>
+<p><strong>其实，你不会被 AI 取代，但如果不紧跟浪潮，就可能会被熟练运用 AI 的人取代。</strong></p>
+<h3 id="OpenAI、GPT-和-ChatGPT-的区别"><a href="#OpenAI、GPT-和-ChatGPT-的区别" class="headerlink" title="OpenAI、GPT 和 ChatGPT 的区别"></a>OpenAI、GPT 和 ChatGPT 的区别</h3><table>
+<thead>
+<tr>
+<th>OpenAI</th>
+<th>它是一个专门研究人工智能的实验室、研究机构</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GPT</td>
+<td>它是 OpenAI 开发一系列基于人工智能的大语言模型（GPT1.X&#x2F;2.X&#x2F;3.X&#x2F;4.X）</td>
+</tr>
+<tr>
+<td>ChatGPT</td>
+<td>它是 OpenAI 公司基于 GPT-3 这大语言模型开发出来的一款具体的产品</td>
+</tr>
+</tbody></table>
+<p>除了 ChatGPT 外，像<strong>字节豆包</strong>、Claude、文心一言、通义千问等聊天助手，也都是基于大语言模型的应用。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013016.webp"></p>
+<p>但是大语言模型并不是在 2022 年才开始发展，早在 2018 年 OpenAI 就已经发布了 GPT-1.0，所以大语言模型的发展早就如火如荼了。只是因为 ChatGPT 2022 年直接向公众开放，而且能让用户在网页上用对话的方式进行交互，体验很流畅丝滑，大众的目光才被吸引过去。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013017.webp"></p>
+<h3 id="ChatGPT-的本质和特征"><a href="#ChatGPT-的本质和特征" class="headerlink" title="ChatGPT 的本质和特征"></a>ChatGPT 的本质和特征</h3><p>从用户角度，ChatGPT 就是一款人工智能聊天的产品。</p>
+<p>从技术角度，ChatGPT &#x3D; Chat + GPT。</p>
+<ul>
+<li>Chat：强调此工具能够理解自然语言和人的意图，提供像人一样的能力，例如对话、问答</li>
+<li>GPT：它是 OpenAI 于 2018 年推出的第一代模型的缩写，意思是「生成式预训练转换器」(Generative Pre-trained Transformer)。<ul>
+<li>「Generative」表示生成的，意味着这个模型能够生成新的文本内容；</li>
+<li>「Pretrained」即预训练，指模型在大规模的文本数据上预先进行训练，学习语言的特征和模式；</li>
+<li>「Transformer」是一种深度学习架构，它在自然语言处理领域具有强大的处理能力，能够很好地捕捉文本中的语义信息和上下文关系。</li>
+</ul>
+</li>
+</ul>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013018.webp"></p>
+<p>用一句话概括，<strong>ChatGPT 就是基于 Transformer 架构和无监督训练技术的对话生成式模型</strong>，由 OpenAI 公司研发出来的一款人工智能产品，它具有自然语言理解、文本生成、对话生成、自动回复等功能。</p>
+<blockquote>
+<p><strong>Tips</strong>：ChatGPT 和传统的对话系统不同，它采用了深度学习的技术，可以自动地从大量的语言数据中学习理解语言的规律、特性，从而实现对话的生成。</p>
+</blockquote>
+<h3 id="三步揭秘-ChatGPT：从「文字接龙」到「贴心助手」的进化之路"><a href="#三步揭秘-ChatGPT：从「文字接龙」到「贴心助手」的进化之路" class="headerlink" title="三步揭秘 ChatGPT：从「文字接龙」到「贴心助手」的进化之路"></a>三步揭秘 ChatGPT：从「文字接龙」到「贴心助手」的进化之路</h3><h4 id="预训练：让-AI-学会「语言规则」"><a href="#预训练：让-AI-学会「语言规则」" class="headerlink" title="预训练：让 AI 学会「语言规则」"></a>预训练：让 AI 学会「语言规则」</h4><blockquote>
+<p><strong>第一步：海量文本自学</strong></p>
+</blockquote>
+<p>ChatGPT 的训练起点是「自学语言规则」。想象一个婴儿牙牙学语，它通过阅读 3000 亿个「文字碎片」（token）来理解人类语言的规律。这些碎片包括书籍、新闻、社交媒体甚至代码，覆盖了人类文明的几乎所有领域。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013019.webp"></p>
+<h5 id="技术核心：无监督学习"><a href="#技术核心：无监督学习" class="headerlink" title="技术核心：无监督学习"></a><strong>技术核心：无监督学习</strong></h5><ul>
+<li>自学原理：模型通过「填空游戏」学习语言逻辑。例如，看到「今天天气不错，因为____」，它会预测出「阳光明媚」或「适合野餐」。</li>
+<li>数学本质：将每个文字转换为向量（类似指纹），通过计算向量间的相似度来捕捉语义关联。比如「国王」和「女王」的向量差异，与「男人」和「女人」的差异高度相似。</li>
+</ul>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013020.webp"></p>
+<h5 id="代价与突破"><a href="#代价与突破" class="headerlink" title="代价与突破"></a><strong>代价与突破</strong></h5><ul>
+<li>烧钱程度：训练 GPT-3 需要数千块 GPU，耗时数月，成本高达数百万美元。</li>
+<li>能力涌现：随着参数规模突破千亿，模型突然展现出「举一反三」的能力，例如理解代码逻辑、进行数学推理。</li>
+</ul>
+<h4 id="监督微调：教会-AI「对话技巧」"><a href="#监督微调：教会-AI「对话技巧」" class="headerlink" title="监督微调：教会 AI「对话技巧」"></a>监督微调：教会 AI「对话技巧」</h4><blockquote>
+<p><strong>第二步：人类老师手把手教学</strong></p>
+</blockquote>
+<p>自学成才的 AI 虽然能流畅生成文本，但可能答非所问。例如，你问「如何煮咖啡」，它可能继续写「咖啡是一种饮品……」。因为此时模型有预测下一个 token 的能力，会根据上文补充文本，但并不擅长对话。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013021.webp"></p>
+<p>这时需要人类介入，通过「监督微调」（SFT）教会它「有问必答」。在这一阶段里，模型不需要从海量文本学习了，而是从一些人类写的专业且高质量的对话里学习。</p>
+<h5 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a><strong>具体操作</strong></h5><ul>
+<li>数据准备：收集高质量对话数据，例如「问题 - 专业回答」对。比如：<ul>
+<li>问题：Python 如何读取 CSV 文件？</li>
+<li>回答：使用 pandas 库的 read_csv 函数……</li>
+</ul>
+</li>
+<li>模型调整：用这些数据重新训练模型，让它学会「先理解问题，再生成答案」。</li>
+</ul>
+<h5 id="对比实验"><a href="#对比实验" class="headerlink" title="对比实验"></a><strong>对比实验</strong></h5><ul>
+<li>基座模型：输入「中国首都是哪里？」→ 输出「中国首都是一个重要的城市……」（答非所问）。</li>
+<li>微调模型：输入同样问题 → 输出「中国首都是北京，位于华北平原……」（直接回答）。</li>
+</ul>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013022.webp"></p>
+<h5 id="微调-Vs-预训练的成本"><a href="#微调-Vs-预训练的成本" class="headerlink" title="微调 Vs 预训练的成本"></a><strong>微调 Vs 预训练的成本</strong></h5><table>
+<thead>
+<tr>
+<th>预训练</th>
+<th>微调</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>大规模数据</td>
+<td>所需数据更少</td>
+</tr>
+<tr>
+<td>长时间训练</td>
+<td>训练时长更短</td>
+</tr>
+<tr>
+<td>高成本</td>
+<td>成本更低</td>
+</tr>
+</tbody></table>
+<h4 id="强化学习：让-AI「投其所好」"><a href="#强化学习：让-AI「投其所好」" class="headerlink" title="强化学习：让 AI「投其所好」"></a>强化学习：让 AI「投其所好」</h4><blockquote>
+<p><strong>第三步：用「奖励机制」驯化 AI</strong></p>
+</blockquote>
+<p>微调后的模型虽然能回答问题，但可能生成错误信息（如「地球是平的」）或态度生硬。这时需要「强化学习」（RLHF），通过人类反馈让模型学会「投其所好」。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013023.webp"></p>
+<h5 id="操作流程"><a href="#操作流程" class="headerlink" title="操作流程"></a><strong>操作流程</strong></h5><ol>
+<li><p>生成候选答案：让模型对同一问题生成多个回答（如「如何减肥？」可能得到「少吃多动」「抽脂手术」等）。</p>
+</li>
+<li><p>人类排序：标注员会根据「有用性、真实性、无害性」，即 3H 原则（Helpful、Honest、Harmless）对回答打分，例如：</p>
+<ul>
+<li>优质回答：「控制饮食 + 规律运动」（10 分）</li>
+<li>劣质回答：「只吃水果」（3 分）<br> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013024.webp"></li>
+</ul>
+</li>
+<li><p>训练奖励模型：用人类排序数据训练一个「裁判模型」，让它学会自动给回答打分。</p>
+</li>
+<li><p>强化学习：模型生成回答后，奖励模型给出分数，模型根据分数调整参数，逐步趋向高奖励的回答模式。<br> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013025.webp"></p>
+</li>
+</ol>
+<h5 id="关键技术"><a href="#关键技术" class="headerlink" title="关键技术"></a><strong>关键技术</strong></h5><ul>
+<li>PPO 算法：类似训练小狗，模型每生成一个回答，就像小狗做了一个动作。如果奖励高（如得到零食），模型会强化这种行为；如果奖励低（如被呵斥），则避免这种行为。</li>
+<li>防止失控：通过「KL 散度」限制模型偏离原始知识，避免生成离谱内容（如推荐危险药物）。<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013026.webp"></li>
+</ul>
+<blockquote>
+<p><strong>三步进化本质总结</strong></p>
+<ol>
+<li><strong>第一步：</strong> 通过「暴力学习」掌握语言规律，相当于人类的「识字阶段」。</li>
+<li><strong>第二步：</strong> 通过「专业培训」学会特定技能，相当于人类的「学校教育」。</li>
+<li><strong>第三步：</strong> 通过「社会反馈」适应人类需求，相当于人类的「社会毒打」。</li>
+</ol>
+</blockquote>
+<h2 id="初始大语言模型"><a href="#初始大语言模型" class="headerlink" title="初始大语言模型"></a>初始大语言模型</h2><h3 id="何为-LLM-模型"><a href="#何为-LLM-模型" class="headerlink" title="何为 LLM 模型"></a>何为 LLM 模型</h3><p>大语言模型也叫 LLM（large language model），是用于做自然语言相关任务的深度学习模型。给模型一些文本内容输入，它能返回相应的输出，完成的具体任务可以是生成、分类、总结、改写等等。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013027.webp"></p>
+<p>LLM 大语言模型也是用于做自然语言相关任务的深度学习模型，它需要大量的文本进行无监督学习。</p>
+<p>以 GPT 3 为例，它的训练数据有多个互联网文本语料库，覆盖线上书籍、新闻文章、科学论文、维基百科、社交媒体帖子等等。借助海量的训练文本数据模型，能更多了解单词与上下文之间的关系，从而更好地理解文本的含义，并生成更准确的预测。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013028.webp"></p>
+<p>大语言模型里的 “大”，重点不是训练用的数据量特别大，而是模型里的参数数量特别多。参数就是模型内部能变的东西，你可以把它想成是模型在训练时学到的知识。</p>
+<p>模型碰到输入的数据，怎么做出反应，全靠这些参数，参数也就决定了模型的表现。以前研究语言模型的时候发现，要是用更多数据、更大算力去训练那些参数更多的模型，多数情况下，模型表现会更好。</p>
+<p>打个比方，让 AI 学做蛋糕，一种情况只让 AI 调整面粉、糖、蛋的用量，另一种情况，除了面粉、糖、蛋，还能让 AI 调整奶油、苏打粉、可可粉的用量，连烤箱时长和温度也能调。后面这种能调整的变量多，AI 就更有机会做出更好吃的蛋糕，大语言模型也是这个道理，参数多了表现更好。</p>
+<blockquote>
+<p><strong>GPT 模型参数数量发</strong>：GPT-1（1.17 亿）-&gt; GPT-2（15 亿）-&gt; GPT-3（1750 亿）</p>
+</blockquote>
+<h3 id="语言模型发展"><a href="#语言模型发展" class="headerlink" title="语言模型发展"></a>语言模型发展</h3><p>在 Transformer 架构被提出之前，语言模型的主流架构主要是循环神经网络，简称 RNN。 RNN 按顺序逐次处理，每一步的输出取决于先前的隐藏状态和当前的输入，要等上一个步骤完成后才能进行当前的计算，因此无法并行计算，训练效率低。而且 RNN 不擅长处理长序列，也就是长文本。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013029.webp"></p>
+<p>由于 RNN 的架构特点，词之间距离越远，前面对后面的影响越弱，所以它难以有效捕获到长距离的语义关系。但在人类自然语言中，依赖信息之间距离较远是很常见的情况。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013030.webp"></p>
+<p>比如这句话里，正确预测下一个词的关键是距离很远的广东，如果由 RNN 生成后续内容，到了这里的时候，它可能已经把前面的信息忘没了。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013031.webp"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013032.webp"></p>
+<p>为了捕获长距离依赖性，后来也出现了 RNN 的改良版本 LSTM 长短期记忆网络。但是这也并没有解决传统 RNN 无法并行计算的问题，而且在处理非常长的序列时也依然受到限制。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013033.webp"></p>
+<p>于是后来，Transformer 就诞生了，Transformer 的出现解决了之前模型的很多问题：</p>
+<ol>
+<li><p><strong>自注意力机制</strong>: Transformer 能学习输入序列里所有词的相关性和上下文，不受短时记忆影响。</p>
+<p> 关键在于自注意力机制，它在处理每个词时，会关注序列里所有词，并给予不同注意力权重，这些权重是训练中习得的。这样即便两个词距离远，也能捕获它们的依赖关系，比如能判断 “it” 和 “animal” 关联性比其它词语更强。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013034.webp"></p>
+</li>
+<li><p><strong>位置编码</strong>: 语言中顺序很重要。此前的模型按顺序处理输入序列，导致训练只能串行，速度慢。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013035.webp"></p>
+<p> 而 Transformer 在将输入词到神经网络前，除了将词转换为向量，即转换成一串数字，还会把词的位置也用数字表示添加到输入序列的表示中。这样模型既能理解词义，又能掌握词的位置和顺序关系。</p>
+<p> 借助位置编码，输入无需按顺序，可同时处理所有位置，每个输出能独立计算，大大提高了训练速度，也让训练大模型变得更容易。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013036.webp"></p>
+<p> 自《Attention Is All You Need》发表之后，Transformer 以及它的变体已经被普遍运用在大型数据集上来训练大语言模型，所以 Transformer 架构对我们当下能拥有那么多牛叉的大语言模型功不可没。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013037.webp"></p>
+</li>
+</ol>
+<h3 id="大语言模型的能力"><a href="#大语言模型的能力" class="headerlink" title="大语言模型的能力"></a>大语言模型的能力</h3><p>大语言模型的能力大概可以分为四层：聊天能力（智能客服）、语言能力（翻译）、文本能力（写代码）、推理能力（场景较多）。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013038.webp"></p>
+<h3 id="大语言模型和传统-AI-的区别"><a href="#大语言模型和传统-AI-的区别" class="headerlink" title="大语言模型和传统 AI 的区别"></a>大语言模型和传统 AI 的区别</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>大语言模型</th>
+<th>传统 AI</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>能力</td>
+<td>大语言模型就像个知识渊博又聪明的学霸，能理解和生成超自然的文本，还能做翻译、写文章、回答问题啥的</td>
+<td>传统 AI 更像是个偏科生，一般只能在特定小领域干活，像简单的图像识别、语音识别</td>
+</tr>
+<tr>
+<td>学习方式</td>
+<td>大语言模型是在超级多、超级杂的数据里 “疯狂学习”，用的是深度学习这种复杂的方法</td>
+<td>传统 AI 更像是照着老师给的规则、模板学习，用的是比较简单的算法</td>
+</tr>
+<tr>
+<td>灵活度</td>
+<td>大语言模型很灵活，遇到不同任务能很快调整适应</td>
+<td>传统 AI 要是换个任务，就像重新学一门课，得重新设计算法</td>
+</tr>
+<tr>
+<td>花费</td>
+<td>大语言模型训练起来费钱又费电，得用超厉害的计算机硬件</td>
+<td>传统 AI 就比较 “省钱”，对硬件要求没那么高</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>简单来讲：</strong><br>	- 小模型（传统 AI）：针对特定应用场景进行训练，能完成特定的任务。<br>	- 大模型：针对无标注数据上进行训练，可以完成多个应用场景的任务，实现通用的智能能力。</p>
+</blockquote>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013039.webp"></p>
+<h2 id="Transformer-模型"><a href="#Transformer-模型" class="headerlink" title="Transformer 模型"></a>Transformer 模型</h2><h3 id="快速了解"><a href="#快速了解" class="headerlink" title="快速了解"></a>快速了解</h3><p>2017 年，为了研究自然语言处理和理解，谷歌提出了新模型 Transformer。在此基础上人们又研发出了 BERT、GPT-3 系统，这两个系统在自然语言的生成和问答方面都取得了令人瞩目的成果。</p>
+<p>其最初用于机器翻译，将一种语言转换为另一种语言，即根据源语言的语义和目标语言的词汇概率补全句子的下一个词。后来，这个架构逐渐用于完成更一般性的生成任务，比如续写文章。</p>
+<h4 id="GPT-模型是怎么知道后面应该补全什么内容呢？"><a href="#GPT-模型是怎么知道后面应该补全什么内容呢？" class="headerlink" title="GPT 模型是怎么知道后面应该补全什么内容呢？"></a>GPT 模型是怎么知道后面应该补全什么内容呢？</h4><p>它实际上是一个「内容词预测器」软件，它所做的是根据前面的词和概率预测下一个词。它一个词、一个词地补全下去，就「写」出了给我们的回答。</p>
+<h4 id="GPT-模型又是怎么预测下一个词的呢？"><a href="#GPT-模型又是怎么预测下一个词的呢？" class="headerlink" title="GPT 模型又是怎么预测下一个词的呢？"></a>GPT 模型又是怎么预测下一个词的呢？</h4><p>简单地说就是，它「看」了极其多的文本资料。通俗地说就是，研究人员用巨量的文本训练了这个模型。它可以根据前面的词，计算出后面的词出现的概率，然后把概率最高的词作为下一个词。</p>
+<p>对此，史蒂芬·沃尔弗拉姆 (Stephen Wolfram）举例说，根据前面一段话，模型预测后面的 5 个单词依次是（按概率排序）​：learn、predict、make、understand、do。那么，GPT 模型就会把 learn 作为下一个词。之后，它又接着预测下一个词。</p>
+<p>实际上，我们可以通过调整「温度」(temperature）指标来调整选择下一个词的概率。所谓的「温度」指的是体现随机性的指标。</p>
+<ul>
+<li>「温度」越低，随机性越低。模型总是选择概率最高的词，这时你可能会觉得它比较古板。</li>
+<li>「温度」提高，随机性增高。模型会在一组词中随机选择下一词，从而每次产生的结果会有很大的差异，这时你又会觉得它比较有创意。</li>
+</ul>
+<h4 id="GPT-模型如何判断下一个单词出现的概率是多少呢？"><a href="#GPT-模型如何判断下一个单词出现的概率是多少呢？" class="headerlink" title="GPT 模型如何判断下一个单词出现的概率是多少呢？"></a>GPT 模型如何判断下一个单词出现的概率是多少呢？</h4><p>多层人工神经网络中的参数或权重 (parameters&#x2F;weight）决定了下一个词出现的概率，这些参数是通过用超大数量的文本对人工神经网络进行训练而调整到位的。</p>
+<p>这也是 GPT 中「P」的含义 —— 对人工神经网络进行预训练 (pre-trained），让它掌握预测下一个词所需要的参数（GPT-3.5 拥有 1750 亿个参数）。</p>
+<h3 id="Transformer-核心结构"><a href="#Transformer-核心结构" class="headerlink" title="Transformer 核心结构"></a>Transformer 核心结构</h3><p>Transformer 架构由两部分组成：编码器（Encoder）和解码器（Decoder）。</p>
+<ul>
+<li>首先在编码器部分，输入的文本会被拆分成若干个 token（可以理解是文本的基本单位）。</li>
+<li>接着将 token 进行向量化之后给到解码器，解码器就会根据预训练的内容生成最终结果。</li>
+</ul>
+<blockquote>
+<p><strong>Tips</strong>: Token 数量不等同于单词或文字的数量，对于一个长单词来说，它可能会被拆分成多个 token。这也就是为什么你明明输入的单词或文字数量没有达到 token 限制的数量，却还是提示你超长了。</p>
+</blockquote>
+<p>假如现在我们要用 Transformer 来做英语翻译法语的任务，给编码器输入一句英语，然后让解码器返回对应的法语，接下来我们看看整个过程中会发生什么。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013040.webp"></p>
+<h4 id="输入预处理"><a href="#输入预处理" class="headerlink" title="输入预处理"></a>输入预处理</h4><h5 id="Token-化"><a href="#Token-化" class="headerlink" title="Token 化"></a>Token 化</h5><blockquote>
+<p><strong>作用</strong>: 将文本拆分为基本单位（Token，如单词、子词），并转换为整数 ID（Token ID），便于计算机处理。</p>
+</blockquote>
+<p>我们先看编码器部分，输入的文本首先会被 token 化，也就是先把输入拆分成各个 token，token 可以被理解为是文本的一个基本单位，取决于不同的 token 化方法。短单词可能每个词是一个 token，长单词可能被拆成多个 token。</p>
+<p>然后每个 token 会被用一个整数数字表示，这个数字被叫做 token ID。这样做是因为计算机内部是无法储存文字的，任何字符最终都得用数字来表示。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013042.webp"></p>
+<p>有了数字表示的输入文本后，就会再把它传入嵌入层。</p>
+<h5 id="嵌入层（Embedding-Layer）"><a href="#嵌入层（Embedding-Layer）" class="headerlink" title="嵌入层（Embedding Layer）"></a>嵌入层（Embedding Layer）</h5><blockquote>
+<p><strong>作用</strong>: 将Token ID 转换为词向量（Vector）（一串数字），包含语法、语义信息。</p>
+</blockquote>
+<p>嵌入层的作用是让每个 token 都用向量表示，向量可以被简单地看为一串数字，为了能在画面里放下，这里把向量长度简化为 3，但实际中向量长度可以非常长。</p>
+<p>而这里之所以要将单个数字再拆分成一串数字，其中一个原因是一串数字能表达的含义是大于一个数字的，能包含更多语法、语义信息等等。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013043.webp"></p>
+<p>这就好比男人和女人这两个词他们都在描述人类，但性别又是完全相反的。如果只用一个数字表示，这两个数字大小之间应该距离很大，还是应该距离很小呢？</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013044.webp"></p>
+<p>但如果有多个数字，我们就可以进行更多维度的表示。就比如说第一个数字可以表示「是雌性」的程度，第二个表示「年龄大」的程度，第三个表示「社会阶层高」的程度。</p>
+<p>所以嵌入层的向量不是随便搞出来的，里面包含了词汇之间语法、语义等关系，相似的词所对应的嵌入向量，在向量空间里距离也更进，而一些没啥关系的词之间的距离就更远。这有助于模型利用数学计算向量空间里的距离，去捕捉不同词在语义和语法等方面的相似性。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013045.webp"></p>
+<p>而且，男人与国王的差异和女人与女王的差异可以被看作是相似的，这也可以在多维向量空间里展现。因此，词向量不仅可以帮模型理解词的语义，也可以捕捉词与词之间的复杂关系。</p>
+<p>这里为了直观是用三维向量空间表示的，把向量长度相应简化成了 3。但提出 Transformer 的论文里，向量长度是 512，GPT-3 是 12288，所以可以想象它能包含多少信息。</p>
+<p>通过编码器的嵌入层得到词向量后，下一步是对向量进行位置编码。</p>
+<h5 id="位置编码（Positional-Encoding）"><a href="#位置编码（Positional-Encoding）" class="headerlink" title="位置编码（Positional Encoding）"></a>位置编码（Positional Encoding）</h5><blockquote>
+<p><strong>作用</strong>: 将词的顺序信息转换为向量，与词向量相加，让模型理解文本顺序。</p>
+</blockquote>
+<p>Transformer 中一项关键机制就是位置编码，而位置编码就是把表示各个词在文本里顺序的向量和上一步得到的词向量相加，然后把得到的结果传给编码器。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013046.webp"></p>
+<p>这样做的意义是模型，既可以理解每个词的意义，又能够捕捉词在句子中的位置，从而理解不同词之间的顺序关系。</p>
+<h4 id="编码器（Encoder）工作流程"><a href="#编码器（Encoder）工作流程" class="headerlink" title="编码器（Encoder）工作流程"></a>编码器（Encoder）工作流程</h4><h5 id="核心目标"><a href="#核心目标" class="headerlink" title="核心目标"></a>核心目标</h5><blockquote>
+<p><strong>重点</strong>: 将输入文本转换为包含词汇、顺序、语法语义的「抽象向量」表示。</p>
+</blockquote>
+<p>接下来就到了编码器这个核心部分，它的主要任务是把输入转换成一种更抽象的表示形式。这个表示形式也是向量，即一串数字里面既保留了输入文本的词汇信息和顺序关系，也捕捉了语法语义上的关键特征。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013047.webp"></p>
+<h5 id="关键机制"><a href="#关键机制" class="headerlink" title="关键机制"></a>关键机制</h5><ol>
+<li><p>自注意力机制（Self-Attention）</p>
+<p> <strong>作用：</strong><br> - 处理每个词时，关注输入序列中所有词（而非仅邻近词），通过计算相关性分配注意力权重。<br> - 输出融合当前词与上下文信息，同一词在不同上下文有不同表示。<br> 捕捉关键特征的核心是编码器的自注意力机制，模型在处理每个词的时候，不仅会关注这个词本身和它附近的词，还会关注输入序列中所有其他词。</p>
+<p> 自注意力机制通过计算每对词之间的相关性来决定注意力权重。如果两个词之间的相关性更强，它们之间的注意力权重就会更高。</p>
+<p> 比如这个例子，单从语法上来讲，it 可以指 animal，也可以指 street。而自注意力机制发现了 it 与 animal 更强的关联，所以给 animal 的权重会更大一些。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013034.webp"></p>
+<p> 但由于自注意力机制对上下文的全面关注，那在输出的表示结果里不仅包含这个词本身的信息，还融合了上下文中的相关信息。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013049.webp"></p>
+<p> 上下文在语言里很重要，也能揭露相同词的不同含义，所以在解码器输出的结果里，表示各个词的向量会根据上下文信息进行调整，同一个词根据上下文有不同的抽象表示。</p>
+</li>
+<li><p>多头自注意力（Multi-Head Attention）</p>
+<p><strong>作用</strong>: 多个独立注意力头并行工作，关注文本不同特征（如动词、修饰词、命名实体等），提升模型对复杂关系的捕捉能力。</p>
+<p>自注意力机制涉及到很多计算步骤，更多细节可以在论文原文里关注一下。Transformer 实际上使用了多头自注意力，也就是编码器不只有一个自注意力模块，而是有多个。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013050.webp"></p>
+<p>每个头都有它自己的注意力权重，用来关注文本里不同特征或方面。比如有的关注动词，有的关注修饰词，有的关注情感，有的关注命名实体等等。而且它们之间可以做并行运算，也就是计算进展上互不影响。</p>
+<p>每个字注意力投的权重，都是模型在之前的训练过程中，从大量文本里逐渐学习和调整的。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013051.webp"></p>
+</li>
+<li><p>前馈神经网络（Feed-Forward Network）</p>
+<p> <strong>作用</strong>: 对自注意力输出进一步处理，增强表达能力。</p>
+<p> 在多头自注意力后面还有一个前馈神经网络，它会对自注意力模块的输出进行进一步的处理，增强模型的表达能力。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013052.webp"></p>
+</li>
+</ol>
+<h5 id="堆叠增强"><a href="#堆叠增强" class="headerlink" title="堆叠增强"></a>堆叠增强</h5><blockquote>
+<p><strong>作用</strong>: 多个编码器堆叠（结构相同，权重不共享），逐层深入提取特征。</p>
+</blockquote>
+<p>而编码器在 Transformer 里也不止有一个，实际上是有多个堆叠到一起，每个编码器内部结构一样，但不共享权重。这样模型能更深入地理解数据，处理更复杂的文本语言内容。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013053.webp"></p>
+<h4 id="解码器（Decoder）工作流程"><a href="#解码器（Decoder）工作流程" class="headerlink" title="解码器（Decoder）工作流程"></a>解码器（Decoder）工作流程</h4><h5 id="核心目标-1"><a href="#核心目标-1" class="headerlink" title="核心目标"></a>核心目标</h5><blockquote>
+<p><strong>重点</strong>: 基于编码器的抽象表示，生成目标序列（如翻译后的法语）。</p>
+</blockquote>
+<p>看完编码器，接下来看解码器的部分，它是大语言模型生成一个个词的关键。</p>
+<p>通过前面的编码器，我们有了输入序列里各个 token 的抽象表示，接着可以把它传给解码器。而解码器还会先接收一个特殊值，这个值表示输出序列的开头。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013054.webp"></p>
+<p>这样做的原因是，解码器不仅会把来自「编码器的输入序列的抽象表示」作为输入，还会把之前「已经生成的文本」也作为输入，来保持输出的连贯性和上下文相关性。</p>
+<h5 id="关键机制-1"><a href="#关键机制-1" class="headerlink" title="关键机制"></a>关键机制</h5><ol>
+<li><p>带掩码的自注意力（Masked Self-Attention）<br> <strong>作用</strong>: 生成文本时，仅允许关注已生成的前文词，禁止 “偷看” 后文，确保按顺序预测。</p>
+<p> 具体的生成过程仍然是要经过多个步骤，首先和编码器一样，文本要经过我们已经了解过的嵌入层和位置编码，然后被输入进多头自注意力层，但它和编码器里的自注意力层有点不一样。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013055.webp"></p>
+<p> 当编码器在处理各个词的时候，它会关注输入序列里所有其他词。但解码器中自注意力只会关注这个词和它前面的其他词，后面的词要被遮住不去关注。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013056.webp"></p>
+<p> 这样做是为了确保解码器生成文本时遵循正确的时间顺序，不能给它偷看到后面，在预测下一个词时，只使用前面的词作为上下文，这种类型的多头自注意力被叫做<strong>带掩码的多头自注意力。</strong></p>
+</li>
+<li><p>跨注意力（Cross-Attention）<br> <strong>作用</strong>: 连接编码器输出和解码器输入，融合原始输入信息与生成序列的上下文。</p>
+<p> 带掩码的多头自注意力是针对已生成的输出序列的，而在后面，解码器还有个多头自注意力层，这里就是前面「编码器输出的输入序列的抽象表示」所派上用场的地方。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013057.webp"></p>
+<p> 注意力会捕捉「编码器的输出」和「解码器即将生成的输出」之间的对应关系，从而将原始输入序列的信息融合到输出序列的生成过程中。</p>
+<p> 解码器里的前馈神经网络作用和编码器里的类似，也是通过额外的计算来增强模型的表达能力。而且和编码器一样，解码器同样是多个堆叠到一起的。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013058.webp"></p>
+<p> 这可以增加模型的性能，有助于处理复杂的输入输出关系。</p>
+</li>
+</ol>
+<h5 id="输出处理"><a href="#输出处理" class="headerlink" title="输出处理"></a>输出处理</h5><blockquote>
+<p><strong>作用</strong>: 通过 “线性层 + Softmax” 把向量转为概率分布，选概率最高的词作为下一个输出。</p>
+</blockquote>
+<p>解码器的最后阶段包含一个线性层和一个 Softmax 层，它们俩加一块的作用是把「解码器输出的表示」转换为词汇表的概率分布。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013059.webp"></p>
+<p>这个词汇表的概率分布代表下一个被生成 token 的概率，那么有些 token 的概率就会比其他的高。在大多数情况下，模型会选择概率最高的 token 作为下一个输出。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013060.webp"></p>
+<p><strong>现在我们知道了解码器本质上是在猜下一个最可能的输出</strong>。至于输出是否符合客观事实，模型无从得知，所以我们能经常看到模型一本正经地胡说八道，这种现象也被叫做幻觉。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013061.webp"></p>
+<p>解码器的一整个流程会重复多次，新的 token 会持续生成，直到生成的是一个用来表示输出序列结束的特殊token。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013062.webp"></p>
+<h3 id="Transformer-变种"><a href="#Transformer-变种" class="headerlink" title="Transformer 变种"></a>Transformer 变种</h3><p>但以上描述的架构是《Attention Is All You Need》论文里的原始 Transformer 架构，即编码器用来理解和表示输入序列，解码器用来生成输出序列。实际上，在原始架构的基础上，后续出现了一些变种，主要有三个类别：<strong>仅编码器、仅解码器以及编码器-解码器。</strong></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013063.webp"></p>
+<h4 id="仅编码器（Encoder-only）-自编码模型-——-适合-“理解型”-任务"><a href="#仅编码器（Encoder-only）-自编码模型-——-适合-“理解型”-任务" class="headerlink" title="仅编码器（Encoder-only）&#x2F; 自编码模型 —— 适合 “理解型” 任务"></a>仅编码器（Encoder-only）&#x2F; 自编码模型 —— 适合 “理解型” 任务</h4><blockquote>
+<p><strong>一句话总结：</strong>“我看懂了，现在做判断！”（适合理解、分析）</p>
+</blockquote>
+<ul>
+<li><p><strong>结构</strong>: 只保留原始 Transformer 中的编码器部分（没有解码器）。</p>
+<ul>
+<li>编码器的作用是 “理解输入”，比如把一句话转换成包含语义和顺序的 “数字密码”（向量）。</li>
+</ul>
+</li>
+<li><p><strong>怎么用</strong>: 将输入一段文本，编码器层层处理后输出 “密码”，然后基于这个 “密码” 完成任务（比如判断情感、填空）。</p>
+</li>
+<li><p><strong>核心特点：</strong></p>
+<ul>
+<li>可以 “看到全文”（自注意力不遮挡后面的词），适合分析整个句子的关系。</li>
+<li>不生成内容，只做 “理解” 和 “判断”。</li>
+</ul>
+</li>
+<li><p><strong>场景</strong>: 阅读理解、情感分析、关键词提取（比如判断 “这篇评论是好评还是差评”）。</p>
+<ul>
+<li>例如，BERT（比如你让它 “猜” 句子里被遮住的词，如 “猫坐在____上”，它能根据上下文填 “地毯”）、RoBERTa 等模型。</li>
+</ul>
+</li>
+</ul>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013064.webp"></p>
+<h4 id="仅解码器（Decoder-only）-自回归模型-——-适合-“生成型”-任务"><a href="#仅解码器（Decoder-only）-自回归模型-——-适合-“生成型”-任务" class="headerlink" title="仅解码器（Decoder-only）&#x2F; 自回归模型 —— 适合 “生成型” 任务"></a>仅解码器（Decoder-only）&#x2F; 自回归模型 —— 适合 “生成型” 任务</h4><blockquote>
+<p><strong>一句话总结：</strong>“我开始编了，想到哪写到哪！”（适合生成、创作）</p>
+</blockquote>
+<ul>
+<li><p><strong>结构</strong>: 只保留原始 Transformer 中的解码器部分（没有编码器）。</p>
+<ul>
+<li>解码器的核心是 “一个词一个词地猜下一个词”，比如从 “今天天气” 猜到 “很好”。</li>
+</ul>
+</li>
+<li><p><strong>怎么用：</strong></p>
+<ul>
+<li>输入一个起始信号（比如 “开始生成”），然后每次根据前面生成的词，预测下一个词，直到结束。</li>
+<li>过程中只能 “看前面的词”（后面的词被 “遮住”，避免 “偷看答案”），符合人类说话的顺序（先说前半句，再说后半句）。</li>
+</ul>
+</li>
+<li><p><strong>核心特点：</strong></p>
+<ul>
+<li>专注 “生成”，擅长 “顺着思路往下编”，比如写文章、对话、写诗。</li>
+<li>不需要提前输入完整内容，边想边输出。</li>
+</ul>
+</li>
+<li><p><strong>场景</strong>: 写作文、聊天机器人、代码生成（比如根据前半行代码补全后半行）。</p>
+<ul>
+<li>例如，GPT 系列（比如 GPT-4，你让它写一个故事，它会一句一句 “编” 出来）、PaLM 等模型。</li>
+</ul>
+</li>
+</ul>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013065.webp"></p>
+<h4 id="编码器-解码器（Encoder-Decoder）——-适合-“输入输出转换”-任务"><a href="#编码器-解码器（Encoder-Decoder）——-适合-“输入输出转换”-任务" class="headerlink" title="编码器 - 解码器（Encoder-Decoder）—— 适合 “输入输出转换” 任务"></a>编码器 - 解码器（Encoder-Decoder）—— 适合 “输入输出转换” 任务</h4><blockquote>
+<p><strong>一句话总结：</strong>“你给我输入，我帮你转换成你要的输出！”（适合转换、翻译）</p>
+</blockquote>
+<ul>
+<li><p><strong>结构</strong>: 同时保留编码器和解码器，编码器先 “理解输入”，解码器再 “生成输出”。</p>
+<ul>
+<li>比如翻译：编码器把英语句子变成 “密码”，解码器把 “密码” 翻译成法语句子。</li>
+</ul>
+</li>
+<li><p><strong>怎么用：</strong></p>
+<ul>
+<li>编码器处理输入（如英语句子），得到 “密码”；解码器用这个 “密码” 作为参考，结合自己生成的历史内容，逐步输出目标内容（如法语）。</li>
+<li>解码器生成时，既能 “回顾输入的整体信息”（编码器的密码），又能 “看自己已经生成的部分”（比如翻译到一半，知道前面翻了什么）。</li>
+</ul>
+</li>
+<li><p><strong>核心特点：</strong></p>
+<ul>
+<li>适合 “跨领域转换”，比如从一种语言到另一种，或从文本到结构化数据。</li>
+<li>输入和输出可以是不同形式（比如输入问题，输出答案；输入图片描述，输出图片）。</li>
+</ul>
+</li>
+<li><p><strong>场景</strong>: 机器翻译、问答系统（比如输入 “怎么煮奶茶”，输出步骤）、文本摘要（把长文章缩短）。</p>
+<ul>
+<li>例如，原始 Transformer（论文里用来做机器翻译）、T5（可以同时处理翻译、问答等多种任务）、BART（用于文本摘要、纠错）等模型。</li>
+</ul>
+</li>
+</ul>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013066.webp"></p>
+<h2 id="如何成为提问工程师？"><a href="#如何成为提问工程师？" class="headerlink" title="如何成为提问工程师？"></a>如何成为提问工程师？</h2><h3 id="GPT-的能力"><a href="#GPT-的能力" class="headerlink" title="GPT 的能力"></a>GPT 的能力</h3><p>随着训练所用的文本资料和参数数量的增加，GPT 模型预测下一个词的核心能力越来越强。它似乎也有了语言能力、掌握了知识、学会了推理，这颇有点像人类的成长，当孩子逐渐学会了说话之后，他学习了知识，后来又能够进行推理了。GPT 模型的演进方式是：<strong>当加大训练的文本数量后，它的知识与能力会得到大幅度提升。</strong></p>
+<p>因此现在我们使用的这些大语言模型：</p>
+<ul>
+<li>首先，都是经过了大量的学习（即预训练）​，掌握了基本的知识与能力</li>
+<li>其次，它们可能会针对专业领域的内容进行再训练（比如，OpenAI 就曾经用代码训练模型，使其具有编程能力）​</li>
+<li>最后，会根据相关指令对它们进行微调训练，以使其能够更好地完成与这些指令相关的任务</li>
+</ul>
+<p>所以知识性问题是生成式 AI 最擅长的，你可以用它来做很多事情：</p>
+<ul>
+<li>写通用的代码、寻找 BUG、优化算法 ……</li>
+<li>改写代码、写 SQL 语句、生成文本 ……</li>
+</ul>
+<h4 id="AI-聊天助手的局限性"><a href="#AI-聊天助手的局限性" class="headerlink" title="AI 聊天助手的局限性"></a>AI 聊天助手的局限性</h4><p>虽然大模型通过海量的文本训练，学会了模仿人类语言，积累了不少知识。但这种 “学习方式” 也带来了一些问题：</p>
+<ol>
+<li><p><strong>盲目自信的 “瞎猜王”</strong>: 遇到不熟悉的领域，AI 并不知道自己 “知识匮乏”，依然会自信满满地 “瞎猜”，就像一个不懂装懂的人，硬着头皮也要说上几句。</p>
+</li>
+<li><p><strong>缺乏反思的 “冲动派”</strong>: 在生成回答的过程中，AI 没有反思能力，不会停下来思考自己的回答是否正确，一旦开始 “说”，就一路 “狂飙”，所以经常出现胡说八道还 “理直气壮” 的情况。</p>
+</li>
+<li><p><strong>“一视同仁” 的生成逻辑</strong>: AI生成每个 token（可以理解为文字、词语等基本单位）的时间差不多，不会因为问题复杂就多花时间思考，这也是它在处理数学计算等需要深度思考的问题时容易出错的原因。</p>
+</li>
+</ol>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013067.webp"></p>
+<h4 id="怎么让它的能力为我们所用呢？"><a href="#怎么让它的能力为我们所用呢？" class="headerlink" title="怎么让它的能力为我们所用呢？"></a><strong>怎么让它的能力为我们所用呢？</strong></h4><blockquote>
+<p><strong>提示语是调用 GPT 知识与能力的接口。</strong></p>
+</blockquote>
+<p>针对这种现象，越来越多人开始研究怎么调教出一个聪明的 AI 聊天助手 <strong>「提示工程」</strong>，就是研究如何提高和 AI 的沟通质量及效率的核心关注提示的开发和优化。</p>
+<p><strong>我们将向 GPT 模型输入的请求就称为提示语，它是使用 GPT 模型所拥有的知识与能力的接口</strong>。我们可以通过在搜索引擎上搜索关键词来获取和使用海量的信息（如谷歌和百度所做的）和服务（如亚马逊、淘宝、美团所做的）。现在，我们可以通过提示语来使用 AI 模型所掌握的知识与能力。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013068.webp"></p>
+<p>实际上，我们可以通过提示语将通用的大语言模型转化为聊天机器人，谷歌 Deepmind 和人工智能公司 Athropic 在论文中都提到了这个技巧，Athropic 的提示语示例展示了如何用长达 6000 个标记符的提示语让模型具有聊天功能。</p>
+<h3 id="如何高效的提问？"><a href="#如何高效的提问？" class="headerlink" title="如何高效的提问？"></a>如何高效的提问？</h3><h4 id="怎么样才算是好的问题？"><a href="#怎么样才算是好的问题？" class="headerlink" title="怎么样才算是好的问题？"></a><strong>怎么样才算是好的问题？</strong></h4><ul>
+<li>尽量别问搜索引擎就能很容易解决的问题<ul>
+<li>例如如何安装某个常见的库</li>
+</ul>
+</li>
+<li>尽量提供充足的问题背景信息<ul>
+<li>例如不要单纯抛个异常报错截图，一定要将详细的上下文信息提供出来</li>
+</ul>
+</li>
+<li>明确你的提问目的是什么？<ul>
+<li>例如不能单纯问怎么学习自动化这个宽泛的问题，提问要具体点</li>
+<li>比如可以问如何使用自动化落地解决某个具体的问题，也可以问如何利用自动化提升某个模块的效率）</li>
+</ul>
+</li>
+</ul>
+<h4 id="如何提问才能更好的得到想要的答案？"><a href="#如何提问才能更好的得到想要的答案？" class="headerlink" title="如何提问才能更好的得到想要的答案？"></a><strong>如何提问才能更好的得到想要的答案？</strong></h4><ul>
+<li>采用封闭式提问，将问题控制到有效的范围内<ul>
+<li>例如不要问我毕业后去哪个城市发展好这种问题，别人就算有空回答你，也不知道从何讲起</li>
+<li>比如可以问我想从事互联网行业，目前我拿到了哪些公司的 offer，待遇是这些，我本身不变的诉求是什么，毕业后是去北京还是上海发展比较好（给明确别人回答的方向）</li>
+</ul>
+</li>
+<li>带着过程去提问<ul>
+<li>我这里遇到了一个问题：【问题描述】</li>
+<li>我经过了以下尝试：【思路细节】</li>
+<li>但还是不能解决，报错信息如下：【完整报错的信息、截图】</li>
+</ul>
+</li>
+</ul>
+<h4 id="结构化提示语：ICDO"><a href="#结构化提示语：ICDO" class="headerlink" title="结构化提示语：ICDO"></a>结构化提示语：ICDO</h4><p>具体来讲，提示语可拆解为以下四个部分：指令、上下文、输入数据、输出要求。”ICDO” 是结构化提示语四个组成部分的英文首字母：指令 (instruction)、上下文 (context)、输入数据 (input data)、输出要求 (outputindicator)。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013069.webp"></p>
+<p>它由埃尔维斯·萨拉维亚 (Elvis Saravia) 等人总结而来，原本是为用编程接口访问 GPT 的程序员准备的，但现在它也适用于所有想要高效使用 AI 的人。这里列举并解读一个简单的示例。</p>
+<ul>
+<li><strong>指令 (instruction)</strong>: 你想让 GPT 执行的特定任务。<br>“你的任务是将中文翻译成英文。”</li>
+<li><strong>上下文 (context)</strong>: 额外的上下文或背景信息，以引导 GPT 更好地做出响应。<br>“请按此词汇表将这些专有名词进行翻译。”</li>
+<li><strong>输入数据 (input data)</strong>: 用户实际输入的内容。<br>“需要翻译的句子是：天空是蓝色的。”</li>
+<li><strong>输出要求 (output indicator)</strong>: 指定输出的类型、格式等。<br>“译文是：The sky is blue.”</li>
+</ul>
+<p>当然上面这些要求不是绝对的，可以适当省略，但是大体是按照这个顺序对 GPT 进行提问，这其实也和我们请一个人帮忙完成任务时的交互方式一样：<strong>首先说明任务，给出背景信息，然后提供任务的具体信息，最后提出对于结果的明确要求。</strong></p>
+<p>GPT 也像人一样，越靠后的信息它记得越清楚。如果你先给出具体任务，再说明背景信息，它可能会混淆具体任务与背景信息。我们提问的目的是要得到结果，因此对于结果的要求应放在最后。</p>
+<p>同时，有一个被一再验证有效的向 GPT 提问的技巧是，在提示语的开头描述指令（你的任务是将中文翻译成英文）​，最后再以某种方式重复指令（翻译是：​）​；这会让 GPT 更容易清晰地理解和执行我们的要求。</p>
+<h3 id="AI-调教小技巧"><a href="#AI-调教小技巧" class="headerlink" title="AI 调教小技巧"></a>AI 调教小技巧</h3><h4 id="小样本提示：给-AI-打个样"><a href="#小样本提示：给-AI-打个样" class="headerlink" title="小样本提示：给 AI 打个样"></a>小样本提示：给 AI 打个样</h4><p>当我们直接向 AI 提问时，这属于「零样本提示」，就像是给 AI 出了一道没有任何提示的题目，它的回答往往很难符合我们的预期。这时候小样本提示就可以出场了：</p>
+<ol>
+<li><strong>什么是小样本提示</strong>: 在向 AI 提出问题之前，先给它几个相关的对话示例。这些示例就像是「参考答案」，AI 会利用自身的上下文学习能力，记住这些内容，并模仿着示例的风格和逻辑进行回应。</li>
+<li><strong>小样本提示的好处：</strong><ul>
+<li>省心省力：因为 AI 会模仿示例的风格，所以我们不用反复强调各种要求，它自己就能从示例中「领悟」我们想要的回答风格和内容重点。</li>
+<li>引导方向：就像给 AI 指了一条路，让它知道该往哪里「走」，避免回答偏离我们的需求。</li>
+</ul>
+</li>
+<li><strong>小样本提示的局限</strong>：虽然小样本提示很有用，但也不是 “万能药”。比如在处理数学计算这类 AI 本身就不擅长的问题时，即使给了正确的示例，它还是可能 “掉链子”。因为 AI 生成 token 的特性，让它很难静下心来认真计算，所以计算结果常常出错。错。</li>
+</ol>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013070.webp"></p>
+<h4 id="思维连：让-AI-一步步来"><a href="#思维连：让-AI-一步步来" class="headerlink" title="思维连：让 AI 一步步来"></a>思维连：让 AI 一步步来</h4><p>当小样本提示在某些复杂任务上 “失灵” 时，思维链就派上用场了！这一概念最早由谷歌在 2022 年的一篇论文中提出，它能显著提升大语言模型的复杂推理能力。</p>
+<ol>
+<li><strong>思维链的原理</strong>：在给 AI 的小样本提示中，不仅展示正确的结果，还详细呈现中间的推理步骤。这样一来，AI 在生成回答时，也会模仿着一步一步地进行推理，把复杂的任务分解成一个个小步骤。</li>
+<li><strong>思维链的好处：</strong><ul>
+<li>降低错误率：就像我们做题时，把解题步骤写出来，更容易发现错误一样，AI 分步骤推理，也能减少出错的概率。</li>
+<li>集中注意力：在每一个步骤中，AI 只需要专注于当前的思考，减少了上下文信息的干扰，能更清晰地梳理逻辑，得出准确的结果。</li>
+</ul>
+</li>
+<li><strong>超简单的懒人用法</strong>：如果你觉得准备小样本提示和推理步骤太麻烦，还有一个 “懒人福音” 方法！只需要在问题后面加上一句 “let’s think step by step”（让我们来分步骤思考），AI 就会自动生成中间推理步骤，虽然效果可能比精心设计的思维链稍弱，但胜在方便快捷，也能有效提升回答的正确率。率。</li>
+</ol>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713091013072.webp"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/70918e5/">https://alwaysfyo.github.io/posts/70918e5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AI/">AI</a><a class="post-meta__tags" href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a><a class="post-meta__tags" href="/tags/AIGC%E7%B3%BB%E5%88%97/">AIGC系列</a><a class="post-meta__tags" href="/tags/ChatGPT/">ChatGPT</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/c9acbf1/" title="AI 系列：搜索-从迷宫求解看人工智能关键技术"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">AI 系列：搜索-从迷宫求解看人工智能关键技术</div></div><div class="info-2"><div class="info-item-1">在人工智能研究的早期，科学家们一直在寻觅一套通用的方法，以攻克各式各样的智能难题。搜索技术便在这样的探索中应运而生。</div></div></div></a><a class="pagination-related" href="/posts/6a0c689f/" title="AI 系列：人工智能的前世今生 &amp; 必知基础原理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">AI 系列：人工智能的前世今生 & 必知基础原理</div></div><div class="info-2"><div class="info-item-1">人工智能的这一切得从源于电子计算机的出现说起，艾伦・图灵（Alan Turing，1912—1954）突然某一天对 "机器除了计算和记忆，是…</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/9b21ba2c/" title="ChatGPT 指令大全"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-25</div><div class="info-item-2">ChatGPT 指令大全</div></div><div class="info-2"><div class="info-item-1">产生 数字 个具有说服力和描述性的文章主题想法，主题为"某个主题"</div></div></div></a><a class="pagination-related" href="/posts/6a0c689f/" title="AI 系列：人工智能的前世今生 &amp; 必知基础原理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">AI 系列：人工智能的前世今生 &amp; 必知基础原理</div></div><div class="info-2"><div class="info-item-1">人工智能的这一切得从源于电子计算机的出现说起，艾伦・图灵（Alan Turing，1912—1954）突然某一天对 "机器除了计算和记忆，是…</div></div></div></a><a class="pagination-related" href="/posts/de697756/" title="ChatGPT 介绍及技术原理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-06</div><div class="info-item-2">ChatGPT 介绍及技术原理</div></div><div class="info-2"><div class="info-item-1">ChatGPT 博客中的技术原理图 总体来说， ChatGPT 的训练流程包含三个步骤</div></div></div></a><a class="pagination-related" href="/posts/8fe1f36/" title="AI 系列：计算机视觉-给机器装上眼睛"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">AI 系列：计算机视觉-给机器装上眼睛</div></div><div class="info-2"><div class="info-item-1">计算机视觉，简单说就是让计算机也能像人一样 "看" 懂世界。</div></div></div></a><a class="pagination-related" href="/posts/a7f69d7a/" title="Claude 使用教程（ChatGPT 平替）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-06</div><div class="info-item-2">Claude 使用教程（ChatGPT 平替）</div></div><div class="info-2"><div class="info-item-1">Claude 完全免费，支持中文，无需特殊网络，没有使用次数之类的限制，速度很快，加上有 Slack 跨平台客户端的加持，综合使用体验相当的…</div></div></div></a><a class="pagination-related" href="/posts/c9acbf1/" title="AI 系列：搜索-从迷宫求解看人工智能关键技术"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">AI 系列：搜索-从迷宫求解看人工智能关键技术</div></div><div class="info-2"><div class="info-item-1">在人工智能研究的早期，科学家们一直在寻觅一套通用的方法，以攻克各式各样的智能难题。搜索技术便在这样的探索中应运而生。</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ChatGPT"><span class="toc-number">1.</span> <span class="toc-text">ChatGPT</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ChatGPT-%E7%81%AB%E7%88%86%E5%87%BA%E5%9C%88"><span class="toc-number">1.1.</span> <span class="toc-text">ChatGPT 火爆出圈</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#OpenAI%E3%80%81GPT-%E5%92%8C-ChatGPT-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.2.</span> <span class="toc-text">OpenAI、GPT 和 ChatGPT 的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ChatGPT-%E7%9A%84%E6%9C%AC%E8%B4%A8%E5%92%8C%E7%89%B9%E5%BE%81"><span class="toc-number">1.3.</span> <span class="toc-text">ChatGPT 的本质和特征</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E6%AD%A5%E6%8F%AD%E7%A7%98-ChatGPT%EF%BC%9A%E4%BB%8E%E3%80%8C%E6%96%87%E5%AD%97%E6%8E%A5%E9%BE%99%E3%80%8D%E5%88%B0%E3%80%8C%E8%B4%B4%E5%BF%83%E5%8A%A9%E6%89%8B%E3%80%8D%E7%9A%84%E8%BF%9B%E5%8C%96%E4%B9%8B%E8%B7%AF"><span class="toc-number">1.4.</span> <span class="toc-text">三步揭秘 ChatGPT：从「文字接龙」到「贴心助手」的进化之路</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%84%E8%AE%AD%E7%BB%83%EF%BC%9A%E8%AE%A9-AI-%E5%AD%A6%E4%BC%9A%E3%80%8C%E8%AF%AD%E8%A8%80%E8%A7%84%E5%88%99%E3%80%8D"><span class="toc-number">1.4.1.</span> <span class="toc-text">预训练：让 AI 学会「语言规则」</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8A%80%E6%9C%AF%E6%A0%B8%E5%BF%83%EF%BC%9A%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">技术核心：无监督学习</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BB%A3%E4%BB%B7%E4%B8%8E%E7%AA%81%E7%A0%B4"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">代价与突破</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%91%E7%9D%A3%E5%BE%AE%E8%B0%83%EF%BC%9A%E6%95%99%E4%BC%9A-AI%E3%80%8C%E5%AF%B9%E8%AF%9D%E6%8A%80%E5%B7%A7%E3%80%8D"><span class="toc-number">1.4.2.</span> <span class="toc-text">监督微调：教会 AI「对话技巧」</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E6%93%8D%E4%BD%9C"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">具体操作</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%B9%E6%AF%94%E5%AE%9E%E9%AA%8C"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">对比实验</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%BE%AE%E8%B0%83-Vs-%E9%A2%84%E8%AE%AD%E7%BB%83%E7%9A%84%E6%88%90%E6%9C%AC"><span class="toc-number">1.4.2.3.</span> <span class="toc-text">微调 Vs 预训练的成本</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%9A%E8%AE%A9-AI%E3%80%8C%E6%8A%95%E5%85%B6%E6%89%80%E5%A5%BD%E3%80%8D"><span class="toc-number">1.4.3.</span> <span class="toc-text">强化学习：让 AI「投其所好」</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">操作流程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">关键技术</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.</span> <span class="toc-text">初始大语言模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%95%E4%B8%BA-LLM-%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.1.</span> <span class="toc-text">何为 LLM 模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%8F%91%E5%B1%95"><span class="toc-number">2.2.</span> <span class="toc-text">语言模型发展</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%83%BD%E5%8A%9B"><span class="toc-number">2.3.</span> <span class="toc-text">大语言模型的能力</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%92%8C%E4%BC%A0%E7%BB%9F-AI-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">2.4.</span> <span class="toc-text">大语言模型和传统 AI 的区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Transformer-%E6%A8%A1%E5%9E%8B"><span class="toc-number">3.</span> <span class="toc-text">Transformer 模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E9%80%9F%E4%BA%86%E8%A7%A3"><span class="toc-number">3.1.</span> <span class="toc-text">快速了解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#GPT-%E6%A8%A1%E5%9E%8B%E6%98%AF%E6%80%8E%E4%B9%88%E7%9F%A5%E9%81%93%E5%90%8E%E9%9D%A2%E5%BA%94%E8%AF%A5%E8%A1%A5%E5%85%A8%E4%BB%80%E4%B9%88%E5%86%85%E5%AE%B9%E5%91%A2%EF%BC%9F"><span class="toc-number">3.1.1.</span> <span class="toc-text">GPT 模型是怎么知道后面应该补全什么内容呢？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#GPT-%E6%A8%A1%E5%9E%8B%E5%8F%88%E6%98%AF%E6%80%8E%E4%B9%88%E9%A2%84%E6%B5%8B%E4%B8%8B%E4%B8%80%E4%B8%AA%E8%AF%8D%E7%9A%84%E5%91%A2%EF%BC%9F"><span class="toc-number">3.1.2.</span> <span class="toc-text">GPT 模型又是怎么预测下一个词的呢？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#GPT-%E6%A8%A1%E5%9E%8B%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%B8%8B%E4%B8%80%E4%B8%AA%E5%8D%95%E8%AF%8D%E5%87%BA%E7%8E%B0%E7%9A%84%E6%A6%82%E7%8E%87%E6%98%AF%E5%A4%9A%E5%B0%91%E5%91%A2%EF%BC%9F"><span class="toc-number">3.1.3.</span> <span class="toc-text">GPT 模型如何判断下一个单词出现的概率是多少呢？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Transformer-%E6%A0%B8%E5%BF%83%E7%BB%93%E6%9E%84"><span class="toc-number">3.2.</span> <span class="toc-text">Transformer 核心结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BE%93%E5%85%A5%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-number">3.2.1.</span> <span class="toc-text">输入预处理</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Token-%E5%8C%96"><span class="toc-number">3.2.1.1.</span> <span class="toc-text">Token 化</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B5%8C%E5%85%A5%E5%B1%82%EF%BC%88Embedding-Layer%EF%BC%89"><span class="toc-number">3.2.1.2.</span> <span class="toc-text">嵌入层（Embedding Layer）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BD%8D%E7%BD%AE%E7%BC%96%E7%A0%81%EF%BC%88Positional-Encoding%EF%BC%89"><span class="toc-number">3.2.1.3.</span> <span class="toc-text">位置编码（Positional Encoding）</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E7%A0%81%E5%99%A8%EF%BC%88Encoder%EF%BC%89%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">3.2.2.</span> <span class="toc-text">编码器（Encoder）工作流程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%9B%AE%E6%A0%87"><span class="toc-number">3.2.2.1.</span> <span class="toc-text">核心目标</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E6%9C%BA%E5%88%B6"><span class="toc-number">3.2.2.2.</span> <span class="toc-text">关键机制</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%A0%86%E5%8F%A0%E5%A2%9E%E5%BC%BA"><span class="toc-number">3.2.2.3.</span> <span class="toc-text">堆叠增强</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E7%A0%81%E5%99%A8%EF%BC%88Decoder%EF%BC%89%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">3.2.3.</span> <span class="toc-text">解码器（Decoder）工作流程</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%9B%AE%E6%A0%87-1"><span class="toc-number">3.2.3.1.</span> <span class="toc-text">核心目标</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E6%9C%BA%E5%88%B6-1"><span class="toc-number">3.2.3.2.</span> <span class="toc-text">关键机制</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%BE%93%E5%87%BA%E5%A4%84%E7%90%86"><span class="toc-number">3.2.3.3.</span> <span class="toc-text">输出处理</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Transformer-%E5%8F%98%E7%A7%8D"><span class="toc-number">3.3.</span> <span class="toc-text">Transformer 变种</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%85%E7%BC%96%E7%A0%81%E5%99%A8%EF%BC%88Encoder-only%EF%BC%89-%E8%87%AA%E7%BC%96%E7%A0%81%E6%A8%A1%E5%9E%8B-%E2%80%94%E2%80%94-%E9%80%82%E5%90%88-%E2%80%9C%E7%90%86%E8%A7%A3%E5%9E%8B%E2%80%9D-%E4%BB%BB%E5%8A%A1"><span class="toc-number">3.3.1.</span> <span class="toc-text">仅编码器（Encoder-only）&#x2F; 自编码模型 —— 适合 “理解型” 任务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%85%E8%A7%A3%E7%A0%81%E5%99%A8%EF%BC%88Decoder-only%EF%BC%89-%E8%87%AA%E5%9B%9E%E5%BD%92%E6%A8%A1%E5%9E%8B-%E2%80%94%E2%80%94-%E9%80%82%E5%90%88-%E2%80%9C%E7%94%9F%E6%88%90%E5%9E%8B%E2%80%9D-%E4%BB%BB%E5%8A%A1"><span class="toc-number">3.3.2.</span> <span class="toc-text">仅解码器（Decoder-only）&#x2F; 自回归模型 —— 适合 “生成型” 任务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%96%E7%A0%81%E5%99%A8-%E8%A7%A3%E7%A0%81%E5%99%A8%EF%BC%88Encoder-Decoder%EF%BC%89%E2%80%94%E2%80%94-%E9%80%82%E5%90%88-%E2%80%9C%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E8%BD%AC%E6%8D%A2%E2%80%9D-%E4%BB%BB%E5%8A%A1"><span class="toc-number">3.3.3.</span> <span class="toc-text">编码器 - 解码器（Encoder-Decoder）—— 适合 “输入输出转换” 任务</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%88%90%E4%B8%BA%E6%8F%90%E9%97%AE%E5%B7%A5%E7%A8%8B%E5%B8%88%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">如何成为提问工程师？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GPT-%E7%9A%84%E8%83%BD%E5%8A%9B"><span class="toc-number">4.1.</span> <span class="toc-text">GPT 的能力</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#AI-%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7"><span class="toc-number">4.1.1.</span> <span class="toc-text">AI 聊天助手的局限性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E8%AE%A9%E5%AE%83%E7%9A%84%E8%83%BD%E5%8A%9B%E4%B8%BA%E6%88%91%E4%BB%AC%E6%89%80%E7%94%A8%E5%91%A2%EF%BC%9F"><span class="toc-number">4.1.2.</span> <span class="toc-text">怎么让它的能力为我们所用呢？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E9%AB%98%E6%95%88%E7%9A%84%E6%8F%90%E9%97%AE%EF%BC%9F"><span class="toc-number">4.2.</span> <span class="toc-text">如何高效的提问？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E6%A0%B7%E6%89%8D%E7%AE%97%E6%98%AF%E5%A5%BD%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">4.2.1.</span> <span class="toc-text">怎么样才算是好的问题？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%8F%90%E9%97%AE%E6%89%8D%E8%83%BD%E6%9B%B4%E5%A5%BD%E7%9A%84%E5%BE%97%E5%88%B0%E6%83%B3%E8%A6%81%E7%9A%84%E7%AD%94%E6%A1%88%EF%BC%9F"><span class="toc-number">4.2.2.</span> <span class="toc-text">如何提问才能更好的得到想要的答案？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E5%8C%96%E6%8F%90%E7%A4%BA%E8%AF%AD%EF%BC%9AICDO"><span class="toc-number">4.2.3.</span> <span class="toc-text">结构化提示语：ICDO</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AI-%E8%B0%83%E6%95%99%E5%B0%8F%E6%8A%80%E5%B7%A7"><span class="toc-number">4.3.</span> <span class="toc-text">AI 调教小技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%8F%E6%A0%B7%E6%9C%AC%E6%8F%90%E7%A4%BA%EF%BC%9A%E7%BB%99-AI-%E6%89%93%E4%B8%AA%E6%A0%B7"><span class="toc-number">4.3.1.</span> <span class="toc-text">小样本提示：给 AI 打个样</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%9D%E7%BB%B4%E8%BF%9E%EF%BC%9A%E8%AE%A9-AI-%E4%B8%80%E6%AD%A5%E6%AD%A5%E6%9D%A5"><span class="toc-number">4.3.2.</span> <span class="toc-text">思维连：让 AI 一步步来</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/68d65074/" title="Selenium 框架三部曲 - 中">Selenium 框架三部曲 - 中</a><time datetime="2025-07-13T01:21:00.000Z" title="发表于 2025-07-13 09:21:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/261faf15/" title="Golang Mutex 详解">Golang Mutex 详解</a><time datetime="2025-07-12T17:30:00.000Z" title="发表于 2025-07-13 01:30:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/edd5b4e5/" title="API 接口智能化测试探索与实践">API 接口智能化测试探索与实践</a><time datetime="2025-07-01T13:01:00.000Z" title="发表于 2025-07-01 21:01:00">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/8fe1f36/" title="AI 系列：计算机视觉-给机器装上眼睛">AI 系列：计算机视觉-给机器装上眼睛</a><time datetime="2025-06-30T15:30:00.000Z" title="发表于 2025-06-30 23:30:00">2025-06-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/c9acbf1/" title="AI 系列：搜索-从迷宫求解看人工智能关键技术">AI 系列：搜索-从迷宫求解看人工智能关键技术</a><time datetime="2025-06-30T15:29:00.000Z" title="发表于 2025-06-30 23:29:00">2025-06-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

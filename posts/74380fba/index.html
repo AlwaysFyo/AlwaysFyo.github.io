@@ -1,0 +1,497 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Git 使用规范 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Git 的使用规范， Commit 填写、提交&#x2F;审批 Merge 请求、拉分支等">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 使用规范">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/74380fba/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="Git 的使用规范， Commit 填写、提交&#x2F;审批 Merge 请求、拉分支等">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2025-04-01T12:12:00.000Z">
+<meta property="article:modified_time" content="2025-07-15T13:15:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="Git">
+<meta property="article:tag" content="工具相关">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Git 使用规范",
+  "url": "https://alwaysfyo.github.io/posts/74380fba/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2025-04-01T12:12:00.000Z",
+  "dateModified": "2025-07-15T13:15:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/74380fba/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Git 使用规范',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Git 使用规范</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Git 使用规范</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-01T12:12:00.000Z" title="发表于 2025-04-01 20:12:00">2025-04-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-15T13:15:00.000Z" title="更新于 2025-07-15 21:15:00">2025-07-15</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/">开发工具</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="提交-Commit-填写规范"><a href="#提交-Commit-填写规范" class="headerlink" title="提交 Commit 填写规范"></a>提交 Commit 填写规范</h2><ol>
+<li>填写描述的格式如下</li>
+</ol>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;type&gt;:&lt;subject&gt;</span><br><span class="line"></span><br><span class="line">空行</span><br><span class="line"></span><br><span class="line">&lt;body&gt; </span><br><span class="line"></span><br><span class="line">1.原因分析：无</span><br><span class="line"></span><br><span class="line">2.修改方法：无</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line"></span><br><span class="line">空行</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>【 type说明 】如下：</strong></p>
+<table>
+<thead>
+<tr>
+<th><strong>type 名称</strong></th>
+<th><strong>type 说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>新增特性</td>
+<td>新的功能点、新的需求</td>
+</tr>
+<tr>
+<td>Bug 修复</td>
+<td>修复的 Bug：现场的 Bug、测试阶段的 Bug，线上环节的 BUG</td>
+</tr>
+<tr>
+<td>文档修改</td>
+<td>只是修改了文档：注释，接口、README.md 等</td>
+</tr>
+<tr>
+<td>样式修改</td>
+<td>不影响代码功能的修改：CSS 样式、代码格式化等</td>
+</tr>
+<tr>
+<td>代码重构</td>
+<td>代码更改既不修复错误也不添加功能</td>
+</tr>
+<tr>
+<td>性能优化</td>
+<td>代码更改可以提高性能</td>
+</tr>
+<tr>
+<td>测试代码</td>
+<td>添加缺失测试或更正现有测试</td>
+</tr>
+<tr>
+<td>编译代码</td>
+<td>影响构建系统或外部依赖项的更改：pom，dockerfile 等</td>
+</tr>
+<tr>
+<td>持续集成</td>
+<td>我们的CI配置文件和脚本的更改：Jenkinsfile 等</td>
+</tr>
+<tr>
+<td>回退更改</td>
+<td>代码回退提交更改</td>
+</tr>
+<tr>
+<td>其他提交</td>
+<td>除以上所有类型之外的提交更改</td>
+</tr>
+</tbody></table>
+<p><strong>【 subject 说明 】如下：</strong></p>
+<pre><code>如果提交类型是【Bug 修复】，则简要描述直接填写 Bug 的 JIRA 单或者 DTS 单链接 + 问题描述
+
+如果提交类型是【新增特性】，则简要描述填写对应需求的 JIRA 单 + 需求描述，如需求过于庞大，则应拆分成小的功能点提交代码，便于 Review 人员审核，也有利于 Bug 的回溯
+
+如果提交类型是【代码重构】，则简要描述直接填写对应的 JIRA 单+简要描述
+
+如果提交类型是【性能优化】，则简要描述直接填写对应的 JIRA 单+简要描述
+</code></pre>
+<p>其他不做强制要求，如果有对应的 JIRA 单，则附上 JIRA 单，后面再附上简要描述</p>
+<p>**【 body 说明 】如下：	**</p>
+<p>详细描述，力争语句表达清晰此次提交的代码具体涉及的原因分析和修改方法，如功能点很多则应使用序号列出代码所涉及的功能点。对于 Bug 修复，代码重构，性能优化必须有原因分析，其他可以为空，如下所示</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.原因分析：后台代码对于地址进行强 IP 校验</span><br><span class="line">2.修改方法： </span><br><span class="line">1）取消后台代码对于地址的强 IP 校验</span><br><span class="line">2）支持解析地址从中获取 IP / 域名和端口号</span><br></pre></td></tr></table></figure>
+
+<p>举例说明如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">新增特性：DCP-175 数据开发-解决方案/业务流程支持操作记录</span><br><span class="line"></span><br><span class="line">1.原因分析：无</span><br><span class="line">2.修改方法：</span><br><span class="line">1）增加实时 common 模块 OperateLogHandler 的切入点</span><br><span class="line">2）增加 FlinkSqlTable 控制层的日志收集行为</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Bug 修复：DTS001771957 多次导入实时任务业务流，第一次导入的实时任务业务流的信息未清空</span><br><span class="line"></span><br><span class="line">1.原因分析：实时业务流导入时，上传完文件以后点击右上角关闭弹窗，未调用内部清空方法</span><br><span class="line">2.修改方法：</span><br><span class="line">1）关闭窗口时及时调用清空方法</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">文档修改：DCP-101 取消离线开发业务流函数</span><br><span class="line"></span><br><span class="line">1.原因分析：无</span><br><span class="line">2.修改方法：</span><br><span class="line">1）废弃数据开发业务流函数相关接口</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">样式修改：统一各模块首页样式，各模块首页展示框部分存在阴影，部分不存在</span><br><span class="line"></span><br><span class="line">1.原因分析：无</span><br><span class="line">2.修改方法：</span><br><span class="line">1）样式统一为阴影</span><br><span class="line">2）修改 xxx 模块的展示框</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">代码重构：DCP-XXX 数据集成支持不同数据源接口抽象不合理</span><br><span class="line"></span><br><span class="line">1.原因分析：通过一个大 json 代表所有参数不利于后续扩展</span><br><span class="line">2.修改方法：</span><br><span class="line">1）剥离出数据源，字段映射，通道控制三大基本信息</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">性能优化：DCP-XXX 离线开发长时间允许回调速度显著降低</span><br><span class="line"></span><br><span class="line">1.原因分析：xxxSQL 查询通过 in 关键字进行匹配，效率低下</span><br><span class="line">2.修改方法：</span><br><span class="line">1）优化 sql 逻辑，通过 join 来规避解决in查询性能低的场景</span><br><span class="line">2）增加部分字段的索引配置</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">编译代码：统一 hadoop 版本</span><br><span class="line"></span><br><span class="line">1.原因分析：无</span><br><span class="line">2.修改方法：</span><br><span class="line">1）将 xxx 包的版本号修改为 xxx</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">回退更改：提交 xxx 代码导致 xxx 模块代码被覆盖</span><br><span class="line"></span><br><span class="line">1.原因分析：无</span><br><span class="line">2.修改方法：</span><br><span class="line">1）回退 xxx 模块的代码</span><br></pre></td></tr></table></figure>
+
+<h2 id="提交-Merge-请求规范"><a href="#提交-Merge-请求规范" class="headerlink" title="提交 Merge 请求规范"></a>提交 Merge 请求规范</h2><ol>
+<li>前提：分支可正常构建，特性分支经过验证，其他分支经过充分自验。</li>
+<li>标题（Title）填写说明（必选）：</li>
+</ol>
+<p>1）填写本次请求的概述，要求简短且可以看得懂。</p>
+<p>举例说明如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">下载中心特性合入</span><br><span class="line">数据探索服务启动慢性能优化</span><br></pre></td></tr></table></figure>
+
+<p>对于 Merge 这块的 Title 说明会弱化，不需要强制大家附上相关的 JIRA 或者 WeTrack 单号</p>
+<ol>
+<li>Description 填写说明（必选）：</li>
+</ol>
+<p>1）填写本次 Merger 的涉及的范围，从大的方面上讲，以 1，2，3 来标识</p>
+<p>举例说明如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.数据接入模块支持下载中心相关代码开发</span><br><span class="line">2.数据标准模块支持下载中心相关代码开发</span><br><span class="line">3.数据组织模块支持下载中心相关代码开发</span><br><span class="line">4.离线开发模块支持下载中心相关代码开发</span><br><span class="line">5.实时开发模块支持下载中心相关代码开发</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>Assignee 填写说明（必选）：</li>
+</ol>
+<p>1）评审人员选择顺序：小组内部成员–模块负责人–系分&#x2F;开发主管。可以通过 <strong>@ 工号或姓名</strong>邀请多人评审</p>
+<p>2）版本邻近发布阶段（如最后一轮系统测试转测阶段、临时修改内容提供现场时），需要邀请系分、开发主管评审</p>
+<ol start="3">
+<li>milestone 填写说明（可选）：</li>
+</ol>
+<p>1）里程碑暂时不使用</p>
+<ol start="4">
+<li>Labels 填写说明（可选）：</li>
+</ol>
+<p>1）保持和 Commit 时候的类型说明一致</p>
+<ol start="5">
+<li>选择是否合入后删除源分支、是否合并提交</li>
+</ol>
+<p>1）若 Merge 不需要保留源分支，则勾选：Delete source branch when merge request is accepted</p>
+<p>2）若 Merge 时可以合并 commit，则勾选：Squash commits when merge request is accepted</p>
+<ol start="6">
+<li>若主审人没有 Merger 权限，待代码评审完成后，可 @ 如下有权限的人进行 Merge</li>
+</ol>
+<p>1）开发主管</p>
+<p>2）系分</p>
+<p>3）开发部负责人</p>
+<h2 id="审批-Merge-请求规范"><a href="#审批-Merge-请求规范" class="headerlink" title="审批 Merge 请求规范"></a>审批 Merge 请求规范</h2><ol>
+<li>同意 Merge 请求时候最后一次填写的评估规范</li>
+</ol>
+<p>1）确认合规同意合入备注：必须填写以上 8 个字，防止啥也不看直接点击 Merge ，后续会慢慢放看 Merge 权限，本质上是引导大家需要去做 check</p>
+<ol start="2">
+<li>Merge 时需要审核的内容</li>
+</ol>
+<p>1）符合 Merge 条件，如已测试通过、已充分自验、可以正常构建</p>
+<p>2）请求的填写格式符合规范</p>
+<p>3）已经完成代码评审并按规范填写了评审内容</p>
+<h2 id="拉分支-Tag-规范"><a href="#拉分支-Tag-规范" class="headerlink" title="拉分支 &#x2F; Tag 规范"></a>拉分支 &#x2F; Tag 规范</h2><ol>
+<li><p>命名规范：<strong>版本号-类别-关键 ID-概述</strong>，总计由 4 部分组成，下方会对每部分内容做详细说明</p>
+<p> 示例 1：V1.1.6.0-Feature-DCP-198-开源漏洞修复及开源协议合规</p>
+<p> 示例 2：V1.1.1-performance-20230430-大后端版本</p>
+<p> 示例 3：V1.2.1-feature-20240630-统一底座版本冒烟用例</p>
+</li>
+<li><p>版本号说明 VMP 系统标准版本号：V1.001.0000006.0、V1.001.0000006.1，由项目经理在 VMP 系统建立，走发布流程及公司级流程时必须使用标准写法，其他时间使用缩写</p>
+<p> 缩写版本号：V1.1.6.0、v1.1.6.0，即保留四位，每位去掉所有可以去掉的 0</p>
+<p> 如：V1.1.10.0，这两个 0 都要保留，前面 10 代表第 10 个版本，后面的 0 代表修订版本</p>
+</li>
+<li><p>类别说明</p>
+</li>
+</ol>
+<p>1）新增特性：Feature</p>
+<p>2）问题修复：Bug</p>
+<p>3）文档修改：Docs</p>
+<p>4）样式修改：Style</p>
+<p>5）代码重构：Refactor</p>
+<p>6）性能优化：Perf</p>
+<p>7）测试代码：Test</p>
+<p>8）编译代码：Chore</p>
+<p>9）持续集成：CI</p>
+<p>10）项目定制：Custome</p>
+<p>11）发布版本：Gdp</p>
+<p>12）其他：Other</p>
+<ol start="4">
+<li>关键 ID 说明</li>
+</ol>
+<p>1）针对新增特性类型：必填，关键 ID 为 JIRA 的关键字（单号、特性ID），如 DCP-198</p>
+<p>2）针对问题修复类型：必填，关键 ID 为 问题单号。若有多个，仅填写一个重要的即可</p>
+<p>3）针对文档修改类型：选填，关键 ID 可以为空，或者是 JIRA 单号</p>
+<p>4）针对样式修改类型：选填，关键 ID 可以为空，或者是 JIRA 单号</p>
+<p>5）针对代码重构类型：必填，关键 ID 是 JIRA 单号</p>
+<p>6）针对性能优化类型：必填，关键 ID 是 JIRA 单号</p>
+<p>7）针对测试代码类型：选填，关键 ID 可以为空，或者是 JIRA 单号</p>
+<p>8）针对编译代码类型：选填，关键 ID 可以为空，或者是 JIRA 单号</p>
+<p>9）针对持续集成类型：选填，关键 ID 可以为空，或者是 JIRA 单号</p>
+<p>10）针对项目定制类型：必填，关键 ID 是 JIRA 单号或者 需求单号</p>
+<p>11）针对发布版本类型：不需要填写，关键 ID 为空</p>
+<p>12）针对其他类型：选填，关键ID可以为空，或者是JIRA单号</p>
+<ol start="5">
+<li>概述说明</li>
+</ol>
+<p>1）针对此分支做简洁、清楚的描述，可以是中文也可以是英文</p>
+<p>2）对于发布分支，概述填写为：Release</p>
+<h2 id="分支保护与清理"><a href="#分支保护与清理" class="headerlink" title="分支保护与清理"></a>分支保护与清理</h2><ol>
+<li>需要保护的分支，提供充分理由后，请有权限的人进行保护</li>
+<li>谁创建谁清理。版本发布后，各小组对不必要保留的分支再次进行审查清理（提交 Merge 时可先做一次筛选）</li>
+</ol>
+<h2 id="关于冲突解决"><a href="#关于冲突解决" class="headerlink" title="关于冲突解决"></a>关于冲突解决</h2><ol>
+<li>flyway 文件冲突的时候，需要新建一个文件，不允许合并内容。</li>
+<li>特性开发过程中定期执行代码反合的动作，尽量保持和主干代码一致，防止最后一次提交时冲突过于严重。</li>
+</ol>
+<h2 id="关于-JIRA-填写规范"><a href="#关于-JIRA-填写规范" class="headerlink" title="关于 JIRA 填写规范"></a>关于 JIRA 填写规范</h2><ol>
+<li>JIRA 主要用于流程记录，记录你整个特性开发过程中的主心骨</li>
+<li>每个环节只填写每个环节该输出的东西，养成及时记录的开发习惯</li>
+<li>串讲环节主要填写需求背景，需求的主要实现点，可以附带一些针对 DFX 的考虑</li>
+<li>反串讲环节主要填写串讲环节会后确认的内容和遗漏的内容</li>
+<li>方案设计环节主要填写整个特性实现的关键路径，例如模块图，时序图，流程图等，并且做简要描述，指导整个代码开发</li>
+<li>方案评审环节主要填写对于方案设计环节的补充</li>
+<li>代码开发环节主要填写代码开发过程中遇到的困难（包括联调），这里不需要很细，主要指的那些耗时 0.5 天以上的困难</li>
+<li>代码评审环节主要填写代码评审的相关内容</li>
+<li>转测自验环节主要填写自验的情况，总共多少用例，通过多少用例，需要附上测试用例的清单，防止随意填写</li>
+</ol>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/74380fba/">https://alwaysfyo.github.io/posts/74380fba/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%B7%A5%E5%85%B7%E7%9B%B8%E5%85%B3/">工具相关</a><a class="post-meta__tags" href="/tags/Git/">Git</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/3fab784d/" title="Git 其他"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Git 其他</div></div><div class="info-2"><div class="info-item-1">其他操作、常用忽略文件、配置别名、显示颜色</div></div></div></a><a class="pagination-related" href="/posts/4a17b156/" title="Hello World"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Hello World</div></div><div class="info-2"><div class="info-item-1">Hexo 博客的第一篇文章：站点搭建、常用命令与初始配置说明</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/226ce186/" title="Git 远程仓库"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-01</div><div class="info-item-2">Git 远程仓库</div></div><div class="info-2"><div class="info-item-1">-u 意同 --set-upstream，用以将本地库分支与远程库分支关联</div></div></div></a><a class="pagination-related" href="/posts/1992b905/" title="Git 基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-01</div><div class="info-item-2">Git 基础</div></div><div class="info-2"><div class="info-item-1">git config命令的--global参数，表明这台机器上的所有Git仓库都会使用这个配置，也可以对某个仓库指定不同的用户名和邮箱地址。</div></div></div></a><a class="pagination-related" href="/posts/3fab784d/" title="Git 其他"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-01</div><div class="info-item-2">Git 其他</div></div><div class="info-2"><div class="info-item-1">其他操作、常用忽略文件、配置别名、显示颜色</div></div></div></a><a class="pagination-related" href="/posts/798d2056/" title="Git 分支"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-01</div><div class="info-item-2">Git 分支</div></div><div class="info-2"><div class="info-item-1">在实际开发中，我们应该按照几个基本原则进行分支管理：</div></div></div></a><a class="pagination-related" href="/posts/d3e29627/" title="Git 标签"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-01</div><div class="info-item-2">Git 标签</div></div><div class="info-2"><div class="info-item-1">tag就是一个让人容易记住的有意义的名字，它跟某个commit绑在一起。</div></div></div></a><a class="pagination-related" href="/posts/5fb0e9d1/" title="Git 版本控制"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-04-01</div><div class="info-item-2">Git 版本控制</div></div><div class="info-2"><div class="info-item-1">git add可以反复多次使用，添加多个文件，git commit可以一次提交很多文件，-m后面输入的是本次提交说明。</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E4%BA%A4-Commit-%E5%A1%AB%E5%86%99%E8%A7%84%E8%8C%83"><span class="toc-number">1.</span> <span class="toc-text">提交 Commit 填写规范</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E4%BA%A4-Merge-%E8%AF%B7%E6%B1%82%E8%A7%84%E8%8C%83"><span class="toc-number">2.</span> <span class="toc-text">提交 Merge 请求规范</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A1%E6%89%B9-Merge-%E8%AF%B7%E6%B1%82%E8%A7%84%E8%8C%83"><span class="toc-number">3.</span> <span class="toc-text">审批 Merge 请求规范</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%89%E5%88%86%E6%94%AF-Tag-%E8%A7%84%E8%8C%83"><span class="toc-number">4.</span> <span class="toc-text">拉分支 &#x2F; Tag 规范</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%94%AF%E4%BF%9D%E6%8A%A4%E4%B8%8E%E6%B8%85%E7%90%86"><span class="toc-number">5.</span> <span class="toc-text">分支保护与清理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3"><span class="toc-number">6.</span> <span class="toc-text">关于冲突解决</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E-JIRA-%E5%A1%AB%E5%86%99%E8%A7%84%E8%8C%83"><span class="toc-number">7.</span> <span class="toc-text">关于 JIRA 填写规范</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/68d65074/" title="Selenium 框架三部曲 - 中">Selenium 框架三部曲 - 中</a><time datetime="2025-07-13T01:21:00.000Z" title="发表于 2025-07-13 09:21:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/261faf15/" title="Golang Mutex 详解">Golang Mutex 详解</a><time datetime="2025-07-12T17:30:00.000Z" title="发表于 2025-07-13 01:30:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/edd5b4e5/" title="API 接口智能化测试探索与实践">API 接口智能化测试探索与实践</a><time datetime="2025-07-01T13:01:00.000Z" title="发表于 2025-07-01 21:01:00">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/8fe1f36/" title="AI 系列：计算机视觉-给机器装上眼睛">AI 系列：计算机视觉-给机器装上眼睛</a><time datetime="2025-06-30T15:30:00.000Z" title="发表于 2025-06-30 23:30:00">2025-06-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/c9acbf1/" title="AI 系列：搜索-从迷宫求解看人工智能关键技术">AI 系列：搜索-从迷宫求解看人工智能关键技术</a><time datetime="2025-06-30T15:29:00.000Z" title="发表于 2025-06-30 23:29:00">2025-06-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

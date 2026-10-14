@@ -1,0 +1,481 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Golang Mutex 详解 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="在一些多进程或多线程的场景下，可能会出现数据不一致的情况，这时候就需要通过加锁来保证数据的一致性，下面可以简单来看几个例子，快速了解一下锁的…">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang Mutex 详解">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/261faf15/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="在一些多进程或多线程的场景下，可能会出现数据不一致的情况，这时候就需要通过加锁来保证数据的一致性，下面可以简单来看几个例子，快速了解一下锁的…">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2025-07-12T17:30:00.000Z">
+<meta property="article:modified_time" content="2025-07-13T13:06:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="软件测试, 自动化测试, 接口自动化测试, UI自动化测试, Python, 开发者, 程序猿, 极客, 编程, 代码, 开源, IT网站, Developer, flask, 性能测试, Jmeter, unittest, pytest, Robot Framework">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Golang Mutex 详解",
+  "url": "https://alwaysfyo.github.io/posts/261faf15/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2025-07-12T17:30:00.000Z",
+  "dateModified": "2025-07-13T13:06:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/261faf15/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Golang Mutex 详解',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Golang Mutex 详解</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Golang Mutex 详解</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-07-12T17:30:00.000Z" title="发表于 2025-07-13 01:30:00">2025-07-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-13T13:06:00.000Z" title="更新于 2025-07-13 21:06:00">2025-07-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>11分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713210326573.png"></p>
+<h2 id="1-快速了解"><a href="#1-快速了解" class="headerlink" title="1. 快速了解"></a>1. 快速了解</h2><p>在一些多进程或多线程的场景下，可能会出现数据不一致的情况，这时候就需要通过加锁来保证数据的一致性，下面可以简单来看几个例子，快速了解一下锁的重要性。</p>
+<ul>
+<li><strong>不用锁的情况</strong></li>
+</ul>
+<p>由于没有加锁，可能会导致 total 最终得到的值不是期望的结果。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> lock</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;sync&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> total <span class="type">int</span></span><br><span class="line"><span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> wg.Done()</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">100000</span>; i++ &#123;</span><br><span class="line">        total += <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sub</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> wg.Done()</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">100000</span>; i++ &#123;</span><br><span class="line">        total -= <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    wg.Add(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">go</span> add()</span><br><span class="line">    <span class="keyword">go</span> sub()</span><br><span class="line">    wg.Wait()</span><br><span class="line">    fmt.Println(total)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>之所以期望不一致，是因为每次执行代码计算操作时，在编译器中只是显示一行 <code>a+=1</code> 或 <code>a-=1</code>。但在代码的底层其实是分为了三步执行，而由于没有加锁，所以这三步操作并不能保证使原子性的。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713210326575.png"></p>
+<ul>
+<li><strong>加锁</strong></li>
+</ul>
+<p>当代码带锁之后，每一步操作的同一时间段都不会有其他进程操作，从而可以保证数据的一致性。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> lock</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;sync&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> total <span class="type">int</span></span><br><span class="line"><span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line"><span class="keyword">var</span> lock sync.Mutex    <span class="comment">//定义一个锁变量</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> wg.Done()</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">100000</span>; i++ &#123;</span><br><span class="line">        lock.Lock()</span><br><span class="line">        total += <span class="number">1</span></span><br><span class="line">        lock.Unlock()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sub</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> wg.Done()</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">100000</span>; i++ &#123;</span><br><span class="line">        lock.Lock()</span><br><span class="line">        total -= <span class="number">1</span></span><br><span class="line">        lock.Unlock()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    wg.Add(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">go</span> add()</span><br><span class="line">    <span class="keyword">go</span> sub()</span><br><span class="line">    wg.Wait()</span><br><span class="line">    fmt.Println(total)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>使用 atomic 原子操作</strong></li>
+</ul>
+<p>如果想达到数据一致性的效果，除了使用加锁操作外，也可以使用 atomic 原子操作。</p>
+<p>而原子操作简单来讲，就是在多线程或多进程环境下，不可被中断且执行过程具有原子性（不可分割），它能够保证数据一致性与并发安全的操作。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> lock</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;sync&quot;</span></span><br><span class="line">    <span class="string">&quot;sync/atomic&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> total <span class="type">int32</span>    <span class="comment">//需要改变</span></span><br><span class="line"><span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> wg.Done()</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">100000</span>; i++ &#123;</span><br><span class="line">        atomic.AddInt32(&amp;total, <span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">sub</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">defer</span> wg.Done()</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">100000</span>; i++ &#123;</span><br><span class="line">        atomic.AddInt32(&amp;total, <span class="number">-1</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    wg.Add(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">go</span> add()</span><br><span class="line">    <span class="keyword">go</span> sub()</span><br><span class="line">    wg.Wait()</span><br><span class="line">    fmt.Println(total)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-Mutex-的常见模式"><a href="#2-Mutex-的常见模式" class="headerlink" title="2. Mutex 的常见模式"></a>2. Mutex 的常见模式</h2><p>Mutex 这个名称的由来应该是 mutual exclusion 的前缀组合，俗称「互斥体」或「互斥锁」。 go 语言 sync 包中 Mutex 的数据结构是下面这样的：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Mutext <span class="keyword">struct</span> &#123;</span><br><span class="line">    state <span class="type">int32</span></span><br><span class="line">    sema <span class="type">uint32</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为足够简单，所以不需要额外的初始化。</p>
+<ul>
+<li>此结构的零值就是一个有效的互斥锁，处于 unlock 的状态，state 存储的就是互斥锁的状态，加锁和解锁都是通过 atomic 包提供的函数原子性的操作该字段。</li>
+<li>而 sema 用作一个信号量，主要用作等待队列。</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *Mutex)</span></span> Lock() &#123;</span><br><span class="line">   ......</span><br><span class="line">   atomic.CompareAndSwapInt32(&amp;m.state, <span class="number">0</span>, mutexLocked)</span><br><span class="line">   ......</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *Mutex)</span></span> Unlock() &#123;</span><br><span class="line">   ......</span><br><span class="line">   atomic.AddInt32(&amp;m.state, -mutexLocked)</span><br><span class="line">   ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-正常模式"><a href="#2-1-正常模式" class="headerlink" title="2.1 正常模式"></a>2.1 正常模式</h3><p>Mutex 有两种模式，在正常模式下，一个尝试加锁的 goroutine 会先自旋几次，尝试通过原子操作获得锁。若几次自旋之后仍不能获得锁，则通过信号量排队等待，所有的等待者都会按照先入先出的顺序排队。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713210326576.png"></p>
+<p>但是当锁被释放，第一个等待者被唤醒后，并不会直接拥有锁，而是需要和后来者竞争，也就是那些处于自旋阶段尚未排队等待的 goroutine。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713210326577.png"></p>
+<p>这种情况下，后者更有优势，一方面它们已经在 CPU 上运行了，自然比刚被唤醒的 goroutine 更有优势。</p>
+<p>另一方面，处于自旋状态的 goroutine 可以有很多，而被唤醒的 goroutine 每次只有一个，所以被唤醒的 goroutine 有很大概率拿不到锁，这种情况下它会被重新插入到队列的头部而不是尾部。而当一个 goroutine 本次加锁等待的时间超过了一毫秒后，它会把当前 Mutex 从正常模式切换至饥饿模式。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713210326578.png"></p>
+<h3 id="2-2-饥饿模式"><a href="#2-2-饥饿模式" class="headerlink" title="2.2 饥饿模式"></a>2.2 饥饿模式</h3><p>在饥饿模式下，Mutex 的所有权从执行 unlock 的 goroutine 直接传递给等待队列头部的 goroutine。后来者不会自旋，也不会尝试获得锁，即使 Mutex 处于 unlock 的状态，它们会直接从队列的尾部排队等待。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713210326579.png"></p>
+<p>当一个等待者获得锁之后，它会在以下两种情况时将 Mutex 由饥饿模式切换回正常模式。</p>
+<ul>
+<li>第一种情况是他的等待时间小于一毫秒，也就是他刚来不久。</li>
+<li>第二种情况是他是最后一个等待者，等待队列已经空了，后面自然就没有饥饿的 goroutine 了。</li>
+</ul>
+<p>综上所述，在正常模式下，自旋和排队是同时存在的。执行 lock 的 goroutine 会先一边自旋一边抢锁，尝试过几次后，如果还没拿到锁就需要去排队等待了。这种在排队之前先让大家来抢的模式能够有更高的吞吐量，因为频繁的挂起和唤醒 goroutine 会带来较多的开销，但是又不能无限制地自旋，要把自旋的开销控制在较小的范围内。</p>
+<p>所以在正常模式下，Mutex 有更好的性能，但是可能会出现队列尾端的 goroutine 迟迟抢不到锁的情况。而饥饿模式下不再自旋尝试，所有 goroutine 都要排队，严格的先来后到，对于防止出现尾端延迟来讲特别重要。</p>
+<h3 id="2-3-正常模式-Vs-饥饿模式"><a href="#2-3-正常模式-Vs-饥饿模式" class="headerlink" title="2.3 正常模式 Vs 饥饿模式"></a>2.3 正常模式 Vs 饥饿模式</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>正常模式（默认）</th>
+<th>饥饿模式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>目标</td>
+<td>追求效率（适合短时间持锁）</td>
+<td>追求公平（避免个别 goroutine 长期等待）</td>
+</tr>
+<tr>
+<td>新请求处理</td>
+<td>先自旋，再排队</td>
+<td>直接排队，不自旋</td>
+</tr>
+<tr>
+<td>锁释放逻辑</td>
+<td>唤醒等待队列中的第一个 goroutine（可能被新请求抢占）</td>
+<td>直接把锁交给队列头部的 goroutine（跳过抢占）</td>
+</tr>
+<tr>
+<td>切换条件</td>
+<td>等待时间 &lt; 1 毫秒</td>
+<td>等待时间 ≥ 1 毫秒（或队列头部等待超 1 毫秒）</td>
+</tr>
+</tbody></table>
+<p>举个例子：</p>
+<ul>
+<li>正常模式像「自助餐取餐」：有人在门口张望（自旋），一旦空位出现就立刻抢位。</li>
+<li>饥饿模式像「排队买票」：所有人按顺序等待，新来的人必须去队尾，不允许插队（自旋）。</li>
+</ul>
+<h2 id="3-Lock-Unlock-详解"><a href="#3-Lock-Unlock-详解" class="headerlink" title="3. Lock &amp; Unlock 详解"></a>3. Lock &amp; Unlock 详解</h2><p>接下来我们来展开 lock 和 unlock 的逻辑，首先来看一下关于 Mutex.state 的几个常量定义，state 的类型是 int32：</p>
+<ul>
+<li>第 1 位用作锁状态标识，置为 1 就表示已加锁，对应掩码常量为 mutexLocked。</li>
+<li>第 2 位用于记录是否已有 goroutine 被唤醒了，置为 1 表示已唤，醒对应掩码常量为 mutexWoken。</li>
+<li>第 3 位标识 mutext 的工作模式，0 代表正常模式，1 则代表饥饿模式，对应掩码常量被 mutexStarving。</li>
+</ul>
+<p>而常量 mutexWaiterShift 等于 3，表示除了最低 3 位以外，state 的其他位用来记录有多少个等待者在排队。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713210326580.png"></p>
+<p>然后再来看一下 lock 和 unlock 方法，两个方法中主要通过 atomic 函数实现了 Fast path，相应的 Slow path 被单独放在了 lockSlow 和 unlockSlow 方法中。根据源码注释的说法，这样是为了便于编译器对 Fast path 进行内联优化。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *Mutex)</span></span> Lock() &#123;</span><br><span class="line">    <span class="keyword">if</span> atomic.CompareAndSwapInt32(&amp;m.state, <span class="number">0</span>, mutexLocked) &#123;</span><br><span class="line">        <span class="keyword">if</span> race.Enabled &#123;</span><br><span class="line">            race.Acquire(unsafe.Pointer(m))</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    m.lockSlow()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(m *Mutex)</span></span> Unlock() &#123;</span><br><span class="line">    <span class="keyword">if</span> race.Enabled &#123;</span><br><span class="line">        _ = m.state</span><br><span class="line">        race.Release(unsafe.Pointer(m))</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">new</span> := atomic.AddInt32(&amp;m.state, -mutexLocked)</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">new</span> != <span class="number">0</span> &#123;</span><br><span class="line">        m.unlockSlow(<span class="built_in">new</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Fast path 和 Slow path 的含义：</strong></p>
+<ul>
+<li>Fast path（快路径 ）：可以理解成一条 “绿色通道” ，当 Mutex 处于理想状态，也就是没有被锁住，也没有其他 goroutine 在排队等着拿锁时，程序可以直接通过简单的操作（像 <code>atomic.CompareAndSwapInt32</code> 这种原子操作 ）快速获取锁。</li>
+<li>Slow path（慢路径 ）：如果走不了 “绿色通道”，也就是 Mutex 已经被锁住，或者有其他 goroutine 在排队等着拿锁，那程序就没办法直接获取锁了。这时候就得走一条 “慢路”，进入 <code>lockSlow</code> 或 <code>unlockSlow</code> 这样的函数去处理，要经过更复杂的流程，比如处理排队、唤醒等操作。</li>
+</ul>
+</blockquote>
+<p>lock 方法的 Fast path 期望 Mutex 处于 unlock 状态，没有 goroutine 在排队，更不会饥饿，理想状况下一个 CAS 操作就可以获得锁。但是如果 CAS 操作没能获得锁，就需要进入 Slow path，也就是 lockSlow 方法。</p>
+<blockquote>
+<p><strong>CAS 的含义：</strong></p>
+<p>CAS 是一种在多线程等场景下，能原子性地比较变量当前值与预期值，若相等则更新为新值的操作。</p>
+</blockquote>
+<p>unlock 方法同理，首先通过原子操作从 state 中减去 mutexLocked，也就是释放锁，然后根据 state 的新值来判断是否需要执行 Slow path：</p>
+<ul>
+<li>如果新值为 0，也就意味着没有其他 goroutine 在排队，所以不需要执行额外操作。</li>
+<li>如果新值不为0，那就需要进入 Slow path，看看是不是需要唤醒某个 goroutine。</li>
+</ul>
+<p>lock 和 unlock 的 Fast path就是这样，接下来我们展开 Slow path 的主要逻辑。</p>
+<h2 id="4-Mutex-自旋机制详解"><a href="#4-Mutex-自旋机制详解" class="headerlink" title="4. Mutex 自旋机制详解"></a>4. Mutex 自旋机制详解</h2><h3 id="4-1-何为-Mutex-自旋？"><a href="#4-1-何为-Mutex-自旋？" class="headerlink" title="4.1 何为 Mutex 自旋？"></a>4.1 何为 Mutex 自旋？</h3><blockquote>
+<p><strong>自旋（Spin）的核心思想：</strong> 在等待锁时不立即阻塞，而是循环检查锁是否释放，适合「锁被短暂占用」的场景。</p>
+</blockquote>
+<p>假设你和朋友去食堂打饭，窗口只有一个阿姨（锁）。</p>
+<ul>
+<li>正常情况：你发现前面有人排队（锁被占用），就乖乖站到队尾（阻塞等待）。</li>
+<li>自旋场景：你站在窗口旁边「偷看」，发现阿姨马上就要打完饭（锁即将释放），于是原地等待，避免去队尾再回来的麻烦（减少上下文切换开销）。</li>
+</ul>
+<h3 id="4-2-Golang-的-Mutex-自旋"><a href="#4-2-Golang-的-Mutex-自旋" class="headerlink" title="4.2 Golang 的 Mutex 自旋"></a>4.2 Golang 的 Mutex 自旋</h3><p>Golang 的 <code>sync.Mutex</code> 有两种工作模式：正常模式（默认）和饥饿模式。我们先聊正常模式下的自旋条件，这需要满足 4 个前提（缺一不可）：</p>
+<ol>
+<li><strong>多核环境（<code>GOMAXPROCS &gt; 1</code>）</strong><br>如果是单核 CPU（或 <code>GOMAXPROCS=1</code>），自旋的 goroutine 和持有锁的 goroutine 共享同一个 CPU，你在自旋时对方无法运行，自旋毫无意义。</li>
+<li><strong>有其他处理器（P）在运行</strong><br>Golang 的调度器（GMP 模型）中，<code>P</code>（Processor）是真正执行 goroutine 的单元。如果其他 <code>P</code> 都空闲，说明没有其他任务在跑，即使自旋也等不到锁释放，不如直接阻塞。</li>
+<li><strong>当前 P 的本地任务队列（runqueue）为空</strong><br>如果本地还有其他 goroutine 在排队（比如 <code>go func()</code> 刚创建的任务），与其自旋浪费 CPU，不如先执行这些任务，等轮到自己时再抢锁，提升整体效率。</li>
+<li><strong>未进入饥饿模式</strong><br>如果某个 goroutine 等待锁超过 1 毫秒，Mutex 会切换到饥饿模式，此时所有新请求直接排队，不再自旋。</li>
+</ol>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713210326581.png"></p>
+<h3 id="4-3-自旋的底层逻辑"><a href="#4-3-自旋的底层逻辑" class="headerlink" title="4.3 自旋的底层逻辑"></a>4.3 自旋的底层逻辑</h3><p>当满足上述条件时，goroutine 会进入自旋循环，具体做三件事：</p>
+<ol>
+<li><strong>抢「唤醒标识位」</strong><br>Mutex 中有一个标记位（<code>wakelock</code>），用来避免唤醒过多的 goroutine 同时等待。就像食堂窗口放了一个「等待牌」，只有抢到牌子的人才能留在门口自旋，其他人必须去排队。</li>
+<li><strong>有限次数自旋</strong><br>最多自旋 4 次（每次循环执行 <code>procyield</code> 函数，让 CPU 稍作休息），每次自旋都重新检查：<ul>
+<li>锁是否已释放？</li>
+<li>是否进入饥饿模式？</li>
+<li>自旋次数是否超标？<br> 一旦满足任意条件，立刻停止自旋，进入下一步操作（抢锁或排队）。</li>
+</ul>
+</li>
+<li><strong>原子操作改状态</strong><br>自旋结束后，goroutine 会通过原子操作（<code>CAS</code>）尝试修改 Mutex 的状态（<code>state</code> 字段）：<ul>
+<li>如果锁处于正常模式且未被占用，直接抢锁成功。</li>
+<li>如果锁被占用或处于饥饿模式，就加入等待队列（排队规模 +1）。</li>
+</ul>
+</li>
+</ol>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713210326582.png"></p>
+<h3 id="4-4-加锁流程"><a href="#4-4-加锁流程" class="headerlink" title="4.4 加锁流程"></a>4.4 加锁流程</h3><ol>
+<li><strong>快速路径（Fast Path）</strong><br>直接通过原子操作抢锁，成功则结束（无需自旋和排队）。</li>
+<li><strong>慢速路径（Slow Path）</strong><ul>
+<li>自旋检查：满足条件则自旋（最多 4 次），否则跳过。</li>
+<li>状态判断：<ul>
+<li>如果锁处于饥饿模式，或已被占用，当前 goroutine 加入等待队列（记录等待时间）。</li>
+<li>如果正常模式且锁可用，通过原子操作抢锁。</li>
+</ul>
+</li>
+<li>唤醒逻辑：<ul>
+<li>解锁时，若在正常模式，会尝试唤醒一个等待的 goroutine（通过 <code>semrelease</code> 函数）。</li>
+<li>若在饥饿模式，直接把锁交给队首 goroutine，无需竞争。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713210326583.png"></p>
+<blockquote>
+<p><strong>为什么要自旋？</strong></p>
+</blockquote>
+<p>自旋的核心价值是减少上下文切换开销：</p>
+<ul>
+<li>当锁被短暂持有时（比如几纳秒），自旋比阻塞（陷入内核、唤醒线程）更高效。</li>
+<li>当锁被长期持有时，自旋会浪费 CPU，此时进入饥饿模式，通过排队保证公平。</li>
+</ul>
+<h3 id="4-5-机制小结"><a href="#4-5-机制小结" class="headerlink" title="4.5 机制小结"></a>4.5 机制小结</h3><ol>
+<li><strong>自旋一定比阻塞好？</strong><br> 错！单核、本地任务队列非空时，自旋反而降低效率，必须阻塞。</li>
+<li><strong>饥饿模式一定更公平？</strong><br> 对，但牺牲了效率。Golang 通过 1 毫秒的阈值平衡两者：短等待用正常模式（自旋抢锁），长等待用饥饿模式（排队保公平）。</li>
+<li><strong>自旋次数越多越好？</strong><br> 错！限制 4 次是为了防止 CPU 被过度占用，就像排队时不能一直盯着窗口，最多看 4 眼，没人出来就去队尾等着。</li>
+</ol>
+<blockquote>
+<p><strong>Golang Mutex 自旋的「生存法则」</strong></p>
+</blockquote>
+<ol start="4">
+<li><strong>自旋是优化，不是必须：</strong> 只有满足多核、有其他 P 运行、本地队列为空时才会触发。</li>
+<li><strong>有限且克制：</strong> 最多自旋 4 次，避免浪费 CPU。</li>
+<li><strong>动态切换模式：</strong> 短等待用正常模式（自旋抢锁），长等待用饥饿模式（排队保公平）。。</li>
+</ol>
+<p>理解自旋机制，能帮你更好地设计并发程序：</p>
+<ul>
+<li>若业务场景中锁竞争激烈且持锁时间长，可通过 <code>sync.RWMutex</code> 或通道（Channel）减少锁冲突。</li>
+<li>若持锁时间极短（如高频计数），自旋能显著提升性能。</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/261faf15/">https://alwaysfyo.github.io/posts/261faf15/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/68d65074/" title="Selenium 框架三部曲 - 中"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Selenium 框架三部曲 - 中</div></div><div class="info-2"><div class="info-item-1">chropath 是一款浏览器插件，用于元素属性识别和自动获取，支持主流浏览器。</div></div></div></a><a class="pagination-related" href="/posts/edd5b4e5/" title="API 接口智能化测试探索与实践"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">API 接口智能化测试探索与实践</div></div><div class="info-2"><div class="info-item-1">API 接口由于具备良好的可测性，很自然的成为服务端程序自动化测试的首选方案：</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%BF%AB%E9%80%9F%E4%BA%86%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">1. 快速了解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Mutex-%E7%9A%84%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">2. Mutex 的常见模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%AD%A3%E5%B8%B8%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 正常模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E9%A5%A5%E9%A5%BF%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 饥饿模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E6%AD%A3%E5%B8%B8%E6%A8%A1%E5%BC%8F-Vs-%E9%A5%A5%E9%A5%BF%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 正常模式 Vs 饥饿模式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Lock-Unlock-%E8%AF%A6%E8%A7%A3"><span class="toc-number">3.</span> <span class="toc-text">3. Lock &amp; Unlock 详解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Mutex-%E8%87%AA%E6%97%8B%E6%9C%BA%E5%88%B6%E8%AF%A6%E8%A7%A3"><span class="toc-number">4.</span> <span class="toc-text">4. Mutex 自旋机制详解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E4%BD%95%E4%B8%BA-Mutex-%E8%87%AA%E6%97%8B%EF%BC%9F"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 何为 Mutex 自旋？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Golang-%E7%9A%84-Mutex-%E8%87%AA%E6%97%8B"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 Golang 的 Mutex 自旋</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E8%87%AA%E6%97%8B%E7%9A%84%E5%BA%95%E5%B1%82%E9%80%BB%E8%BE%91"><span class="toc-number">4.3.</span> <span class="toc-text">4.3 自旋的底层逻辑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E5%8A%A0%E9%94%81%E6%B5%81%E7%A8%8B"><span class="toc-number">4.4.</span> <span class="toc-text">4.4 加锁流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E6%9C%BA%E5%88%B6%E5%B0%8F%E7%BB%93"><span class="toc-number">4.5.</span> <span class="toc-text">4.5 机制小结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/68d65074/" title="Selenium 框架三部曲 - 中">Selenium 框架三部曲 - 中</a><time datetime="2025-07-13T01:21:00.000Z" title="发表于 2025-07-13 09:21:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/261faf15/" title="Golang Mutex 详解">Golang Mutex 详解</a><time datetime="2025-07-12T17:30:00.000Z" title="发表于 2025-07-13 01:30:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/edd5b4e5/" title="API 接口智能化测试探索与实践">API 接口智能化测试探索与实践</a><time datetime="2025-07-01T13:01:00.000Z" title="发表于 2025-07-01 21:01:00">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/8fe1f36/" title="AI 系列：计算机视觉-给机器装上眼睛">AI 系列：计算机视觉-给机器装上眼睛</a><time datetime="2025-06-30T15:30:00.000Z" title="发表于 2025-06-30 23:30:00">2025-06-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/c9acbf1/" title="AI 系列：搜索-从迷宫求解看人工智能关键技术">AI 系列：搜索-从迷宫求解看人工智能关键技术</a><time datetime="2025-06-30T15:29:00.000Z" title="发表于 2025-06-30 23:29:00">2025-06-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

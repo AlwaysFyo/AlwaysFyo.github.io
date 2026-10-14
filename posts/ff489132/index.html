@@ -1,0 +1,1042 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Python 包及模块 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="导入一个模块就起一行，最好不要将多个模块导入放在同一行。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 包及模块">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/ff489132/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="导入一个模块就起一行，最好不要将多个模块导入放在同一行。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2025-06-30T15:21:00.000Z">
+<meta property="article:modified_time" content="2025-07-13T12:59:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Python系列">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Python 包及模块",
+  "url": "https://alwaysfyo.github.io/posts/ff489132/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2025-06-30T15:21:00.000Z",
+  "dateModified": "2025-07-13T12:59:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/ff489132/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Python 包及模块',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Python 包及模块</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Python 包及模块</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-30T15:21:00.000Z" title="发表于 2025-06-30 23:21:00">2025-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-13T12:59:00.000Z" title="更新于 2025-07-13 20:59:00">2025-07-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">9.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>34分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="1-Python-库"><a href="#1-Python-库" class="headerlink" title="1. Python 库"></a>1. Python 库</h2><h3 id="1-1-Import-原理"><a href="#1-1-Import-原理" class="headerlink" title="1.1 Import 原理"></a>1.1 Import 原理</h3><ol>
+<li>搜索路径：当执行 <code>import</code> 语句时，Python 会在一系列预定义的路径中搜索要导入的模块，搜索路径主要按照「内置模块 -&gt; 当前目录 -&gt; 环境变量 -&gt; 标准库目录 -&gt; .pth 文件 -&gt; 第三方库路径」进行搜索。另外也可以通过 <code>sys.path</code> 得方式可以查看和修改的其他路径。<ul>
+<li>内置模块：Python 解释器自带的模块，例如 <code>math</code>、<code>os</code> 等。</li>
+<li>当前目录：首先会在当前执行脚本所在的目录或所属项目目录中查找模块。</li>
+<li>环境变量：如果在当前目录中没有找到模块，会继续在 <code>PYTHONPATH</code> 环境变量中指定的目录列表中搜索。</li>
+<li>标准库路径：Python 安装目录下的标准库模块所在的路径。</li>
+<li>.pth 文件：如果模块仍未找到，Python 会查看安装目录下的 <code>.pth</code> 文件，这些文件包含了额外的搜索路径。.pth 文件的作用和环境变量 PYTHONPATH 一样，都会把路径加到 sys.path。.pth 文件要放在 python 安装目录下的 <code>lib\site-package</code> 文件夹下，一行就代表一个路径。</li>
+<li>第三方库路径：如果通过 pip 安装了第三方库，通常在 Python 安装目录的 <code>lib\site-packages</code> 目录下。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p><strong>Tips：</strong></p>
+<p>import 的搜索路径有两大步骤：先判断 import 后面的 XXX 包是不是内置模块，内置模块可以直接 import,基本不会报错。如果 XXX 不是内置的，那么就从 sys.path 的列表中依次查找 XXX（注意是依次，即有先后顺序），如果遍历完 sys.path 还找不到 XXX 就抛 ModuleNotFoundError 异常结束。</p>
+</blockquote>
+<ol start="2">
+<li>模块查找：Python 会按照指定的名称在搜索路径中查找对应的 <code>.py</code> 文件（对于 Python 模块）或包含 <code>init.py</code> 文件的目录（对于 Python 包）。</li>
+<li>编译和缓存：如果找到模块并且是 <code>.py</code> 文件，Python 会将其编译为字节码（<code>.pyc</code> 或 <code>.pyo</code> 文件）以提高后续导入的性能。编译后的字节码会被缓存，下次导入时如果模块没有修改，将直接使用缓存的字节码。</li>
+<li>执行模块代码：在导入模块时，模块中的顶层代码（不在函数或类内部的代码）会被执行，包括变量的定义、函数的定义等。</li>
+<li>命名空间：导入的模块会在当前的命名空间中创建一个对应的名称，通过这个名称可以访问模块中的内容。</li>
+</ol>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428484.webp"></p>
+<h3 id="1-2-模块与包"><a href="#1-2-模块与包" class="headerlink" title="1.2 模块与包"></a>1.2 模块与包</h3><h4 id="1-2-1-定义"><a href="#1-2-1-定义" class="headerlink" title="1.2.1 定义"></a>1.2.1 <strong>定义</strong></h4><ul>
+<li><p><strong>模块：</strong> 在 Python 中，一个 .py 文件就是一个模块，模块让你能够有逻辑地组织你的 Python 代码段。模块能定义函数、类和变量等。</p>
+</li>
+<li><p><strong>包（目录）：</strong> Python 包是一个分层次的文件目录结构，它定义了一个由模块及子包组成的 Python 的应用环境。简单来说，包就是文件夹，但该文件夹下必须存在 <strong>init</strong>.py 文件，该文件的内容可以为空，<strong>init</strong>.py 用于标识当前文件夹是一个包。</p>
+</li>
+</ul>
+<h4 id="1-2-2-导入规范"><a href="#1-2-2-导入规范" class="headerlink" title="1.2.2 导入规范"></a>1.2.2 <strong>导入规范</strong></h4><p>导入一个模块就起一行，最好不要将多个模块导入放在同一行。另外，import 建议要放在文件头部，一般是放在 docstring 之后，全局变量或正式逻辑代码之前。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 推荐每一个模块放一行</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 不推荐放在一行导入</span></span><br><span class="line"><span class="keyword">import</span> os, sys, time</span><br></pre></td></tr></table></figure>
+
+<p>尽量按照内置模块、第三方模块和本地模块的顺序导入。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 内置模块</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 第三方模块</span></span><br><span class="line"><span class="keyword">import</span> request</span><br><span class="line"><span class="keyword">import</span> django</span><br><span class="line"><span class="keyword">import</span> flask</span><br><span class="line"></span><br><span class="line"><span class="comment"># 本地模块</span></span><br><span class="line"><span class="keyword">import</span> xxx</span><br></pre></td></tr></table></figure>
+<h4 id="1-2-3-导入操作"><a href="#1-2-3-导入操作" class="headerlink" title="1.2.3 导入操作"></a>1.2.3 导入操作</h4><h5 id="导入整个模块"><a href="#导入整个模块" class="headerlink" title="导入整个模块"></a><strong>导入整个模块</strong></h5><p>加入已经有写好的程序 pizza.py，那么可以通过 import 来调动这个程序，然后通过 import 的模块来调用其中的函数名进行使用：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> module_name</span><br><span class="line"></span><br><span class="line">module_name.function_name( )</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pizza</span><br><span class="line"></span><br><span class="line">make_pizza(<span class="number">16</span>, <span class="string">&#x27;mushrooms&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h5 id="导入特定函数（推荐用法）"><a href="#导入特定函数（推荐用法）" class="headerlink" title="导入特定函数（推荐用法）"></a><strong>导入特定函数（推荐用法）</strong></h5><p>可以导入模块中的特定函数，导入后想调用这些函数就不用加上前面的模块名了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> module_name <span class="keyword">import</span> function_name</span><br><span class="line"><span class="keyword">from</span> module_name <span class="keyword">import</span> function_0, function_1, function_2</span><br><span class="line"></span><br><span class="line">function_name()</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pizza <span class="keyword">import</span> make_pizza</span><br><span class="line"></span><br><span class="line">make_pizza(<span class="number">16</span>, <span class="string">&#x27;mushrooms&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h5 id="导入模块中的所有函数（不推荐）"><a href="#导入模块中的所有函数（不推荐）" class="headerlink" title="导入模块中的所有函数（不推荐）"></a><strong>导入模块中的所有函数（不推荐）</strong></h5><p>通过星号可以将模块中的所有函数都复制到这个程序文件中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> module_name <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">function_name()</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pizza <span class="keyword">import</span> *</span><br><span class="line">make_pizza(<span class="number">16</span>,<span class="string">&#x27;pepperoni&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这种方法使用需谨慎，如果模块中有函数的名称与当前项目中使用的名称相同，Python 会覆盖函数。</p>
+<p>比如当前项目中有一个叫 func 的函数，然后从某个模块中又通过 “from module_name import *“ 导入了一个也叫 func 的函数。那么此时在当前项目中使用 func 时，实际上使用的是从模块中导入的那个 func 函数，而不是原本自己定义的那个。</p>
+<p>但是在 <code>my_package/__init__.py</code> 文件中，可以定义 <code>all</code> 列表来指定当用户执行 <code>from modname import *</code> 时应该导入哪些模块或对象。</p>
+<p>例如有如下包结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">my_package/</span><br><span class="line">    __init__.py</span><br><span class="line">    module1.py</span><br><span class="line">    module2.py</span><br><span class="line">    module3.py</span><br></pre></td></tr></table></figure>
+
+<p>并且在 __all__ 这样设置：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__all__ = [<span class="string">&#x27;module1&#x27;</span>, <span class="string">&#x27;module2&#x27;</span>]</span><br></pre></td></tr></table></figure>
+
+<p>如果 <code>module1.py</code> 中有一个函数 <code>func1</code>，<code>module2.py</code> 中有一个类 <code>MyClass</code>，现在当用户执行 <code>from my_package import *</code> 时，只会导入 <code>module1</code> 和 <code>module2</code> 这两个模块名.</p>
+<h5 id="使用-as"><a href="#使用-as" class="headerlink" title="使用 as"></a><strong>使用 as</strong></h5><ul>
+<li>给函数指定别名</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pizza <span class="keyword">import</span> make_pizza <span class="keyword">as</span> mp</span><br><span class="line">mp(<span class="number">16</span>,<span class="string">&#x27;pepperoni&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>给模块指定别名</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pizza <span class="keyword">as</span> p</span><br><span class="line">p.make_pizza(<span class="number">16</span>,<span class="string">&#x27;pepperoni&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Tips：</strong><br>导入类的方法和导入函数的方法是一致的，只是类名需要需要大写，因此下面就不再过多赘述了</p>
+</blockquote>
+<h5 id="导入类"><a href="#导入类" class="headerlink" title="导入类"></a><strong>导入类</strong></h5><p>已知文件 car.py，从此文件中向另一个文件导入 Car 类：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> car <span class="keyword">import</span> Car</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-动态加载"><a href="#1-3-动态加载" class="headerlink" title="1.3 动态加载"></a>1.3 动态加载</h3><p>动态加载模块，不需要提前导入相关模块，它可以根据运行条件来选择加载不同的模块，从而增强程序的灵活性和扩展性。</p>
+<p><strong>方法一：</strong> Python 提供了一个 importlib 模块，可以用于实现动态加载。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> importlib</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test_func</span>():</span><br><span class="line">    module_name = <span class="string">&#x27;math&#x27;</span></span><br><span class="line">    math = importlib.import_module(module_name)</span><br><span class="line">    result = math.sqrt(<span class="number">16</span>)</span><br><span class="line">    <span class="built_in">print</span>(result)   <span class="comment"># 4.0</span></span><br><span class="line"></span><br><span class="line">test_func()</span><br></pre></td></tr></table></figure>
+
+<p>可以需要选择时机加载模块，按需加载，按需使用，延时加载模块。</p>
+<p>另外，importlib 还有一些扩展的用法，但不是必须掌握的，一般用上面那种方法就足够了。对于这个扩展的用法，还是来看一个例子，在下面这个例子中：</p>
+<ul>
+<li>首先使用 <code>spec_from_file_location</code> 函数创建一个模块规格，指定了模块的名称和文件路径。</li>
+<li>然后，使用 <code>module_from_spec</code> 创建一个模块对象。</li>
+<li>接着通过 <code>spec.loader.exec_module(module)</code> 执行模块的代码，将模块加载到内存中。</li>
+<li>最后，可以使用导入的模块中的函数或属性。</li>
+</ul>
+<p><strong>方法二：</strong> 使用 __import__ 来实现动态加载。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">os = <span class="built_in">__import__</span>(<span class="string">&#x27;os&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> platform.uname().system == <span class="string">&#x27;Windows&#x27;</span>:</span><br><span class="line">    module = <span class="built_in">__import__</span>(<span class="string">&#x27;os&#x27;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    module = <span class="built_in">__import__</span>(<span class="string">&#x27;sys&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="1-4-Pip-工具"><a href="#1-4-Pip-工具" class="headerlink" title="1.4 Pip 工具"></a>1.4 Pip 工具</h3><h4 id="1-4-1-官方下载源"><a href="#1-4-1-官方下载源" class="headerlink" title="1.4.1 官方下载源"></a>1.4.1 <strong>官方下载源</strong></h4><blockquote>
+<p>Python 包官网地址：<a target="_blank" rel="noopener" href="https://pypi.org/">https://pypi.org/</a></p>
+</blockquote>
+<p>Python 语言提供超过 15 万个第三方库，使用 pip 安装。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428485.webp"></p>
+<h4 id="1-4-2-国内下载源"><a href="#1-4-2-国内下载源" class="headerlink" title="1.4.2 国内下载源"></a>1.4.2 <strong>国内下载源</strong></h4><p>官网的包下载速度可能比较慢，因此也可以使用国内的下载源来下载第三方包：</p>
+<ul>
+<li>阿里云：<a target="_blank" rel="noopener" href="http://mirrors.aliyun.com/pypi/simple/">http://mirrors.aliyun.com/pypi/simple/</a></li>
+<li>中国科技大学：<a target="_blank" rel="noopener" href="https://pypi.mirrors.ustc.edu.cn/simple/">https://pypi.mirrors.ustc.edu.cn/simple/</a></li>
+<li>清华大学：<a target="_blank" rel="noopener" href="https://pypi.tuna.tsinghua.edu.cn/simple/">https://pypi.tuna.tsinghua.edu.cn/simple/</a></li>
+<li>中国科学技术大学：<a target="_blank" rel="noopener" href="http://pypi.mirrors.ustc.edu.cn/simple/">http://pypi.mirrors.ustc.edu.cn/simple/</a></li>
+</ul>
+<p>如果要使用国内镜像源配置（以使用国内知名的 Python 镜像源”阿里云”为例），主要有两种方式使用方法：</p>
+<ol>
+<li>可以在使用 <code>pip</code> 命令安装包时，通过 <code>-i</code> 参数指定镜像源，例如：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install 包名 -i https://mirrors.aliyun.com/pypi/simple/</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>永久配置（以配置阿里云镜像源为例）：</li>
+</ol>
+<ul>
+<li>Windows 系统：在用户目录下创建一个名为 <code>pip</code> 的文件夹，在该文件夹内创建一个名为 <code>pip.ini</code> 的文件，在文件中添加以下内容。</li>
+</ul>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[global]</span></span><br><span class="line"><span class="attr">index-url</span> = https://mirrors.aliyun.com/pypi/simple/</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Linux 或 macOS 系统：在用户目录下创建一个 <code>.pip</code> 文件夹，在该文件夹内创建一个 <code>pip.conf</code> 文件，添加类似上述的内容。</li>
+</ul>
+<p>另外，如果想将整个包都下载下来，则可以使用如下命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip download 包名</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-常用标准库"><a href="#2-常用标准库" class="headerlink" title="2. 常用标准库"></a>2. 常用标准库</h2><blockquote>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3.7/library/os.html">https://docs.python.org/zh-cn/3.7/library/os.html</a></p>
+</blockquote>
+<p>利用 Python 标准库或三方库，覆盖的功能场景包括：Web 框架、网络编程、网络爬虫、网络内容提取、模板引擎、数据库、数据可视化、图片处理、文本处理、自然语言处理、机器学习、日志、代码分析等。</p>
+<ul>
+<li>Python 标准库：<a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3.7/library/index.html">https://docs.python.org/zh-cn/3.7/library/index.html</a></li>
+<li>Python 资源集合：<a target="_blank" rel="noopener" href="https://github.com/zhoujinjian/awesome-python-cn">https://github.com/zhoujinjian/awesome-python-cn</a></li>
+</ul>
+<blockquote>
+<p><strong>Tips：</strong></p>
+<p>不用通过 pip 工具下载的库称为标准库，需要用 pip 工具下载的库称为第三方库。</p>
+</blockquote>
+<p>有些问题可以通过现成的库进行解决，通过上面提供的链接可以寻找符合需求的库进行下载使用。</p>
+<h3 id="2-1-os-模块"><a href="#2-1-os-模块" class="headerlink" title="2.1 os 模块"></a>2.1 <strong>os 模块</strong></h3><h4 id="2-1-1-Os-定义"><a href="#2-1-1-Os-定义" class="headerlink" title="2.1.1 Os 定义"></a>2.1.1 Os <strong>定义</strong></h4><p>os 模块是 Python 标准库中的一个用于访问操作系统相关功能的模块，使用 os 模块中提供的接口，可以实现跨平台访问。</p>
+<p>os 模块的主要功能：系统相关、目录及文件操作、执行命令和管理进程</p>
+<p>模块导入方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br></pre></td></tr></table></figure>
+<h4 id="2-1-2-使用方法"><a href="#2-1-2-使用方法" class="headerlink" title="2.1.2 使用方法"></a>2.1.2 使用方法</h4><p><strong>常见函数及方法</strong></p>
+<p>os 模块中包含了一系列文件操作相关的函数：</p>
+<table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>功能</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>os.getcwd()</td>
+<td>获取当前工作目录，即当前 python 脚本工作的目录路径</td>
+</tr>
+<tr>
+<td>os.chdir(“..”)</td>
+<td>改变当前脚本工作目录，相当于在 shell 下 cd</td>
+</tr>
+<tr>
+<td>os.listdir(‘.’)</td>
+<td>列出指定目录下的所有文件和子目录，包括隐藏文件</td>
+</tr>
+<tr>
+<td>os.makedirs(‘dir1&#x2F;dir2’)</td>
+<td>可生成多层递归目录</td>
+</tr>
+<tr>
+<td>os.removedirs(‘dirname’)</td>
+<td>递归删除空目录</td>
+</tr>
+<tr>
+<td>os.mkdir(‘dirname’)</td>
+<td>生成单级目录</td>
+</tr>
+<tr>
+<td>os.rmdir(‘dirname’)</td>
+<td>删除单级空目录，若目录不为空则无法删除并报错</td>
+</tr>
+<tr>
+<td>os.remove(‘filename’)</td>
+<td>删除一个文件</td>
+</tr>
+<tr>
+<td>os.rename(“oldname”,”newname”)</td>
+<td>重命名文件 &#x2F; 目录</td>
+</tr>
+</tbody></table>
+<p>os.path 模块不仅提供了一些操作路径字符串的方法，还包含一些或者指定文件属性的一些方法：</p>
+<table>
+<thead>
+<tr>
+<th><strong>方法</strong></th>
+<th><strong>功能</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>os.path.abspath(path)</td>
+<td>返回 path 的绝对路径。</td>
+</tr>
+<tr>
+<td>os.path.basename(path)</td>
+<td>获取 path 路径的基本名称，即 path 末尾到最后一个斜杠的位置之间的字符串。</td>
+</tr>
+<tr>
+<td>os.path.dirname(path)</td>
+<td>返回 path 路径中的目录部分。</td>
+</tr>
+<tr>
+<td>os.path.exists(path)</td>
+<td>判断 path 对应的文件是否存在，如果存在，返回 True；反之，返回 False。</td>
+</tr>
+<tr>
+<td>os.path.getatime(path)</td>
+<td>返回 path 所指文件的最近访问时间(浮点型秒数)。</td>
+</tr>
+<tr>
+<td>os.path.getmtime(path)</td>
+<td>返回文件的最近修改时间（单位为秒）。</td>
+</tr>
+<tr>
+<td>os.path.getctime(path)</td>
+<td>返回文件的创建时间（单位为秒，自 1970 年 1 月 1 日起（又称 Unix 时间））</td>
+</tr>
+<tr>
+<td>os.path.getsize(path)</td>
+<td>返回文件大小，如果文件不存在就返回错误。</td>
+</tr>
+<tr>
+<td>os.path.isabs(path)</td>
+<td>判断是否为绝对路径。</td>
+</tr>
+<tr>
+<td>os.path.isfile(path)</td>
+<td>判断路径是否为文件。</td>
+</tr>
+<tr>
+<td>os.path.isdir(path)</td>
+<td>判断路径是否为目录。</td>
+</tr>
+<tr>
+<td>os.path.join(path1[, path2[, …]])</td>
+<td>把目录和文件名合成一个路径。</td>
+</tr>
+<tr>
+<td>os.path.realpath(path)</td>
+<td>返回 path 的真实路径。</td>
+</tr>
+<tr>
+<td>os.path.split(path)</td>
+<td>把路径分割成 dirname 和 basename，返回一个元组。</td>
+</tr>
+<tr>
+<td>os.path.splitdrive(path)</td>
+<td>一般用在 windows 下，返回驱动器名和路径组成的元组。</td>
+</tr>
+<tr>
+<td>os.path.splitext(path)</td>
+<td>分割路径，返回路径名和文件扩展名的元组。</td>
+</tr>
+<tr>
+<td>os.path.walk(path)</td>
+<td>遍历 path，并会生成一个三元组 (dirpath, dirnames, filenames) ，对于目录树中的每个目录：</td>
+</tr>
+</tbody></table>
+<p>上面红色标注的方法是日常过程中比较常用的方法，其中前三个标红的方法使用方法如下。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取当前文件的绝对路径</span></span><br><span class="line"><span class="built_in">print</span>(os.path.abspath(__file__))    <span class="comment"># /Users/Desktop/project/test_python/test.py</span></span><br><span class="line"><span class="comment"># 获取当前文件名</span></span><br><span class="line"><span class="built_in">print</span>(os.path.basename(__file__))   <span class="comment"># test.py</span></span><br><span class="line"><span class="comment"># 获取当前文件所在目录</span></span><br><span class="line"><span class="built_in">print</span>(os.path.dirname(__file__))    <span class="comment"># /Users/Desktop/project/test_python</span></span><br></pre></td></tr></table></figure>
+
+<p>而 listdr 和 walk 方法都可用于遍历目录，其使用场景如下：</p>
+<ul>
+<li>场景 1：在一个目录中只有文件，没有子文件夹，使用 os.listdir</li>
+<li>场景 2：一个目录下既有子目录也有文件，需要递归遍历时，使用 os.walk</li>
+</ul>
+<p>walk 函数声明：</p>
+<ul>
+<li>返回值：函数返回一个元组，含有三个元素。</li>
+<li>分别是：每次遍历的路径名、路径下子目录列表、目录下文件列表。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">path = <span class="string">&quot;.&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在一个目录下只有文件，没有文件夹，这个时候可以使用 os.listdir 遍历</span></span><br><span class="line"><span class="keyword">for</span> filename <span class="keyword">in</span> os.listdir(path):</span><br><span class="line">    <span class="built_in">print</span>(os.path.join(path, filename))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 递归的情况，一个目录下既有目录也有文件，则可以使用 os.walk 遍历</span></span><br><span class="line"><span class="keyword">for</span> root, dirs, files <span class="keyword">in</span> os.walk(path):</span><br><span class="line">    <span class="comment"># 继续遍历当前目录下的所有文件</span></span><br><span class="line">    <span class="keyword">for</span> name <span class="keyword">in</span> files:</span><br><span class="line">        <span class="built_in">print</span>(os.path.join(root, name))</span><br><span class="line">    <span class="comment"># 继续遍历当前目录下的所有目录</span></span><br><span class="line">    <span class="keyword">for</span> name <span class="keyword">in</span> dirs:</span><br><span class="line">        <span class="built_in">print</span>(os.path.join(root, name))</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行命令</strong></p>
+<p>使用 os 模块中的 system 或者 popen 等方法可以执行操作系统的命令令。</p>
+<ol>
+<li><strong>os.system(command)</strong></li>
+</ol>
+<p>运行操作系统命令，直接显示结果。但返回值是 0 或 -1，不能获得显示在屏幕上的数据。其中 command 是要执行的命令字符串。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">os.system(<span class="string">&quot;ls&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428487.webp"></p>
+<ol start="2">
+<li><strong>os.popen(command, [mode, [bufsize]])</strong></li>
+</ol>
+<p>如果想将执行的命令结果持久化到变量中，则可以使用这个方法。它开启了一个子进程执行 command 参数指定的命令，在父进程和子进程之间建立一个管道 pipe，用于在父子进程间通信，并通过 read() 方法将命令的结果返回。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">ret = os.popen(<span class="string">&quot;ls&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(ret)</span><br><span class="line"><span class="built_in">print</span>(ret.read())</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428488.webp"></p>
+<h3 id="2-2-Sys-模块"><a href="#2-2-Sys-模块" class="headerlink" title="2.2 Sys 模块"></a>2.2 Sys 模块</h3><h4 id="2-2-1-Sys-定义"><a href="#2-2-1-Sys-定义" class="headerlink" title="2.2.1 Sys 定义"></a>2.2.1 Sys <strong>定义</strong></h4><p>sys 模块主要是针对与 Python 解释器相关的变量和方法，不是主机操作系统。</p>
+<p>导入方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br></pre></td></tr></table></figure>
+<h4 id="2-2-2-使用方法"><a href="#2-2-2-使用方法" class="headerlink" title="2.2.2 使用方法"></a>2.2.2 <strong>使用方法</strong></h4><table>
+<thead>
+<tr>
+<th><strong>方法&#x2F;属性</strong></th>
+<th><strong>功能</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>sys.argv</td>
+<td>获取命令行参数列表，第一个元素是程序本身</td>
+</tr>
+<tr>
+<td>sys.exit(n)</td>
+<td>退出 Python 程序，exit(0)表示正常退出。当参数非 0 时，会引发一个 SystemExit 异常，可以在程序中捕获该异常</td>
+</tr>
+<tr>
+<td>sys.version</td>
+<td>获取 Python 解释程器的版本信息</td>
+</tr>
+<tr>
+<td>sys.path</td>
+<td>返回模块的搜索路径，初始化时使用 PYTHONPATH 环境变量的值</td>
+</tr>
+<tr>
+<td>sys.platform</td>
+<td>返回操作系统平台名称</td>
+</tr>
+<tr>
+<td>sys.exc_info()</td>
+<td>返回异常信息三元元组</td>
+</tr>
+<tr>
+<td>sys.getdefaultencoding()</td>
+<td>获取系统当前编码，默认为 utf-8</td>
+</tr>
+<tr>
+<td>sys.setdefaultencoding()</td>
+<td>设置系统的默认编码</td>
+</tr>
+<tr>
+<td>sys.getfilesystemencoding()</td>
+<td>获取文件系统使用编码方式，默认是 utf-8</td>
+</tr>
+<tr>
+<td>sys.modules</td>
+<td>以字典的形式返回所有当前 Python 环境中已经导入的模块</td>
+</tr>
+<tr>
+<td>sys.copyright</td>
+<td>当前 Python 的版权信息</td>
+</tr>
+<tr>
+<td>sys.getrefcount(object)</td>
+<td>返回对象的引用数量</td>
+</tr>
+<tr>
+<td>sys.getrecursionlimit()</td>
+<td>返回 Python 最大递归深度，默认为 1000</td>
+</tr>
+<tr>
+<td>sys.getsizeof(object[, default])</td>
+<td>返回对象的大小</td>
+</tr>
+<tr>
+<td>sys.getwindowsversion()</td>
+<td>返回当前 windwos 系统的版本信息</td>
+</tr>
+</tbody></table>
+<ol>
+<li><strong>sys.argv</strong></li>
+</ol>
+<p>sys.argv 是一个脚本执行参数列表，列表的第一个元素是脚本名称，从第二个元素开始才是真正的参数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印参数列表</span></span><br><span class="line"><span class="keyword">for</span> index, arg <span class="keyword">in</span> <span class="built_in">enumerate</span>(sys.argv):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;第 %d 个参数是：%s&quot;</span> % (index, arg))</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428489.webp"></p>
+<ol start="2">
+<li><strong>sys.path</strong></li>
+</ol>
+<p>sys.path 是 Python 的搜索模块的路径集合，Python 就会按照这个路径集合搜索查找模块。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="comment"># 模块搜索路径</span></span><br><span class="line"><span class="keyword">for</span> path <span class="keyword">in</span> sys.path:</span><br><span class="line">    <span class="built_in">print</span>(path)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428490.webp"></p>
+<p>如果想添加模块查找的路径，则可以直接使用 append 方法添加。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sys.path.append(<span class="string">&quot;C:\\&quot;</span>)    <span class="comment"># 将 C 盘路径添加到模块的查找的路径中</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-3-Time-模块"><a href="#2-3-Time-模块" class="headerlink" title="2.3 Time 模块"></a>2.3 Time 模块</h3><h4 id="2-3-1-Time-定义"><a href="#2-3-1-Time-定义" class="headerlink" title="2.3.1 Time 定义"></a>2.3.1 Time <strong>定义</strong></h4><p>time 模块是 python 专门用来处理时间的内建库。</p>
+<p>导入方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br></pre></td></tr></table></figure>
+<h4 id="2-3-2-使用方法"><a href="#2-3-2-使用方法" class="headerlink" title="2.3.2 使用方法"></a>2.3.2 使用方法</h4><p><strong>时间获取</strong></p>
+<p>在 Python 中，通常有这几种方式来表示时间：</p>
+<ul>
+<li>时间戳</li>
+<li>时间字符串</li>
+<li>时间元组（struct_time）</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取时间戳</span></span><br><span class="line">t1 = time.time()</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">int</span>(t1))  <span class="comment"># 1723771496</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取时间元组</span></span><br><span class="line">t2 = time.localtime()</span><br><span class="line"><span class="built_in">print</span>(t2)       <span class="comment"># time.struct_time(tm_year=2024, tm_mon=8, tm_mday=16, tm_hour=9, tm_min=24, tm_sec=56, tm_wday=4, tm_yday=229, tm_isdst=0)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取时间字符串</span></span><br><span class="line">t3 = time.asctime()</span><br><span class="line"><span class="built_in">print</span>(t3)       <span class="comment"># Fri Aug 16 09:24:56 2024</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>时间类型转换</strong></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428491.webp"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取时间戳</span></span><br><span class="line">t1 = time.time()</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">int</span>(t1))  <span class="comment"># 1723772044</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 将一个时间戳转换为时间元组</span></span><br><span class="line">t2 = time.localtime((t1))</span><br><span class="line"><span class="built_in">print</span>(t2)   <span class="comment"># time.struct_time(tm_year=2024, tm_mon=8, tm_mday=16, tm_hour=9, tm_min=34, tm_sec=4, tm_wday=4, tm_yday=229, tm_isdst=0)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 再将时间元组转换回时间戳</span></span><br><span class="line">t3 = time.mktime(t2)</span><br><span class="line"><span class="built_in">print</span>(t3)   <span class="comment"># 1723772044.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 将时间戳转换成时间字符串</span></span><br><span class="line">t4 = time.ctime(t3)</span><br><span class="line"><span class="built_in">print</span>(t4)   <span class="comment"># Fri Aug 16 09:34:04 2024</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>时间类型格式化</strong></p>
+<ol>
+<li><strong>time.strftime(format[, struct_time])</strong></li>
+</ol>
+<p>传入格式和 struct_time，返回按照 format 格式化后的时间字符串。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将 struct_time 对象转换成格式化时间字符串</span></span><br><span class="line">t1 = time.strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(t1)   <span class="comment"># 2024-08-16 09:37:36</span></span><br><span class="line"></span><br><span class="line">t = time.localtime()    <span class="comment"># 在睡眠前获取</span></span><br><span class="line">time.sleep(<span class="number">3</span>)</span><br><span class="line"></span><br><span class="line">t2 = time.strftime(<span class="string">&quot;%Y-%m-%d %H:%M:%S&quot;</span>, t)</span><br><span class="line"><span class="built_in">print</span>(t2)   <span class="comment"># 2024-08-16 09:37:36</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>time.strptime(string[, format])</strong></li>
+</ol>
+<p>将字符串时间转为 struct_time，time.strftime() 的逆向操作。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将时间字符串转换成 struct_time 对象</span></span><br><span class="line">time_str = <span class="string">&quot;2010-01-01 20:00:00&quot;</span></span><br><span class="line">t = time.strptime(time_str, <span class="string">&quot;%Y-%m-%d %H:%M:%S&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(t)    <span class="comment"># time.struct_time(tm_year=2010, tm_mon=1, tm_mday=1, tm_hour=20, tm_min=0, tm_sec=0, tm_wday=4, tm_yday=1, tm_isdst=-1)</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-4-Itertools-模块"><a href="#2-4-Itertools-模块" class="headerlink" title="2.4 Itertools 模块"></a>2.4 Itertools 模块</h3><h4 id="2-4-1-Itertools-定义"><a href="#2-4-1-Itertools-定义" class="headerlink" title="2.4.1 Itertools 定义"></a>2.4.1 Itertools <strong>定义</strong></h4><blockquote>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3.7/library/itertools.html">https://docs.python.org/zh-cn/3.7/library/itertools.html</a></p>
+</blockquote>
+<p>编程中会用到很多需要迭代的地方，强大的 Python 已经为我们提供了 itertools 内置库，用来帮助开发人员更便捷的编码。</p>
+<p>导入方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br></pre></td></tr></table></figure>
+<h4 id="2-4-2-使用方法"><a href="#2-4-2-使用方法" class="headerlink" title="2.4.2 使用方法"></a>2.4.2 <strong>使用方法</strong></h4><ul>
+<li><strong>迭代计数 - itertools.count()</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计数：从 1 开始，按照步长为 2 的间距迭代至 100 为止</span></span><br><span class="line">c = itertools.count(start=<span class="number">1</span>, step=<span class="number">2</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> c:</span><br><span class="line">    <span class="keyword">if</span> i&gt; <span class="number">10</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(i)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428492.webp"></p>
+<ul>
+<li><strong>循环迭代 - itertools.cycle()</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"></span><br><span class="line"><span class="comment"># itertools.cycle 传入一个可迭代对象，然后无限循环迭代</span></span><br><span class="line">list1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">num = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> itertools.cycle(list1):</span><br><span class="line">    <span class="built_in">print</span>(i)</span><br><span class="line">    num = num + <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> num == <span class="number">7</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428493.webp"></p>
+<ul>
+<li><strong>重复迭代 - itertools.repeat()</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"></span><br><span class="line"><span class="comment"># itertools.repeat 重复迭代一个可迭代对象，如果不指定 times，则会迭代无数次，也可以通过 times 参数指定迭代的次数</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> itertools.repeat(<span class="string">&#x27;hello world&#x27;</span>, <span class="number">5</span>):</span><br><span class="line">    <span class="built_in">print</span>(i)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428494.webp"></p>
+<ul>
+<li><strong>拼接迭代器 - itertools.chain()</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"></span><br><span class="line"><span class="comment"># itertools.chain 连接多个列表或者迭代器，把传入的多个 iterable 拼接一个迭代器，并且按传入顺迭代</span></span><br><span class="line">list1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">list2 = (<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> itertools.chain(list1, list2):</span><br><span class="line">    <span class="built_in">print</span>(i)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428495.webp"></p>
+<ul>
+<li><strong>排列组合 - itertools.permutations()</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"></span><br><span class="line">l1 = <span class="built_in">list</span>(itertools.permutations([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]))</span><br><span class="line"><span class="built_in">print</span>(l1)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428496.webp"></p>
+<ul>
+<li><strong>指定元素组合 - itertools.combinations()</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"></span><br><span class="line"><span class="comment"># itertools.combinations 元素组合</span></span><br><span class="line">list1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</span><br><span class="line">x = itertools.combinations(list1, <span class="number">2</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(x))</span><br><span class="line"></span><br><span class="line"><span class="comment"># itertools.combinations_with_replacement 允许重复元素组合</span></span><br><span class="line">x = itertools.combinations_with_replacement(list1, <span class="number">2</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(x))</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428497.webp"></p>
+<ul>
+<li><strong>求笛卡尔积 - itertools.product()</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> itertools</span><br><span class="line"></span><br><span class="line"><span class="comment"># itertools.product 用于求多个可迭代对象的笛卡尔积（Cartesian Product）</span></span><br><span class="line">A = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">B = [<span class="number">100</span>, <span class="number">200</span>, <span class="number">300</span>]</span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> itertools.product(A, B):</span><br><span class="line">    <span class="built_in">print</span>(item)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428498.webp"></p>
+<blockquote>
+<p><strong>Tips：笛卡尔积、元素组合以及排列组合之间的区别</strong></p>
+<ol>
+<li>笛卡尔积：<ul>
+<li>笛卡尔积是两个或多个集合中元素的所有可能有序对的集合。</li>
+<li>它强调的是不同集合之间元素的配对，并且顺序是重要的。</li>
+<li>例如，集合 A &#x3D; {1, 2} 和集合 B &#x3D; {a, b} 的笛卡尔积是 {(1, a), (1, b), (2, a), (2, b)}。</li>
+</ul>
+</li>
+<li>元素组合：<ul>
+<li>组合是从给定的集合中选取一定数量的元素形成子集，不考虑元素的顺序。</li>
+<li>例如，从集合 {1, 2, 3} 中选取 2 个元素的组合有 {1, 2} 、{1, 3} 、{2, 3}。</li>
+</ul>
+</li>
+<li>排列组合：<ul>
+<li>排列是从给定的集合中选取一定数量的元素进行排列，元素的顺序是重要的。</li>
+<li>例如，从集合 {1, 2, 3} 中选取 2 个元素的排列有 12、21、13、31、23、32。</li>
+</ul>
+</li>
+</ol>
+<p>总结来说，笛卡尔积是不同集合元素的配对；组合只关注选取的元素集合，不考虑顺序；排列则既关注选取的元素集合，又考虑元素的顺序。</p>
+</blockquote>
+<h3 id="2-5-Collections-模块"><a href="#2-5-Collections-模块" class="headerlink" title="2.5 Collections 模块"></a>2.5 Collections 模块</h3><h4 id="2-5-1-Collections-定义"><a href="#2-5-1-Collections-定义" class="headerlink" title="2.5.1 Collections 定义"></a>2.5.1 Collections 定义</h4><blockquote>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3.7/library/collections.html">https://docs.python.org/zh-cn/3.7/library/collections.html</a></p>
+</blockquote>
+<p>Collections 模块 – Python 标准库，是数据结构常用模块。</p>
+<p>导入方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br></pre></td></tr></table></figure>
+<h4 id="2-5-2-使用方法"><a href="#2-5-2-使用方法" class="headerlink" title="2.5.2 使用方法"></a>2.5.2 使用方法</h4><p><strong>计数功能</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># Counter 计数功能</span></span><br><span class="line">list1 = [<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;c&quot;</span>, <span class="string">&quot;a&quot;</span>, <span class="string">&quot;a&quot;</span>]</span><br><span class="line">count = Counter(list1)</span><br><span class="line"><span class="built_in">print</span>(count)            <span class="comment"># Counter(&#123;&#x27;a&#x27;: 3, &#x27;c&#x27;: 2, &#x27;b&#x27;: 1&#125;)</span></span><br><span class="line"><span class="built_in">print</span>(count.keys())     <span class="comment"># dict_keys([&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;])</span></span><br><span class="line"><span class="built_in">print</span>(count.values())   <span class="comment"># dict_values([3, 1, 2])</span></span><br><span class="line"><span class="built_in">print</span>(count[<span class="string">&#x27;a&#x27;</span>])       <span class="comment"># 3</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># most_common，返回一个列表，包含 counter 中 n 个最大数目的元素</span></span><br><span class="line"><span class="built_in">print</span>(Counter(<span class="string">&quot;aabbcaedds&quot;</span>).most_common())      <span class="comment"># [(&#x27;a&#x27;, 3), (&#x27;b&#x27;, 2), (&#x27;d&#x27;, 2), (&#x27;c&#x27;, 1), (&#x27;e&#x27;, 1), (&#x27;s&#x27;, 1)]</span></span><br><span class="line"><span class="built_in">print</span>(Counter(<span class="string">&quot;aabbcaedds&quot;</span>).most_common(<span class="number">2</span>))     <span class="comment"># [(&#x27;a&#x27;, 3), (&#x27;b&#x27;, 2)]</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>队列模拟</strong></p>
+<p>Deque 模块是 Python 标准库 collections 中的一项，它提供了两端都可以操作的序列，这意味着你可以在序列前后都执行添加或删除，并且可以限制队列容量。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428499.webp"></p>
+<p>常规操作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建双向队列</span></span><br><span class="line">d = collections.deque()</span><br><span class="line"></span><br><span class="line"><span class="comment"># deque 提供了类似 list 的操作方法</span></span><br><span class="line"><span class="comment"># 往右添加元素</span></span><br><span class="line">d.append(<span class="number">1</span>)</span><br><span class="line">d.append(<span class="number">2</span>)</span><br><span class="line"><span class="built_in">print</span>(d)     <span class="comment"># deque([1, 2])</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 往左添加元素</span></span><br><span class="line">d.appendleft(<span class="number">5</span>)</span><br><span class="line"><span class="built_in">print</span>(d)     <span class="comment"># deque([5, 1, 2])</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在指定位置添加元素</span></span><br><span class="line">d.insert(<span class="number">1</span>, <span class="string">&#x27;a&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(d)     <span class="comment"># deque([5, &#x27;a&#x27;, 1, 2])</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取最右边一个元素，并在队列中删除</span></span><br><span class="line">x = d.pop()</span><br><span class="line"><span class="built_in">print</span>(x, d)  <span class="comment"># 2 deque([5, &#x27;a&#x27;, 1])</span></span><br></pre></td></tr></table></figure>
+
+<p>限制队列最大长度：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line"></span><br><span class="line"><span class="comment"># 还可以显示 deque 的长度，当限制长度的 deque 增加超过限制数的项时，另一边的项会自动删除</span></span><br><span class="line">d = collections.deque(maxlen=<span class="number">3</span>)</span><br><span class="line">d.append(<span class="number">1</span>)</span><br><span class="line">d.append(<span class="number">2</span>)</span><br><span class="line">d.append(<span class="number">3</span>)</span><br><span class="line"><span class="built_in">print</span>(d)     <span class="comment"># deque([1, 2, 3], maxlen=3)</span></span><br><span class="line">d.append(<span class="number">4</span>)</span><br><span class="line"><span class="built_in">print</span>(d)     <span class="comment"># deque([2, 3, 4], maxlen=3)</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-6-Inspect-模块"><a href="#2-6-Inspect-模块" class="headerlink" title="2.6 Inspect 模块"></a>2.6 Inspect 模块</h3><h4 id="2-6-1-Inspect-定义"><a href="#2-6-1-Inspect-定义" class="headerlink" title="2.6.1 Inspect 定义"></a>2.6.1 Inspect 定义</h4><blockquote>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3.7/library/inspect.html">https://docs.python.org/zh-cn/3.7/library/inspect.html</a></p>
+</blockquote>
+<p>inspect 模块用于收集 python 对象的信息，可以获取类或函数的参数的信息和源码、解析堆栈、对对象进行类型检查等。</p>
+<p>导入方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> insepct</span><br></pre></td></tr></table></figure>
+
+<p>inspect 模块主要提供了四种用处：</p>
+<ul>
+<li>对是否是模块、框架、函数进行类型检查</li>
+<li>获取源码</li>
+<li>获取类或者函数的参数信息</li>
+<li>解析堆栈</li>
+</ul>
+<h4 id="2-6-2-使用方法"><a href="#2-6-2-使用方法" class="headerlink" title="2.6.2 使用方法"></a>2.6.2 使用方法</h4><p><strong>获取源码</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> inspect</span><br><span class="line"><span class="keyword">from</span> unittest <span class="keyword">import</span> TestCase</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取源码</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">x, y</span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;add function&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> x + y</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(inspect.getsource(add))</span><br><span class="line"><span class="built_in">print</span>(inspect.getsource(TestCase))</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428500.webp"></p>
+<p><strong>获取函数路径及文档字符串</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> inspect</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">add</span>(<span class="params">x, y</span>):</span><br><span class="line">    <span class="string">&quot;这是一个 add 函数&quot;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;add function&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> x + y</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(inspect.getsourcefile(add))   <span class="comment"># /Users/Desktop/project/test_python/test/test.py</span></span><br><span class="line"><span class="built_in">print</span>(inspect.getdoc(add))          <span class="comment"># 这是一个 add 函数</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>获取模块的所有类</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> inspect</span><br><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取该模块的所有类</span></span><br><span class="line"><span class="keyword">for</span> name, obj <span class="keyword">in</span> inspect.getmembers(unittest):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;获取该模块的所有类&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> inspect.ismodule(obj):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;是否是一个模块:&#x27;</span> + obj.__name__)</span><br><span class="line">    <span class="keyword">if</span> inspect.isclass(obj):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;是否是一个类:&#x27;</span>+obj.__name__)</span><br><span class="line">    <span class="keyword">if</span> inspect.ismethod(obj):</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;是否是一个方法:&#x27;</span>+obj.__name__)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428501.webp"></p>
+<h3 id="2-7-Csv-模块"><a href="#2-7-Csv-模块" class="headerlink" title="2.7 Csv 模块"></a>2.7 Csv 模块</h3><h4 id="2-7-1-Csv-定义"><a href="#2-7-1-Csv-定义" class="headerlink" title="2.7.1 Csv 定义"></a>2.7.1 Csv 定义</h4><p><code>csv</code>模块是用于处理逗号分隔值（Comma-Separated Values，CSV）文件的工具模块，使用场景如下：</p>
+<ol>
+<li>数据导入和导出：当需要从外部数据源（如电子表格、数据库导出等）读取数据或将数据导出到其他应用程序时，CSV 格式通常是一种简单且广泛支持的格式。<code>csv</code>模块可以方便地读取和写入这些 CSV 文件，以便在 Python 程序中进行进一步的处理。</li>
+<li>数据处理和分析：如果需要对大量的数据进行处理和分析，而这些数据以 CSV 格式存储，<code>csv</code>模块可以帮助快速读取数据，并进行各种操作，如筛选、转换、聚合等。可以使用 <code>reader</code> 和 <code>writer</code> 对象结合其他 Python 数据处理库来实现复杂的数据处理流程。</li>
+<li>与其他工具和系统集成：许多其他软件工具和系统支持 CSV 格式作为输入或输出。通过使用 <code>csv</code>模块，Python 程序可以与这些工具进行交互，读取它们生成的 CSV 文件或生成 CSV 文件供它们使用。例如，可以将 Python 程序生成的数据导出为 CSV 文件，以便在电子表格软件中进行进一步的分析和可视化。</li>
+</ol>
+<p>导入方式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import csv</span><br></pre></td></tr></table></figure>
+
+<p>另外，csv 和 excel 比较相似，但 csv 是纯文本格式，且结构简单仅存储数据，无格式和公式等，易被编程处理；而 excel 文件格式丰富，可含多个工作表及格式、公式、图表等，功能强大但相对复杂。</p>
+<h4 id="2-7-2-使用方法"><a href="#2-7-2-使用方法" class="headerlink" title="2.7.2 使用方法"></a>2.7.2 使用方法</h4><p><strong>写入文件</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line">header = [<span class="string">&#x27;姓名&#x27;</span>, <span class="string">&#x27;年纪&#x27;</span>, <span class="string">&#x27;国家&#x27;</span>]</span><br><span class="line">data = [</span><br><span class="line">    [<span class="string">&#x27;张三&#x27;</span>, <span class="number">18</span>, <span class="string">&#x27;中国&#x27;</span>],</span><br><span class="line">    [<span class="string">&#x27;李四&#x27;</span>, <span class="number">19</span>, <span class="string">&#x27;小日本&#x27;</span>],</span><br><span class="line">    [<span class="string">&#x27;王五&#x27;</span>, <span class="number">20</span>, <span class="string">&#x27;美国&#x27;</span>]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;data.csv&quot;</span>, <span class="string">&quot;w&quot;</span>) <span class="keyword">as</span> file:</span><br><span class="line">    write = csv.writer(file)</span><br><span class="line">    write.writerow(header)</span><br><span class="line">    write.writerows(data)</span><br></pre></td></tr></table></figure>
+
+<p>执行上述代码后，会在本地创建一个 ‘data.csv’ 文件，并往里面写入数据。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428502.webp"></p>
+<p><strong>读取文件</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line">header = [<span class="string">&#x27;姓名&#x27;</span>, <span class="string">&#x27;年纪&#x27;</span>, <span class="string">&#x27;国家&#x27;</span>]</span><br><span class="line">data = [</span><br><span class="line">    [<span class="string">&#x27;张三&#x27;</span>, <span class="number">18</span>, <span class="string">&#x27;中国&#x27;</span>],</span><br><span class="line">    [<span class="string">&#x27;李四&#x27;</span>, <span class="number">19</span>, <span class="string">&#x27;小日本&#x27;</span>],</span><br><span class="line">    [<span class="string">&#x27;王五&#x27;</span>, <span class="number">20</span>, <span class="string">&#x27;美国&#x27;</span>]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;data.csv&quot;</span>, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> file:</span><br><span class="line">    reader = csv.reader(file)</span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> reader:</span><br><span class="line">        <span class="built_in">print</span>(row)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428503.webp"></p>
+<h2 id="3-工作常用第三方库"><a href="#3-工作常用第三方库" class="headerlink" title="3. 工作常用第三方库"></a>3. 工作常用第三方库</h2><h3 id="3-1-命令行工具"><a href="#3-1-命令行工具" class="headerlink" title="3.1 命令行工具"></a>3.1 命令行工具</h3><h4 id="3-1-1-常见工具"><a href="#3-1-1-常见工具" class="headerlink" title="3.1.1 常见工具"></a>3.1.1 常见工具</h4><p>常见命令行工具：</p>
+<ul>
+<li><strong>argparse</strong> 是 Python 标准库中的一个模块，它提供了丰富的功能来定义命令行参数的名称、类型、默认值、帮助信息等。通过它，您可以轻松地处理用户在命令行中输入的各种参数，并且可以进行参数的验证和错误处理。</li>
+<li><strong>click</strong> 这个库具有高度的灵活性和可扩展性。它支持命令的嵌套、参数的多种类型（包括文件、目录等）、选项的别名、参数的自动文档生成等。使用 click 可以让命令行工具的定义更加清晰和易读。</li>
+<li><strong>fire</strong> 则以一种非常简洁的方式将现有的 Python 函数或对象转换为命令行接口。您不需要显式地定义参数和选项，fire 会根据函数的参数自动进行处理。</li>
+</ul>
+<p>除了 Python 自带的命令行标准库外，click 库是最受欢迎、使用最多的第三方 Python 命令行解析工具。下面主要会介绍 click 库的使用，在此之前需要先安装一下这个第三方库。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install click</span><br></pre></td></tr></table></figure>
+<h4 id="3-1-2-使用方法"><a href="#3-1-2-使用方法" class="headerlink" title="3.1.2 使用方法"></a>3.1.2 使用方法</h4><table>
+<thead>
+<tr>
+<th><strong>方法及装饰器</strong></th>
+<th><strong>作用</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@click.command()</td>
+<td>用于将函数标记为命令行命令。</td>
+</tr>
+<tr>
+<td>@click.option()</td>
+<td>定义命令行选项。可以指定选项名称、短选项（如 <code>-n</code> ）、长选项（如 <code>--name</code> ）、提示信息、默认值、是否必填等。</td>
+</tr>
+<tr>
+<td>@click.argument()</td>
+<td>定义命令行参数。可以指定参数名称、参数个数等。</td>
+</tr>
+<tr>
+<td>click.echo()</td>
+<td>用于在命令行中输出文本。</td>
+</tr>
+<tr>
+<td>click.prompt()</td>
+<td>用于在命令行中提示用户输入。</td>
+</tr>
+<tr>
+<td>click.confirm()</td>
+<td>用于向用户显示一个确认提示，并返回布尔值表示用户的选择。</td>
+</tr>
+<tr>
+<td>click.group()</td>
+<td>用于创建命令组，可以包含多个子命令。</td>
+</tr>
+<tr>
+<td>click.Context</td>
+<td>命令执行的上下文对象，可以获取命令行参数、选项的值，以及执行其他与上下文相关的操作。</td>
+</tr>
+</tbody></table>
+<p><strong>示例一</strong></p>
+<ul>
+<li>下面通过 <code>@click.command()</code> 将 <code>print_msg</code> 方法标记为了命令行命令。</li>
+<li>通过 <code>@click.option</code> 设置命令行传入参数 <code>--name</code>，以及默认值、提示信息和参数类型。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> click</span><br><span class="line"></span><br><span class="line"><span class="meta">@click.command()</span></span><br><span class="line"><span class="meta">@click.option(<span class="params"><span class="string">&quot;--name&quot;</span>, default=<span class="string">&quot;hello&quot;</span>, <span class="built_in">help</span>=<span class="string">&quot;打印名称&quot;</span>, <span class="built_in">type</span>=<span class="built_in">str</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_msg</span>(<span class="params">name</span>):</span><br><span class="line">    click.echo(<span class="string">f&quot;名称为：<span class="subst">&#123;name&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    print_msg()</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428504.webp"></p>
+<p><strong>示例二</strong></p>
+<ul>
+<li>下面代码在上面示例的基础上，通过 <code>@click.argument</code> 装饰器指定了命令行必传的参数。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> click</span><br><span class="line"></span><br><span class="line"><span class="meta">@click.command()</span></span><br><span class="line"><span class="meta">@click.option(<span class="params"><span class="string">&quot;--count&quot;</span>, default=<span class="number">1</span>, <span class="built_in">help</span>=<span class="string">&quot;打印次数&quot;</span>, <span class="built_in">type</span>=<span class="built_in">int</span></span>)</span></span><br><span class="line"><span class="meta">@click.argument(<span class="params"><span class="string">&quot;name&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_msg</span>(<span class="params">count, name</span>):</span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(count):</span><br><span class="line">        click.echo(<span class="string">f&quot;名称为：<span class="subst">&#123;name&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    print_msg()</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428505.webp"></p>
+<p>我们也可以通过 <code>--help</code> 来查看一下提示信息，和上个示例不同，在 test.py [OPTIONS] 旁增加了一个必填的参数 NAME，除 NAME 外下面的 Options 选项里的都是选填参数。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428506.webp"></p>
+<h3 id="3-2-定时工具"><a href="#3-2-定时工具" class="headerlink" title="3.2 定时工具"></a>3.2 定时工具</h3><h4 id="3-2-1-APScheduler-定义"><a href="#3-2-1-APScheduler-定义" class="headerlink" title="3.2.1 APScheduler 定义"></a>3.2.1 APScheduler 定义</h4><p>这里我们会介绍一个简单易用的定时工具库 - APScheduler，在使用它之前同样需要安装一下。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install apscheduler</span><br></pre></td></tr></table></figure>
+
+<p><code>APScheduler</code> 的一些关键特点和概念：</p>
+<ol>
+<li>调度器（Scheduler）<ul>
+<li><code>BlockingScheduler</code>：在执行任务时会阻塞当前线程，直到调度器被停止。</li>
+<li><code>BackgroundScheduler</code>：在后台运行，不会阻塞当前线程。</li>
+</ul>
+</li>
+<li>触发器（Trigger）<ul>
+<li>决定任务何时执行。常见的触发器类型包括：</li>
+<li><code>IntervalTrigger</code>：按照固定的时间间隔执行任务。</li>
+<li><code>DateTrigger</code>：在指定的日期和时间执行一次任务。</li>
+<li><code>CronTrigger</code>：通过 <code>cron</code> 表达式来灵活定义任务的执行时间规则。</li>
+</ul>
+</li>
+<li>任务存储（Job Store）<ul>
+<li>用于存储任务的信息，如任务的下次执行时间等。支持内存存储和数据库存储等方式。</li>
+</ul>
+</li>
+<li>执行器（Executor）<ul>
+<li>负责执行任务。默认提供了线程池和进程池执行器。</li>
+</ul>
+</li>
+</ol>
+<h4 id="3-2-2-使用方法"><a href="#3-2-2-使用方法" class="headerlink" title="3.2.2 使用方法"></a>3.2.2 使用方法</h4><p>使用 <code>APScheduler</code> 的一般步骤：</p>
+<ol>
+<li>创建调度器对象，如 <code>BlockingScheduler</code> 或 <code>BackgroundScheduler</code>。</li>
+<li>定义任务函数。</li>
+<li>使用适当的触发器创建任务，并将任务添加到调度器中。</li>
+<li>启动调度器。</li>
+</ol>
+<p><strong>使用 DateTrigger</strong></p>
+<p>下面这个例子定义了一个打印的函数，并使用 date 作为触发器，在启动调度器之后，任务函数将会在指定的时间 <code>2024.8.13 9:41:00</code> 的时候执行打印操作。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> datetime</span><br><span class="line"><span class="keyword">from</span> apscheduler.schedulers.blocking <span class="keyword">import</span> BlockingScheduler</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建调度器对象</span></span><br><span class="line">scheduler = BlockingScheduler()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义任务函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_msg</span>(<span class="params">text</span>):</span><br><span class="line">    <span class="built_in">print</span>(text)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 date 触发器创建任务，并添加到调度器中</span></span><br><span class="line">scheduler.add_job(print_msg, <span class="string">&#x27;date&#x27;</span>, run_date=datetime.datetime(<span class="number">2024</span>, <span class="number">8</span>, <span class="number">13</span>, <span class="number">9</span>, <span class="number">41</span>, <span class="number">00</span>), args=[<span class="string">&#x27;hello world&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动调度器</span></span><br><span class="line">scheduler.start()</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用 IntervalTrigger</strong></p>
+<p>下面这个示例则是使用 interval 作为触发器，通过 <code>seconds=5</code> 定义了任务函数每 5 秒执行一次，并且也定义了 <code>end_date</code>，将任务函数执行的截止时间设置在 <code>2024-8-13 12:00:00</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> apscheduler.schedulers.blocking <span class="keyword">import</span> BlockingScheduler</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建调度器对象</span></span><br><span class="line">scheduler = BlockingScheduler()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义任务函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_msg</span>(<span class="params">text</span>):</span><br><span class="line">    <span class="built_in">print</span>(text)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 interval 触发器创建任务，并添加到调度器中</span></span><br><span class="line">scheduler.add_job(print_msg, <span class="string">&#x27;interval&#x27;</span>, seconds=<span class="number">5</span>, args=[<span class="string">&#x27;hello world&#x27;</span>], end_date=<span class="string">&quot;2024-8-13 12:00:00&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动调度器</span></span><br><span class="line">scheduler.start()</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用 CronTrigger</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> apscheduler.schedulers.blocking <span class="keyword">import</span> BlockingScheduler</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建调度器对象</span></span><br><span class="line">scheduler = BlockingScheduler()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义任务函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">print_msg</span>(<span class="params">text</span>):</span><br><span class="line">    <span class="built_in">print</span>(text)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 cron 触发器创建任务，并添加到调度器中</span></span><br><span class="line">scheduler.add_job(print_msg, <span class="string">&#x27;cron&#x27;</span>, second=<span class="string">&#x27;*/5&#x27;</span>, args=[<span class="string">&#x27;hello world&#x27;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启动调度器</span></span><br><span class="line">scheduler.start()</span><br></pre></td></tr></table></figure>
+
+<p>cron 触发器相对上面两个触发器则更加的灵活，不仅可以指定具体的执行日期，还可以指定执行的周期。下面这个例子，同样展示的是每 5 秒执行一次任务。</p>
+<h3 id="3-3-监控工具"><a href="#3-3-监控工具" class="headerlink" title="3.3 监控工具"></a>3.3 监控工具</h3><h4 id="3-3-1-Psutil-定义"><a href="#3-3-1-Psutil-定义" class="headerlink" title="3.3.1 Psutil 定义"></a>3.3.1 Psutil 定义</h4><blockquote>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://github.com/giampaolo/psutil">https://github.com/giampaolo/psutil</a></p>
+</blockquote>
+<p><code>psutil</code> 是一个跨平台的进程和系统监控的 Python 库，它提供了丰富的函数来获取系统的运行信息，例如 CPU、内存、磁盘、网络、进程等方面的信息。</p>
+<p><code>psutil</code> 的主要特点和功能：</p>
+<ol>
+<li>CPU 信息<ul>
+<li>获取 CPU 的使用率，包括整体使用率和每个核心的使用率。</li>
+<li>获取 CPU 的时间统计，如用户时间、系统时间、空闲时间等。</li>
+</ul>
+</li>
+<li>内存信息<ul>
+<li>查看系统的物理内存和交换内存的总量、使用量、空闲量等。</li>
+<li>获取内存的详细信息，如缓冲区、缓存等。</li>
+</ul>
+</li>
+<li>磁盘信息<ul>
+<li>获得磁盘的分区信息、使用率、读写情况等。</li>
+<li>监控磁盘的 I&#x2F;O 操作。</li>
+</ul>
+</li>
+<li>网络信息<ul>
+<li>获取网络接口的地址、状态、流量统计等。</li>
+<li>查看网络连接的详细信息。</li>
+</ul>
+</li>
+<li>进程信息<ul>
+<li>遍历系统中的进程，获取进程的 ID、名称、状态、内存使用、CPU 使用等。</li>
+<li>可以对进程进行操作，如终止进程。</li>
+</ul>
+</li>
+</ol>
+<p>其功能主要集中在系统监控、性能分析和对比以及进程管理这几个维度，它也可以让你实现类似任务管理器、top 命令的同等效果，也可以自定义让其满足你的特定需求。</p>
+<p>当然在使用之前，同样需要先下载一下这个第三方库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install psutil</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-2-使用方法"><a href="#3-3-2-使用方法" class="headerlink" title="3.3.2 使用方法"></a>3.3.2 使用方法</h4><p><strong>获取 CPU 使用率</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> psutil</span><br><span class="line"></span><br><span class="line"><span class="comment"># 每 1 秒获取一次 CPU 使用率，一共获取 5 次</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>):</span><br><span class="line">    cpu_percent = psutil.cpu_percent(interval=<span class="number">1</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;CPU使用率：<span class="subst">&#123;cpu_percent&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428507.webp"></p>
+<p><strong>获取内存信息</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> psutil</span><br><span class="line"></span><br><span class="line">mem_info = psutil.virtual_memory()</span><br><span class="line"><span class="built_in">print</span>(mem_info)   <span class="comment"># 获取内存对象</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;当前内存的占比：<span class="subst">&#123;mem_info.percent&#125;</span>%&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;内存总量：<span class="subst">&#123;mem_info.total/(<span class="number">1024</span>**<span class="number">3</span>):<span class="number">.2</span>f&#125;</span>GB&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;内存占用：<span class="subst">&#123;mem_info.used/(<span class="number">1024</span>**<span class="number">3</span>):<span class="number">.2</span>f&#125;</span>GB&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428508.webp"></p>
+<p><strong>获取磁盘信息</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> psutil</span><br><span class="line"></span><br><span class="line">disk_info = psutil.disk_usage(<span class="string">&quot;/&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(disk_info)   <span class="comment"># 获取磁盘对象</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;当前磁盘的占比：<span class="subst">&#123;disk_info.percent&#125;</span>%&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;磁盘总量：<span class="subst">&#123;disk_info.total/(<span class="number">1024</span>**<span class="number">3</span>):<span class="number">.2</span>f&#125;</span>GB&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;磁盘已用：<span class="subst">&#123;disk_info.used/(<span class="number">1024</span>**<span class="number">3</span>):<span class="number">.2</span>f&#125;</span>GB&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428509.webp"></p>
+<p><strong>获取网络链接信息</strong></p>
+<p><code>net_connections</code> 会返回一个包含连接信息的列表，每个元素都是一个表示连接的元组，元组中的信息通常包括以下内容：</p>
+<ul>
+<li><code>fd</code>：文件描述符</li>
+<li><code>family</code>：地址族（如 <code>AF_INET</code> 表示 IPv4，<code>AF_INET6</code> 表示 IPv6）</li>
+<li><code>type</code>：连接类型（如 <code>SOCK_STREAM</code> 表示 TCP，<code>SOCK_DGRAM</code> 表示 UDP）</li>
+<li><code>laddr</code>：本地地址（IP 和端口）</li>
+<li><code>raddr</code>：远程地址（IP 和端口）</li>
+<li><code>status</code>：连接状态（如 <code>ESTABLISHED</code> 表示已建立的连接）</li>
+<li><code>pid</code>：拥有该连接的进程 ID</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> psutil</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(psutil.net_connections())</span><br></pre></td></tr></table></figure>
+
+<p><strong>获取进程信息</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> psutil</span><br><span class="line"></span><br><span class="line">process = psutil.process_iter()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> proc <span class="keyword">in</span> process:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;进程名称：<span class="subst">&#123;proc.name&#125;</span>，进程 ID 为：<span class="subst">&#123;proc.pid&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-造数工具"><a href="#3-4-造数工具" class="headerlink" title="3.4 造数工具"></a>3.4 造数工具</h3><h4 id="3-4-1-Faker-定义"><a href="#3-4-1-Faker-定义" class="headerlink" title="3.4.1 Faker 定义"></a>3.4.1 Faker 定义</h4><blockquote>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://github.com/joke2k/faker">https://github.com/joke2k/faker</a></p>
+</blockquote>
+<p>Faker 是一个 Python 包，开源的 GITHUB 项目，主要用来创建伪为数据，使用 Faker 包，无需再手动生成或者手写随机数来生成数据，只需要调用 Faker 提供的方法，即可完成数据的生成。</p>
+<p>安装命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install faker</span><br></pre></td></tr></table></figure>
+
+<p>导入方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> faker <span class="keyword">import</span> Faker</span><br></pre></td></tr></table></figure>
+<h4 id="3-4-2-使用方法"><a href="#3-4-2-使用方法" class="headerlink" title="3.4.2 使用方法"></a>3.4.2 使用方法</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> faker <span class="keyword">import</span> Faker</span><br><span class="line"></span><br><span class="line">faker = Faker(<span class="string">&#x27;zh_CN&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;name: &#x27;</span>, faker.name())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;address: &#x27;</span>, faker.address())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;phone: &#x27;</span>, faker.phone_number())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;ssn: &#x27;</span>, faker.ssn())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;url: &#x27;</span>, faker.url())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;image url: &#x27;</span>, faker.image_url())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;random str: &#x27;</span>, faker.pystr())</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;text: &#x27;</span>, faker.text())</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428510.webp"></p>
+<h3 id="3-5-其它工具"><a href="#3-5-其它工具" class="headerlink" title="3.5 其它工具"></a>3.5 其它工具</h3><h4 id="3-5-1-文字转语音"><a href="#3-5-1-文字转语音" class="headerlink" title="3.5.1 文字转语音"></a>3.5.1 文字转语音</h4><p>我们再介绍一个 <code>pyttsx3</code> 库，它可以将文本转换成语音。在使用之前，同样需要下载一下这个第三方库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pyttsx3</span><br></pre></td></tr></table></figure>
+
+<p>下面这段示例在运行的时候，系统就会读出 <code>Hello World</code> 这段话。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pyttsx3</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化引擎</span></span><br><span class="line">engine = pyttsx3.init()</span><br><span class="line"></span><br><span class="line">engine.setProperty(<span class="string">&#x27;rate&#x27;</span>, <span class="number">150</span>)  <span class="comment"># 调整语速</span></span><br><span class="line">engine.setProperty(<span class="string">&#x27;volume&#x27;</span>, <span class="number">0.9</span>)  <span class="comment"># 调整音量</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 将文本转换为语音并播放</span></span><br><span class="line">engine.say(<span class="string">&quot;Hello, World!&quot;</span>)</span><br><span class="line">engine.runAndWait()</span><br></pre></td></tr></table></figure>
+<h4 id="3-5-2-进度条显示工具"><a href="#3-5-2-进度条显示工具" class="headerlink" title="3.5.2 进度条显示工具"></a>3.5.2 进度条显示工具</h4><p><code>tqdm</code> 是一个 Python 库，用于在命令行或终端中为迭代过程提供一个进度条，让用户能够直观地了解任务的进展情况。，在使用之前也需要先下载这个第三方库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install tqdm</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例一</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对一个范围进行进度显示</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(<span class="number">100</span>)):</span><br><span class="line">    time.sleep(<span class="number">0.1</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428511.webp"></p>
+<p><strong>示例二</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示描述信息</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(<span class="number">100</span>), desc=<span class="string">&quot;正在处理&quot;</span>):</span><br><span class="line">    time.sleep(<span class="number">0.1</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428512.webp"></p>
+<p><strong>示例三</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> tqdm(total=<span class="number">100</span>) <span class="keyword">as</span> pbar:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">10</span>):</span><br><span class="line">        pbar.update(<span class="number">2</span>)</span><br><span class="line">        time.sleep(<span class="number">0.1</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428513.webp"></p>
+<p><strong>示例四</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm, trange</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">pbar = trange(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 分段打印</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> pbar:</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> (i % <span class="number">3</span>):</span><br><span class="line">        tqdm.write(<span class="string">f&quot;进度<span class="subst">&#123;i&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713152428514.webp"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/ff489132/">https://alwaysfyo.github.io/posts/ff489132/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/">Python</a><a class="post-meta__tags" href="/tags/Python%E7%B3%BB%E5%88%97/">Python系列</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/defdceeb/" title="Python 常见设计模式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Python 常见设计模式</div></div><div class="info-2"><div class="info-item-1">设计模式是一种解决特定问题的经验、一种通用的解决方案，它有如下优点：</div></div></div></a><a class="pagination-related" href="/posts/e6038de0/" title="Python 网络编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Python 网络编程</div></div><div class="info-2"><div class="info-item-1">一个 URL（统一资源定位符）的访问过程中，涉及到了多个协议。下面是一些常见的协议：</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/cba634da/" title="Python 编码规范"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Python 编码规范</div></div><div class="info-2"><div class="info-item-1">我们可以通过在 pip install 后面加上镜像源地址来提升下载速度，例如我从阿里云的镜像源来下载 django：</div></div></div></a><a class="pagination-related" href="/posts/2632cbb4/" title="Python 面向对象"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-12</div><div class="info-item-2">Python 面向对象</div></div><div class="info-2"><div class="info-item-1">类是面向对象编程的核心， 它扮演相关数据及逻辑的容器角色。它们提供了创建"真实"对象(也就是实例)的蓝图。</div></div></div></a><a class="pagination-related" href="/posts/15d3e3bb/" title="Python 并发编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Python 并发编程</div></div><div class="info-2"><div class="info-item-1">操作系统上可以运行多个进程，一个进程可以有多个线程，多个线程可以被分配到不同的 CPU 核上跑，但实际上每个 CPU 核上只有一个线程，只是…</div></div></div></a><a class="pagination-related" href="/posts/4d555624/" title="Python 介绍及环境搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Python 介绍及环境搭建</div></div><div class="info-2"><div class="info-item-1">Python 是一种跨平台、面向对象的解释型计算机程序设计语言，常被称之为胶水语言，于 1989 年发明，第一个公开版本发行于 1991 年…</div></div></div></a><a class="pagination-related" href="/posts/9b394d56/" title="Python 开源项目"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-25</div><div class="info-item-2">Python 开源项目</div></div><div class="info-2"><div class="info-item-1">Python 开源项目：Python - 100天从新手到大师</div></div></div></a><a class="pagination-related" href="/posts/9eabf176/" title="Python 控制结构 &amp; 函数"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Python 控制结构 &amp; 函数</div></div><div class="info-2"><div class="info-item-1">控制结构就是控制程序执行顺序的结构，而 Python 有三大控制结构，分别是顺序结构、分支结构（选择结构）以及循环结构。</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">83</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">41</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Python-%E5%BA%93"><span class="toc-number">1.</span> <span class="toc-text">1. Python 库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-Import-%E5%8E%9F%E7%90%86"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 Import 原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E6%A8%A1%E5%9D%97%E4%B8%8E%E5%8C%85"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 模块与包</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-1-%E5%AE%9A%E4%B9%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.2.1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-%E5%AF%BC%E5%85%A5%E8%A7%84%E8%8C%83"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2.2 导入规范</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-3-%E5%AF%BC%E5%85%A5%E6%93%8D%E4%BD%9C"><span class="toc-number">1.2.3.</span> <span class="toc-text">1.2.3 导入操作</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5%E6%95%B4%E4%B8%AA%E6%A8%A1%E5%9D%97"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">导入整个模块</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5%E7%89%B9%E5%AE%9A%E5%87%BD%E6%95%B0%EF%BC%88%E6%8E%A8%E8%8D%90%E7%94%A8%E6%B3%95%EF%BC%89"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">导入特定函数（推荐用法）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5%E6%A8%A1%E5%9D%97%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E5%87%BD%E6%95%B0%EF%BC%88%E4%B8%8D%E6%8E%A8%E8%8D%90%EF%BC%89"><span class="toc-number">1.2.3.3.</span> <span class="toc-text">导入模块中的所有函数（不推荐）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-as"><span class="toc-number">1.2.3.4.</span> <span class="toc-text">使用 as</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5%E7%B1%BB"><span class="toc-number">1.2.3.5.</span> <span class="toc-text">导入类</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 动态加载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-Pip-%E5%B7%A5%E5%85%B7"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 Pip 工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-1-%E5%AE%98%E6%96%B9%E4%B8%8B%E8%BD%BD%E6%BA%90"><span class="toc-number">1.4.1.</span> <span class="toc-text">1.4.1 官方下载源</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-2-%E5%9B%BD%E5%86%85%E4%B8%8B%E8%BD%BD%E6%BA%90"><span class="toc-number">1.4.2.</span> <span class="toc-text">1.4.2 国内下载源</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%B8%B8%E7%94%A8%E6%A0%87%E5%87%86%E5%BA%93"><span class="toc-number">2.</span> <span class="toc-text">2. 常用标准库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-os-%E6%A8%A1%E5%9D%97"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 os 模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-Os-%E5%AE%9A%E4%B9%89"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1 Os 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2 使用方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Sys-%E6%A8%A1%E5%9D%97"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 Sys 模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-Sys-%E5%AE%9A%E4%B9%89"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1 Sys 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2 使用方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Time-%E6%A8%A1%E5%9D%97"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 Time 模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-1-Time-%E5%AE%9A%E4%B9%89"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1 Time 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">2.3.2.</span> <span class="toc-text">2.3.2 使用方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-Itertools-%E6%A8%A1%E5%9D%97"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 Itertools 模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-1-Itertools-%E5%AE%9A%E4%B9%89"><span class="toc-number">2.4.1.</span> <span class="toc-text">2.4.1 Itertools 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">2.4.2.</span> <span class="toc-text">2.4.2 使用方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-Collections-%E6%A8%A1%E5%9D%97"><span class="toc-number">2.5.</span> <span class="toc-text">2.5 Collections 模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-1-Collections-%E5%AE%9A%E4%B9%89"><span class="toc-number">2.5.1.</span> <span class="toc-text">2.5.1 Collections 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">2.5.2.</span> <span class="toc-text">2.5.2 使用方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-Inspect-%E6%A8%A1%E5%9D%97"><span class="toc-number">2.6.</span> <span class="toc-text">2.6 Inspect 模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-6-1-Inspect-%E5%AE%9A%E4%B9%89"><span class="toc-number">2.6.1.</span> <span class="toc-text">2.6.1 Inspect 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-6-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">2.6.2.</span> <span class="toc-text">2.6.2 使用方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-Csv-%E6%A8%A1%E5%9D%97"><span class="toc-number">2.7.</span> <span class="toc-text">2.7 Csv 模块</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-7-1-Csv-%E5%AE%9A%E4%B9%89"><span class="toc-number">2.7.1.</span> <span class="toc-text">2.7.1 Csv 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-7-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">2.7.2.</span> <span class="toc-text">2.7.2 使用方法</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%B7%A5%E4%BD%9C%E5%B8%B8%E7%94%A8%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93"><span class="toc-number">3.</span> <span class="toc-text">3. 工作常用第三方库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 命令行工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-1-%E5%B8%B8%E8%A7%81%E5%B7%A5%E5%85%B7"><span class="toc-number">3.1.1.</span> <span class="toc-text">3.1.1 常见工具</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">3.1.2.</span> <span class="toc-text">3.1.2 使用方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%AE%9A%E6%97%B6%E5%B7%A5%E5%85%B7"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 定时工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-1-APScheduler-%E5%AE%9A%E4%B9%89"><span class="toc-number">3.2.1.</span> <span class="toc-text">3.2.1 APScheduler 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">3.2.2.</span> <span class="toc-text">3.2.2 使用方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 监控工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-1-Psutil-%E5%AE%9A%E4%B9%89"><span class="toc-number">3.3.1.</span> <span class="toc-text">3.3.1 Psutil 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">3.3.2.</span> <span class="toc-text">3.3.2 使用方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E9%80%A0%E6%95%B0%E5%B7%A5%E5%85%B7"><span class="toc-number">3.4.</span> <span class="toc-text">3.4 造数工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-1-Faker-%E5%AE%9A%E4%B9%89"><span class="toc-number">3.4.1.</span> <span class="toc-text">3.4.1 Faker 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-2-%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="toc-number">3.4.2.</span> <span class="toc-text">3.4.2 使用方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E5%85%B6%E5%AE%83%E5%B7%A5%E5%85%B7"><span class="toc-number">3.5.</span> <span class="toc-text">3.5 其它工具</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5-1-%E6%96%87%E5%AD%97%E8%BD%AC%E8%AF%AD%E9%9F%B3"><span class="toc-number">3.5.1.</span> <span class="toc-text">3.5.1 文字转语音</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-5-2-%E8%BF%9B%E5%BA%A6%E6%9D%A1%E6%98%BE%E7%A4%BA%E5%B7%A5%E5%85%B7"><span class="toc-number">3.5.2.</span> <span class="toc-text">3.5.2 进度条显示工具</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/68d65074/" title="Selenium 框架三部曲 - 中">Selenium 框架三部曲 - 中</a><time datetime="2025-07-13T01:21:00.000Z" title="发表于 2025-07-13 09:21:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/261faf15/" title="Golang Mutex 详解">Golang Mutex 详解</a><time datetime="2025-07-12T17:30:00.000Z" title="发表于 2025-07-13 01:30:00">2025-07-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/edd5b4e5/" title="API 接口智能化测试探索与实践">API 接口智能化测试探索与实践</a><time datetime="2025-07-01T13:01:00.000Z" title="发表于 2025-07-01 21:01:00">2025-07-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/8fe1f36/" title="AI 系列：计算机视觉-给机器装上眼睛">AI 系列：计算机视觉-给机器装上眼睛</a><time datetime="2025-06-30T15:30:00.000Z" title="发表于 2025-06-30 23:30:00">2025-06-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/c9acbf1/" title="AI 系列：搜索-从迷宫求解看人工智能关键技术">AI 系列：搜索-从迷宫求解看人工智能关键技术</a><time datetime="2025-06-30T15:29:00.000Z" title="发表于 2025-06-30 23:29:00">2025-06-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>
