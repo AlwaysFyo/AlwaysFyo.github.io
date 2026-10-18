@@ -1,0 +1,551 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Golang-03：条件循环 &amp; 集合类型详解 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="讲解 Go 的条件循环语句与数组、切片、map 等集合类型。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang-03：条件循环 &amp; 集合类型详解">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/7e892b96/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="讲解 Go 的条件循环语句与数组、切片、map 等集合类型。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2025-06-30T15:23:00.000Z">
+<meta property="article:modified_time" content="2026-10-17T10:18:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="Golang">
+<meta property="article:tag" content="Golang系列">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Golang-03：条件循环 & 集合类型详解",
+  "url": "https://alwaysfyo.github.io/posts/7e892b96/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2025-06-30T15:23:00.000Z",
+  "dateModified": "2026-10-17T10:18:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/7e892b96/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Golang-03：条件循环 & 集合类型详解',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">101</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">53</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Golang-03：条件循环 &amp; 集合类型详解</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Golang-03：条件循环 &amp; 集合类型详解</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-30T15:23:00.000Z" title="发表于 2025-06-30 23:23:00">2025-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-17T10:18:00.000Z" title="更新于 2026-10-17 18:18:00">2026-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>22分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517570.webp"></p>
+<h2 id="1-条件与循环"><a href="#1-条件与循环" class="headerlink" title="1. 条件与循环"></a>1. 条件与循环</h2><h3 id="1-1-If-Else"><a href="#1-1-If-Else" class="headerlink" title="1.1 If Else"></a>1.1 If Else</h3><p>go 语言中的 if else 写法和 C &#x2F; C++ 的类似，其中不同的地方如下：</p>
+<ol>
+<li>if 后面没有括号，如果你写了括号，则在保存代码时编译器会自动帮你去掉。</li>
+<li>if 后面必须大括号，不能像 C &#x2F; C++ 一样与 if 里面的语句在同一行。</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> <span class="number">7</span>%<span class="number">2</span> == <span class="number">0</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;7 is even&quot;</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;7 is odd&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> num := <span class="number">9</span>; num &lt; <span class="number">0</span> &#123;</span><br><span class="line">        fmt.Println(num , <span class="string">&quot;is negative&quot;</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> num &lt; <span class="number">10</span> &#123;</span><br><span class="line">        fmt.Println(num, <span class="string">&quot;has 1 digit&quot;</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(num, <span class="string">&quot;has multiple digits&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">7 is odd</span><br><span class="line">9 has 1 digit</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-For-循环"><a href="#1-2-For-循环" class="headerlink" title="1.2 For 循环"></a>1.2 For 循环</h3><p>在 go 语言中并没有什么 while、do while 循环，只有 for 循环。最简单的 for 循环就是在后面什么都不加，代表一个死循环。不过循环的过程中可以使用 break 退出，或者 continue 来跳过本次循环后续的代码。另外，for 中间的三段任何一段都可以省略。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;first part&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">&quot;loop&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Println(<span class="string">&quot;second part&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> j := <span class="number">7</span>; j &lt; <span class="number">9</span>; j++ &#123;</span><br><span class="line">        fmt.Println(j)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Println(<span class="string">&quot;thrid part&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> n := <span class="number">0</span>; n &lt; <span class="number">5</span>; n++ &#123;</span><br><span class="line">        <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span> &#123;</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        &#125;</span><br><span class="line">        fmt.Println(n)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Println(<span class="string">&quot;fourth part&quot;</span>)</span><br><span class="line">    i := <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> i &lt;= <span class="number">3</span> &#123;</span><br><span class="line">        fmt.Println(i)</span><br><span class="line">        i++</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">first part</span><br><span class="line">loop</span><br><span class="line">second part</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">thrid part</span><br><span class="line">1</span><br><span class="line">3</span><br><span class="line">fourth part</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-Range"><a href="#1-3-Range" class="headerlink" title="1.3 Range"></a>1.3 Range</h3><p>在 go 语言中可以通过 range 来快速实现遍历操作，在其遍历时，会返回两个值，第一个是索引，第二个是对应位置的值。如果我们不需要索引的话，可以使用下划线来忽略。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">        nums := []<span class="type">int</span>&#123;<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>&#125;</span><br><span class="line">        sum := <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i, num := <span class="keyword">range</span> nums &#123;</span><br><span class="line">                sum += num</span><br><span class="line">                <span class="keyword">if</span> num == <span class="number">2</span> &#123;</span><br><span class="line">                        fmt.Println(<span class="string">&quot;index:&quot;</span>, i, <span class="string">&quot;num:&quot;</span>, num) <span class="comment">// index: 0 num: 2</span></span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        fmt.Println(sum) <span class="comment">// 9</span></span><br><span class="line"></span><br><span class="line">        m := <span class="keyword">map</span>[<span class="type">string</span>]<span class="type">string</span>&#123;<span class="string">&quot;a&quot;</span>: <span class="string">&quot;A&quot;</span>, <span class="string">&quot;b&quot;</span>: <span class="string">&quot;B&quot;</span>&#125;</span><br><span class="line">        <span class="keyword">for</span> k, v := <span class="keyword">range</span> m &#123;</span><br><span class="line">                fmt.Println(k, v) <span class="comment">// b 8; a A</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> k := <span class="keyword">range</span> m &#123;</span><br><span class="line">                fmt.Println(<span class="string">&quot;key&quot;</span>, k) <span class="comment">// key a; key b</span></span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-4-Switch"><a href="#1-4-Switch" class="headerlink" title="1.4 Switch"></a>1.4 Switch</h3><p>go 语言中的 switch 也和 C++ &#x2F; C 中的比较类似，不同的地方如下：</p>
+<ol>
+<li>go 语言 switch 后面直接跟的是变量名，而不是加括号。</li>
+<li>在 C++ 中 switch case 如果不加 break 的话会继续往下跑完所有的 case，而在 go 中则不用加 break，就会自动跳出</li>
+<li>go 语言 switch 可以使用任意的变量类型，甚至可以用来取代 if else 语句。可以在 switch 后面不加任何的变量，然后再 case 里面写条件分支，这样会比一连串的 if else 语句逻辑看起来更加清晰。</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    a := <span class="number">2</span></span><br><span class="line">    <span class="keyword">switch</span> a &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">        fmt.Println(<span class="string">&quot;one&quot;</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">        fmt.Println(<span class="string">&quot;two&quot;</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="number">3</span>, <span class="number">4</span>:</span><br><span class="line">        fmt.Println(<span class="string">&quot;three or four&quot;</span>)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        fmt.Println(<span class="string">&quot;outer&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    t := time.Now()</span><br><span class="line">    <span class="keyword">switch</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> t.Hour() &lt; <span class="number">12</span>:</span><br><span class="line">        fmt.Println(<span class="string">&quot;It&#x27;s before noon&quot;</span>)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        fmt.Println(<span class="string">&quot;It&#x27;s after noon&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">two</span><br><span class="line">It&#x27;s before noon</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-集合类型"><a href="#2-集合类型" class="headerlink" title="2. 集合类型"></a>2. 集合类型</h2><h3 id="2-1-数组"><a href="#2-1-数组" class="headerlink" title="2.1 数组"></a>2.1 数组</h3><p>定义：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//一维数组</span></span><br><span class="line"><span class="keyword">var</span> name [count]<span class="type">int</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//多维数组</span></span><br><span class="line"><span class="keyword">var</span> courseInfo [<span class="number">3</span>][<span class="number">4</span>]<span class="type">string</span></span><br></pre></td></tr></table></figure>
+
+<p>初始化：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 一维数组 */</span></span><br><span class="line"><span class="comment">//方法1</span></span><br><span class="line">coures1 := [<span class="number">3</span>]<span class="type">string</span>&#123;<span class="string">&quot;go&quot;</span>, <span class="string">&quot;grpc&quot;</span>, <span class="string">&quot;gin&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//方法2</span></span><br><span class="line">courses2 := [<span class="number">3</span>]<span class="type">string</span>&#123;<span class="number">2</span>:<span class="string">&quot;gin&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//方法3</span></span><br><span class="line">courses3 := [...]<span class="type">string</span>&#123;<span class="string">&quot;go&quot;</span>, <span class="string">&quot;grpc&quot;</span>, <span class="string">&quot;gin&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 多维数组 */</span></span><br><span class="line"><span class="keyword">var</span> courseInfo [<span class="number">3</span>][<span class="number">4</span>]<span class="type">string</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//方法1</span></span><br><span class="line">courseInfo[<span class="number">0</span>] = [<span class="number">4</span>]<span class="type">string</span>&#123;<span class="string">&quot;go&quot;</span>, <span class="string">&quot;1h&quot;</span>, <span class="string">&quot;bobby&quot;</span>, <span class="string">&quot;go学习&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//方法2</span></span><br><span class="line">courseInfo[<span class="number">0</span>][<span class="number">0</span>] = <span class="string">&quot;go&quot;</span></span><br><span class="line">courseInfo[<span class="number">0</span>][<span class="number">1</span>] = <span class="string">&quot;1h&quot;</span></span><br><span class="line">courseInfo[<span class="number">0</span>][<span class="number">2</span>] = <span class="string">&quot;bobby&quot;</span></span><br><span class="line">courseInfo[<span class="number">0</span>][<span class="number">3</span>] = <span class="string">&quot;go学习&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>遍历：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 一维数组 */</span></span><br><span class="line"><span class="comment">//方法1</span></span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(courses); i++ &#123;</span><br><span class="line">    fmt.Println(courses[i]&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//方法2</span></span><br><span class="line"><span class="keyword">for</span> _, value := <span class="keyword">range</span> courses &#123;</span><br><span class="line">    fmt.Println(value)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 多维数组 */</span></span><br><span class="line"><span class="comment">//方法1</span></span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">len</span>(courseInfo); i++ &#123;</span><br><span class="line">    <span class="keyword">for</span> j:=<span class="number">0</span>; j &lt; <span class="built_in">len</span>(courseInfo[i]); j++ &#123;</span><br><span class="line">        fmt.Print(courseInfo[i][j] + <span class="string">&quot; &quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    fmt.Println();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//方法2</span></span><br><span class="line"><span class="keyword">for</span> _, row := <span class="keyword">range</span> courseInfo &#123;</span><br><span class="line">    fmt.Println(row)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意：</strong></p>
+<ol>
+<li><code>[2]string</code> 和 <code>[3]string</code> 是不同的类型</li>
+<li><code>[count]string</code> 是数组，<code>[]string</code> 是切片</li>
+</ol>
+</blockquote>
+<h3 id="2-2-Slice"><a href="#2-2-Slice" class="headerlink" title="2.2 Slice"></a>2.2 Slice</h3><h4 id="2-2-1-定义与初始化"><a href="#2-2-1-定义与初始化" class="headerlink" title="2.2.1 定义与初始化"></a>2.2.1 定义与初始化</h4><p>定义：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> courses []<span class="type">string</span></span><br></pre></td></tr></table></figure>
+
+<p>初始化：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方法1 - 从数组直接创建 (也可以通过切片创建新的切片)</span></span><br><span class="line">courses := [<span class="number">5</span>]<span class="type">string</span>&#123;<span class="string">&quot;go&quot;</span>, <span class="string">&quot;grpc&quot;</span>, <span class="string">&quot;gin&quot;</span>, <span class="string">&quot;mysql&quot;</span>, <span class="string">&quot;elasticsearch&quot;</span>&#125;</span><br><span class="line">courseSlice := courses[<span class="number">0</span>:<span class="number">2</span>]    <span class="comment">//[go, grpc]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//方法2 - 使用string&#123;&#125;</span></span><br><span class="line">courses := []<span class="type">string</span>&#123;<span class="string">&quot;go&quot;</span>, <span class="string">&quot;grpc&quot;</span>, <span class="string">&quot;gin&quot;</span>, <span class="string">&quot;mysql&quot;</span>, <span class="string">&quot;elasticsearch&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//方法3 - make</span></span><br><span class="line">courses := <span class="built_in">make</span>([]<span class="type">string</span>, <span class="number">3</span>)</span><br><span class="line">courses[<span class="number">0</span>] = <span class="string">&quot;go&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//方法3 - append</span></span><br><span class="line"><span class="keyword">var</span> courses []<span class="type">string</span></span><br><span class="line">courses = <span class="built_in">append</span>(courses, <span class="string">&quot;go&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>切片数组是左闭右开区间</p>
+</blockquote>
+<h4 id="2-2-2-常用操作"><a href="#2-2-2-常用操作" class="headerlink" title="2.2.2 常用操作"></a>2.2.2 <strong>常用操作</strong></h4><p>增加元素：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> courses []<span class="type">string</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//场景1 - 增加单个元素</span></span><br><span class="line">courses = <span class="built_in">append</span>(courses, <span class="string">&quot;go&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//场景2 - 增加多个元素</span></span><br><span class="line">courses = <span class="built_in">append</span>(coureses, <span class="string">&quot;go&quot;</span>, <span class="string">&quot;grpc&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//场景3 - 增加切片到尾部</span></span><br><span class="line">courseSilce1 := []<span class="type">string</span>&#123;<span class="string">&quot;go&quot;</span>, <span class="string">&quot;grpc&quot;</span>&#125;</span><br><span class="line">courseSilce2 := []<span class="type">string</span>&#123;<span class="string">&quot;mysql&quot;</span>, <span class="string">&quot;es&quot;</span>&#125;</span><br><span class="line">courseSilce1 = <span class="built_in">append</span>(courseSilce1, courseSilce2...)</span><br></pre></td></tr></table></figure>
+
+<p>删除元素：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">courseSlice := []<span class="type">string</span>&#123;<span class="string">&quot;go&quot;</span>, <span class="string">&quot;grpc&quot;</span>, <span class="string">&quot;mysql&quot;</span>, <span class="string">&quot;es&quot;</span>, <span class="string">&quot;gin&quot;</span>&#125;</span><br><span class="line"><span class="comment">//删除mysql</span></span><br><span class="line">myslice := <span class="built_in">append</span>(courseSlice[:<span class="number">2</span>], courseSlice[<span class="number">3</span>:]...)</span><br></pre></td></tr></table></figure>
+
+<p>拷贝：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//浅拷贝 - 切片2改动会影响到切片1</span></span><br><span class="line">courseSlice2 = courseSlice1[:]</span><br><span class="line"></span><br><span class="line"><span class="comment">//深拷贝 - 切片2改动不会影响到切片1</span></span><br><span class="line"><span class="keyword">var</span> courseSlice2 = <span class="built_in">make</span>([]<span class="type">string</span>, <span class="built_in">len</span>(courseSlice1))</span><br><span class="line"><span class="built_in">copy</span>(courseSlice2, courseSlice1)</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-3-底层存储原理"><a href="#2-2-3-底层存储原理" class="headerlink" title="2.2.3 底层存储原理"></a>2.2.3 <strong>底层存储原理</strong></h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//切片的实际存储类型</span></span><br><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">    array unsafe.Pointer    <span class="comment">//用来存储实际数据的数组指针，指向一块连续的内存</span></span><br><span class="line">    <span class="built_in">len</span>   <span class="type">int</span>               <span class="comment">//切片中元素的数量</span></span><br><span class="line">    <span class="built_in">cap</span>   <span class="type">int</span>               <span class="comment">//array数组的长度</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517571.webp"></p>
+<p>下面我们分场景举两个例子：</p>
+<ul>
+<li><strong>整形</strong></li>
+</ul>
+<p>如果我们用 make 来初始化的话，则会分配实际的内存，并且会将元素全部初始化为 0，例如下面我们创建了 5 个大小的空间，但访问的只有前 2 个。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517572.webp"></p>
+<p>假设我们现在新增一个元素，并更改其中一个元素的值，可以发现容量没变但实际长度变成了 3，但需要注意的是后面两个元素仍不能访问，否则汇报数组越界的错误。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517573.webp"></p>
+<ul>
+<li><strong>字符串</strong></li>
+</ul>
+<p>这次我们用 new 来初始化，与 make 不同，new 虽然会创建上面的三部分结构，但并不会分配底层数组空间，所以 data 为 nil。因此，如果我们试图更改数组的值比如 <code>(*ps)[0] = &quot;golang&quot;</code>，则会报错。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517574.webp"></p>
+<p>但是，我们可以通过 append 的方式来分配底层数组</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517575.webp"></p>
+<h4 id="2-2-4-分配位置"><a href="#2-2-4-分配位置" class="headerlink" title="2.2.4 分配位置"></a>2.2.4 <strong>分配位置</strong></h4><p>可以发现，我们上面举的例子中 slice 的 data 指针都指向 array 数组的第一个元素，但实际上 slice 可以指向 array 数组的任何一个位置。</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>array 数组一旦申明了容量大小就不可改变，因此我们可以通过 slice 来灵活的获得我们想要的数组变量。</p>
+</blockquote>
+<p>来举个例子：</p>
+<p>下面需要注意的是，s1 的容量计算范围是从开头到底层数组的结尾，因此其容量为 9。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517576.webp"></p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>切片是值传递，但是有引用传递的效果，是因为底层都指向同个地方。一旦增加导致扩容，会指向另一块区域。</p>
+</blockquote>
+<p>我们这里拿 s2 切片数组进行模拟，一旦切片数组发生扩容，则会重新分配一块新的内存，此后对该切片数组的操作都不会再影响到原来的底层数组。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517577.webp"></p>
+<h4 id="2-2-5-扩容规则"><a href="#2-2-5-扩容规则" class="headerlink" title="2.2.5 扩容规则"></a>2.2.5 <strong>扩容规则</strong></h4><p>go1.18 之前：</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517578.webp"></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/runtime/slice.go</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">growslice</span><span class="params">(et *_type, old slice, <span class="built_in">cap</span> <span class="type">int</span>)</span></span> slice &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    newcap := old.<span class="built_in">cap</span></span><br><span class="line">    doublecap := newcap + newcap</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">cap</span> &gt; doublecap &#123;</span><br><span class="line">        newcap = <span class="built_in">cap</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> old.<span class="built_in">cap</span> &lt; <span class="number">1024</span> &#123;</span><br><span class="line">            newcap = doublecap</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// Check 0 &lt; newcap to detect overflow</span></span><br><span class="line">            <span class="comment">// and prevent an infinite loop.</span></span><br><span class="line">            <span class="keyword">for</span> <span class="number">0</span> &lt; newcap &amp;&amp; newcap &lt; <span class="built_in">cap</span> &#123;</span><br><span class="line">                newcap += newcap / <span class="number">4</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// Set newcap to the requested cap when</span></span><br><span class="line">            <span class="comment">// the newcap calculation overflowed.</span></span><br><span class="line">            <span class="keyword">if</span> newcap &lt;= <span class="number">0</span> &#123;</span><br><span class="line">                newcap = <span class="built_in">cap</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> slice&#123;p, old.<span class="built_in">len</span>, newcap&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>go1.18 之后：</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517579.webp"></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// src/runtime/slice.go</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">growslice</span><span class="params">(et *_type, old slice, <span class="built_in">cap</span> <span class="type">int</span>)</span></span> slice &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    newcap := old.<span class="built_in">cap</span></span><br><span class="line">    doublecap := newcap + newcap</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">cap</span> &gt; doublecap &#123;</span><br><span class="line">        newcap = <span class="built_in">cap</span></span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> threshold = <span class="number">256</span></span><br><span class="line">        <span class="keyword">if</span> old.<span class="built_in">cap</span> &lt; threshold &#123;</span><br><span class="line">            newcap = doublecap</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// Check 0 &lt; newcap to detect overflow</span></span><br><span class="line">            <span class="comment">// and prevent an infinite loop.</span></span><br><span class="line">            <span class="keyword">for</span> <span class="number">0</span> &lt; newcap &amp;&amp; newcap &lt; <span class="built_in">cap</span> &#123;</span><br><span class="line">                <span class="comment">// Transition from growing 2x for small slices</span></span><br><span class="line">                <span class="comment">// to growing 1.25x for large slices. This formula</span></span><br><span class="line">                <span class="comment">// gives a smooth-ish transition between the two.</span></span><br><span class="line">                newcap += (newcap + <span class="number">3</span>*threshold) / <span class="number">4</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// Set newcap to the requested cap when</span></span><br><span class="line">            <span class="comment">// the newcap calculation overflowed.</span></span><br><span class="line">            <span class="keyword">if</span> newcap &lt;= <span class="number">0</span> &#123;</span><br><span class="line">                newcap = <span class="built_in">cap</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> slice&#123;p, old.<span class="built_in">len</span>, newcap&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>举个例子：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">        ints := <span class="built_in">make</span>([]<span class="type">int</span>, <span class="number">2</span>)</span><br><span class="line">        fmt.Println(&amp;ints[<span class="number">0</span>], <span class="string">&quot; len: &quot;</span>, <span class="built_in">len</span>(ints), <span class="string">&quot; cap: &quot;</span>, <span class="built_in">cap</span>(ints))</span><br><span class="line">        ints = <span class="built_in">append</span>(ints, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line">        fmt.Println(&amp;ints[<span class="number">0</span>], <span class="string">&quot; len: &quot;</span>, <span class="built_in">len</span>(ints), <span class="string">&quot; cap: &quot;</span>, <span class="built_in">cap</span>(ints))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output</span><br><span class="line">&gt;&gt;&gt; <span class="number">0xc0000180a0</span>  <span class="built_in">len</span>:  <span class="number">2</span>  <span class="built_in">cap</span>:  <span class="number">2</span></span><br><span class="line">&gt;&gt;&gt; <span class="number">0xc00000a360</span>  <span class="built_in">len</span>:  <span class="number">5</span>  <span class="built_in">cap</span>:  <span class="number">6</span></span><br></pre></td></tr></table></figure>
+
+<p>按照扩容规则来讲，上面这个例子 2 * 2 &lt; 2 + 3，所以扩容后的容量理应是 5，但是最终的容量却为 6，与规则对不上。</p>
+<p>这是因为扩容完之后的容量内存大小可能并不是最终的大小，<strong>新分配的内存大小</strong>并不是等于<strong>预估容量</strong>乘以<strong>数据类型的大小</strong>，而是需要按照一定的内存规格进行匹配。</p>
+<p>在许多编程语言中，很多语言中申请分配内存并不是直接与操作系统交涉，而是和语言自身实现的内存管理模块。它会提前向操作系统申请一批内存，分成常用的规格管理起来。我们申请内存时，它会帮我们匹配到足够大且最接近的规格。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517580.webp"></p>
+<p>所以按上面这个例子来讲，最终分配的内存为 48 个字节，而在 64 位系统中 int 占 8 个字节，故最终的容量不是 40 &#x2F; 8 &#x3D; 5 个字节，而是 48 &#x2F; 8 &#x3D; 6 个字节。</p>
+<h3 id="2-3-Map"><a href="#2-3-Map" class="headerlink" title="2.3 Map"></a>2.3 Map</h3><h4 id="2-3-1-定义与初始化"><a href="#2-3-1-定义与初始化" class="headerlink" title="2.3.1 定义与初始化"></a>2.3.1 定义与初始化</h4><p>定义：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> class <span class="keyword">struct</span> &#123;</span><br><span class="line">     Content <span class="type">string</span></span><br><span class="line">     Name    <span class="type">string</span></span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">//定义一个map存储class结构体</span></span><br><span class="line"> <span class="keyword">var</span> course <span class="keyword">map</span>[<span class="type">string</span>]*class</span><br></pre></td></tr></table></figure>
+
+<p>初始化：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方法1</span></span><br><span class="line"><span class="keyword">var</span> courseMap = <span class="keyword">map</span>[<span class="type">string</span>]<span class="type">string</span> &#123;</span><br><span class="line">    <span class="string">&quot;go&quot;</span>:<span class="string">&quot;go工程师&quot;</span>,</span><br><span class="line">    <span class="string">&quot;grpc&quot;</span>:<span class="string">&quot;grpc入门&quot;</span>,</span><br><span class="line">    <span class="string">&quot;gin&quot;</span>:<span class="string">&quot;gin深入理解&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//方法2</span></span><br><span class="line"><span class="keyword">var</span> courseMap = <span class="keyword">map</span>[<span class="type">string</span>]<span class="type">string</span>&#123;&#125;    <span class="comment">//初始化为空</span></span><br><span class="line">courseMap[<span class="string">&quot;mysql&quot;</span>] = <span class="string">&quot;mysql原理&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//方法3</span></span><br><span class="line"><span class="keyword">var</span> courseMap = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">string</span>]<span class="type">string</span>, <span class="number">3</span>)</span><br><span class="line">courseMap[<span class="string">&quot;mysql&quot;</span>] = <span class="string">&quot;mysql原理&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//注意</span></span><br><span class="line"><span class="keyword">var</span> courseMap = <span class="keyword">map</span>[<span class="type">string</span>]<span class="type">string</span>    <span class="comment">//没有初始化</span></span><br><span class="line">courseMap[<span class="string">&quot;mysql&quot;</span>] = <span class="string">&quot;mysql原理&quot;</span>    <span class="comment">//但放值了</span></span><br><span class="line">fmt.Println(courseMap)    <span class="comment">//会报错！！！</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>如果只声明没有初始化，放值后打印会报错。<br>map 必须初始化才能使用，但是 slice 可以不初始化使用。</p>
+</blockquote>
+<h4 id="2-3-2-常用操作"><a href="#2-3-2-常用操作" class="headerlink" title="2.3.2 常用操作"></a>2.3.2 <strong>常用操作</strong></h4><p>遍历：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方法1</span></span><br><span class="line"><span class="keyword">for</span> key, value := <span class="keyword">range</span> courseMap &#123;</span><br><span class="line">    fmt.Println(value)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//方法2</span></span><br><span class="line"><span class="keyword">for</span> key := <span class="keyword">range</span> courseMap &#123;</span><br><span class="line">    fmt.Println(key, courseMap[key])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>map 是无序的，而且不保证每次打印都是相同的顺序。这种设计是有意为之的，因为能防止程序依赖特定遍历顺序，而这是无法保证的。</p>
+</blockquote>
+<p>判断是否存在：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//方法1</span></span><br><span class="line">d, ok := courseMap[<span class="string">&quot;java&quot;</span>]</span><br><span class="line"><span class="keyword">if</span> !ok &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;not int&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//方法2</span></span><br><span class="line"><span class="keyword">if</span> _, ok := courseMap[<span class="string">&quot;java&quot;</span>]; !ok &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;not int&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>删除元素：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">delete</span>(courseMap, <span class="string">&quot;grpc&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>如果删除不存在的元素，不会报错。</p>
+<p>另外，map 不是线程安全的，需要用 sync.Map。</p>
+</blockquote>
+<h4 id="2-3-3-哈希表"><a href="#2-3-3-哈希表" class="headerlink" title="2.3.3 哈希表"></a>2.3.3 <strong>哈希表</strong></h4><p>说到键值对的存储，我们自然会想到哈希表，至于怎么将键值对存储到哈希桶中，主要有以下几个步骤：</p>
+<ol>
+<li>通过哈希函数 Hash() 把 “ 键 k1” 处理一下，得到一个哈希值 hash</li>
+<li>现在需要通过哈希值 hash 从所有桶中选择一个，桶编号范围为 [0, m-1]</li>
+<li>选择方法有两种比较常用：<ul>
+<li><strong>取模法：</strong> hash % m</li>
+<li><strong>与运算：</strong> hash &amp; (m-1)</li>
+</ul>
+</li>
+</ol>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517581.webp"></p>
+<p>需要注意的是，与运算方法如果想确保运算结果落在区间 [0, m-1] 而不会出现空桶，就要限制桶的个数 m 必须是 2 的整数次幂。这样 m 的二进制表示一定只有一位为 1，并且 m-1 的二进制表示一定是低于这一位的所有位均为 1。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517582.webp"></p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>如果桶的数目不是 2 的整数次幂，就有可能出现有些桶绝对不会被选中的情况。</p>
+</blockquote>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517583.webp"></p>
+<h4 id="2-3-4-哈希冲突"><a href="#2-3-4-哈希冲突" class="headerlink" title="2.3.4 哈希冲突"></a>2.3.4 <strong>哈希冲突</strong></h4><p>知道如何选桶后还要考虑一个问题，如果出现选择的桶冲突了怎么办，下面我们同样来介绍两种常用的方法;</p>
+<ol>
+<li><p><strong>开放地址法</strong></p>
+<p> 如果 {k2, v2} 选择的桶和 {k1, v1} 选择的一样即发生了冲突，则沿着 {k1, v1} 的桶往后找到第一个没有被占用的桶进行占用。</p>
+<p> 当要查找 {k2, v2} 时，会从 {k1, v1} 的桶开始比较，如果发现 key 值不相等，则会沿着该桶往后进行比较，直到找到 key &#x3D; k2 的桶为止。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517584.webp"></p>
+</li>
+<li><p><strong>拉链法</strong></p>
+<p> 还有一种方法不用沿着桶进行寻找，而是直接在冲突的桶后面链一个新桶存储这个键值对即可。</p>
+<p> 当要查找 {k2, v2} 时，同样会从 {k1, v1} 的桶开始比较，如果发现 key 值不相等，这次会沿着该桶后面的链表进行比较，直到找到 key &#x3D; k2 的桶为止。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517585.webp"></p>
+</li>
+</ol>
+<h4 id="2-3-5-哈希扩容"><a href="#2-3-5-哈希扩容" class="headerlink" title="2.3.5 哈希扩容"></a>2.3.5 <strong>哈希扩容</strong></h4><p>上面的哈希冲突会影响到我们哈希表的读写效率，因此选择散列均匀的哈希函数可以减少哈希冲突的发生，另外适时的对哈希表进行扩容也是保障读写效率的有效手段。</p>
+<p>通常我们会把<strong>存储键值对的数目</strong>与<strong>桶的数目</strong>的比值作为是否需要扩容的判断依据，这个比值被称为 “ 负载因子 “。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517586.webp"></p>
+<p>当我们需要扩容时，就要分配更多的桶，它们就是 “ 新桶 “，需要把 “ 旧桶 “ 里存储的键值对都迁移到新桶里。</p>
+<p>如果哈希表存户的键值对较多，一次性迁移所有桶花费的时间就比较显著。所以通常会在哈希表扩容时，先分配足够多的新桶，然后用一个字段记录 “ 旧桶 “ 的位置 <code>oldbuckets</code>，再增加一个字段记录 “ 旧桶 “ 的迁移进度，例如记录下一个要迁移的 “ 旧桶 “ 编号 <code>nevacuate</code>。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517587.webp"></p>
+<p>在哈希表每次读写操作时，如果检测到当前处于扩容阶段，就完成一部分键值对的迁移任务，直到所有的 “ 旧桶 “ 迁移完成，” 旧桶 “ 不再使用才算真正完成了一次哈希表的扩容。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517588.webp"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517589.webp"></p>
+<p>像这样把键值对迁移的时间分摊到多次哈希表操作中的方式，就是 “ 渐进式扩容 “ 了，可以避免一次性扩容带来的性能瞬时抖动。</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<p>Go map 的扩容就采用的这种方式，原有的 key 并不会一次性搬迁完毕，每次最多只会搬迁 2 个 bucket。</p>
+</blockquote>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517590.webp"></p>
+<h4 id="2-3-6-底层存储原理"><a href="#2-3-6-底层存储原理" class="headerlink" title="2.3.6 底层存储原理"></a>2.3.6 <strong>底层存储原理</strong></h4><p>在 Go 语言中，map 类型的底层实现就是哈希表，map 类型的变量 <code>a := map[string]string{}</code> 本质上是一个指针 <code>*hmap</code>，指向 hmap 结构体。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> hmap <span class="keyword">struct</span> &#123;</span><br><span class="line">    count        <span class="type">int</span>            <span class="comment">//键值对数目</span></span><br><span class="line">    flags        <span class="type">uint8</span>          <span class="comment">//状态标志（是否处于正在写入的状态等）</span></span><br><span class="line">    B            <span class="type">uint8</span>          <span class="comment">//记录桶的数目是2的多少次幂，因为这里选择桶时用的是与运算的方法</span></span><br><span class="line">    noverflow    <span class="type">uint16</span>         <span class="comment">//记录使用溢出桶的数量</span></span><br><span class="line">    hash0        <span class="type">uint32</span>         <span class="comment">//生成hash的随机数种子</span></span><br><span class="line">    </span><br><span class="line">    buckets      unsafe.Pointer <span class="comment">//记录桶在哪里</span></span><br><span class="line">    oldbuckets   unsafe.Pointer <span class="comment">//用于在扩容阶段保存旧桶在哪儿</span></span><br><span class="line">    nevacuate    <span class="type">uintptr</span>        <span class="comment">//记录渐进式扩容阶段下一个要迁移的旧桶编号</span></span><br><span class="line">    </span><br><span class="line">    extra        *mapextra      <span class="comment">//存储溢出桶</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>map 的桶是用 bmap 结构进行存储，一个桶里可以放 8 个键值对，但是为了让内存排列更加紧凑，所以让 8 个 key 放一起，8 个 value 放一起。</p>
+<p>在 8 个 key 的前面则是 8 个 tophash，每个 tophash 都是对应哈希值的高 8 位。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// A bucket for a Go map.</span></span><br><span class="line"><span class="keyword">type</span> bmap <span class="keyword">struct</span> &#123;</span><br><span class="line">    tophash [bucketCnt]<span class="type">uint8</span>        </span><br><span class="line">    <span class="comment">// len为8的数组</span></span><br><span class="line">    <span class="comment">// 用来快速定位key是否在这个bmap中</span></span><br><span class="line">    <span class="comment">// 一个桶最多8个槽位，如果key所在的tophash值在tophash中，则代表该key在这个桶中</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面 bmap 结构是静态结构，在编译过程中 <code>runtime.bmap</code> 会拓展成以下结构体：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> bmap <span class="keyword">struct</span>&#123;</span><br><span class="line">    tophash [<span class="number">8</span>]<span class="type">uint8</span></span><br><span class="line">    keys [<span class="number">8</span>]keytype </span><br><span class="line">    <span class="comment">// keytype 由编译器编译时候确定</span></span><br><span class="line">    values [<span class="number">8</span>]elemtype </span><br><span class="line">    <span class="comment">// elemtype 由编译器编译时候确定</span></span><br><span class="line">    overflow <span class="type">uintptr</span> </span><br><span class="line">    <span class="comment">// overflow指向下一个bmap，overflow是uintptr而不是*bmap类型，保证bmap完全不含指针，是为了减少gc，溢出桶存储到extra字段中</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/"></p>
+<p>放在最后的是一个 bmap 型指针，指向一个溢出桶，溢出桶的内存布局与常规桶相同，是为了减少扩容次数而引入的。当一个桶存满了，还有可用的溢出桶时，就会在桶后面链一个溢出桶，继续往溢出桶里面存。</p>
+<p>但实际上如果哈希表要分配的桶的数目大于 2^4，就认为使用到溢出桶的几率较大，就会预分配 2^(B-4) 个溢出桶备用，这些溢出桶与常规桶在内存中是连续的，只是前 2^B 个用作常规桶，后面的用作溢出桶。</p>
+<p>举个例子，假设 B &#x3D; 5，那么一共有 2^5 个桶，又因为 2^5 &gt; 2^4，所以就会预分配 2^(5-4) &#x3D; 2^1 个溢出桶。</p>
+<p>也就是说，当 B &#x3D; 5 时，前 2^5 个会被作为常规桶，而剩下的 2^1 个桶会当做溢出桶使用。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517591.webp"></p>
+<p>另外，hmap 结构体最后有一个 extra 字段，它会指向一个 mapextra 结构体，里面记录的都是溢出桶相关的信息。其中 <code>nextoverflow</code> 指向下一个空闲溢出桶，<code>overflow</code> 是一个 slice，记录目前已经被使用的溢出桶的地址，而 <code>oldoverflow</code> 则是用于。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> mapextra <span class="keyword">struct</span> &#123;</span><br><span class="line">    overflow    *[]*bmap <span class="comment">//包含已经使用的溢出桶</span></span><br><span class="line">    oldoverflow *[]*bma  <span class="comment">//包含扩容阶段旧桶使用的溢出桶</span></span><br><span class="line">    nextOverflow *bmap   <span class="comment">//指向下一个溢出桶</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517592.webp"></p>
+<p>假如现在 2 号桶存满了，它就会在后面链一个溢出桶，而 <code>nextoverflow</code> 就会指向下一个空闲溢出桶，并且此时 <code>noverflow</code> 会记录使用溢出桶的数量即记录此时用了 1 个溢出桶。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517593.webp"></p>
+<p>我们来看一个例子，变量 a 本质上是一个 hmap 的指针，目前存储了一个键值对，只拥有一个桶，也没有预分配的溢出桶。</p>
+<p>下面我们把这个桶展开来看一下，首先是 8 个 tophash，每个占一字节，因为 key 和 value 都是 string 类型，所以 64 位下每个 key 和 value 都占用 16 字节。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517594.webp"></p>
+<p>目前只存储了一个键值对，取 k1 哈希值的高 8 位 h1 存到 tophash 第一位，而 k1 和 v1 则按照字符串的存储规则进行存储。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517595.webp"></p>
+<p>如果我们把这个桶存满，接下来继续存储新的键值对时，这个哈希表是会创建溢出桶还是会发生扩容呢？这就要看 map 的扩容规则了。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517596.webp"></p>
+<h4 id="2-3-7-扩容规则"><a href="#2-3-7-扩容规则" class="headerlink" title="2.3.7 扩容规则"></a>2.3.7 扩容规则</h4><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517597.webp"></p>
+<ol>
+<li><strong>翻倍扩容</strong></li>
+</ol>
+<p>当负载因子大于 6.5，即 map 元素个数 &#x2F; 桶个数 &gt; 6.5 时，就会触发翻倍扩容。</p>
+<p>来看源码，其中：</p>
+<ul>
+<li>bucketCnt &#x3D; 8，一个桶可以装的最大元素个数</li>
+<li>loadFactor &#x3D; 6.5，负载因子，平均每个桶的元素个数</li>
+<li>bucketShift(B)：桶的个数</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">overLoadFactor</span><span class="params">(count <span class="type">int</span>, B <span class="type">uint8</span>)</span></span> <span class="type">bool</span> &#123;</span><br><span class="line">   <span class="keyword">return</span> count &gt; bucketCnt &amp;&amp; <span class="type">uintptr</span>(count) &gt; loadFactor * bucketShift(B)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>回到刚刚那个例子，当存储新的键值对时，我们就需要进行扩容。由于负载因子大于 6.5 了，所以会触发翻倍扩容，旧桶数量为 1，所以新桶数量为 1 * 2 &#x3D; 2 个。</p>
+<p>此时，buckets 就会指向刚分配出来的新桶，而 oldbuckets 则会指向旧桶，并且 nevacuate 为 0，标识接下来要迁移编号为 0 的旧桶，每个旧桶的键值对都会分流到新桶中。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517598.webp"></p>
+<p>例如，旧桶的数量为 4，那么翻倍扩容后新桶的数量就为 8。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517599.webp"></p>
+<p>如果一个哈希值选择 0 号旧桶，那么按照旧桶 m &#x3D; 4 的情况来看，哈希值的二进制低两位一定为 0。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517600.webp"></p>
+<p>现在新桶 m &#x3D; 8，那么 0 号旧桶可以迁移的新桶只有两种，取决于哈希值的第三位是 0 还是 1，如果为 0 则迁移到编号为 0 的新桶，反之为 1 则迁移到编号为 4 的新桶。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517601.webp"></p>
+<p>因为桶的数量一定是 2 的整数次幂，所以无论容量为多少，翻倍扩容后，每个旧桶都会按照这样的规律分流道两个新桶中。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517602.webp"></p>
+<ol start="2">
+<li><strong>等量扩容</strong></li>
+</ol>
+<p>如果负载因子没有超标，但是使用的溢出桶较多，也会触发扩容：</p>
+<ul>
+<li>当常规桶数量不大于 2^15 时（B &lt;&#x3D; 15），此时如果溢出桶总数 &gt;&#x3D; 常规桶总数（noverflow &gt;&#x3D; 2^B），则认为溢出桶过多，就会触发等量扩容。</li>
+<li>当常规桶数量大于 2^15 时（B &gt; 15），此时直接与 2^15 比较，当溢出桶总数 &gt;&#x3D; 2^15 时（noverflow &gt;&#x3D; 2^15），即认为溢出桶太多了，也会触发等量扩容。</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">tooManyOverflowBuckets</span><span class="params">(noverflow <span class="type">uint16</span>, B <span class="type">uint8</span>)</span></span> <span class="type">bool</span> &#123;</span><br><span class="line">    <span class="comment">// If the threshold is too low, we do extraneous work.</span></span><br><span class="line">    <span class="comment">// If the threshold is too high, maps that grow and shrink can hold on to lots of unused memory.</span></span><br><span class="line">    <span class="comment">// &quot;too many&quot; means (approximately) as many overflow buckets as regular buckets.</span></span><br><span class="line">    <span class="comment">// See incrnoverflow for more details.</span></span><br><span class="line">    <span class="keyword">if</span> B &gt; <span class="number">15</span> &#123;</span><br><span class="line">        B = <span class="number">15</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// The compiler does not see here that B &lt; 16; mask B to generate shorter shift code.</span></span><br><span class="line">    <span class="keyword">return</span> noverflow &gt;= <span class="type">uint16</span>(<span class="number">1</span>)&lt;&lt;(B&amp;<span class="number">15</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所谓等量扩容，就是创建和旧桶数量一样多的新桶，然后把原来的键值对迁移到新桶中。但是既然是等量，那迁移这些还有什么意义呢？</p>
+<p>那当然是有个特殊情况需要我们关注，当有很多键值对被删除的时候，就有可能出现已经使用了很多溢出桶，但是负载因子仍没有超过上限值的情况。</p>
+<p>就像下面这个例子，编号为 0 的桶中有很多键值对已经被删除了，此时如果触发了等量扩容，则会分配等量的新桶。而旧桶的每一个桶则会迁移到对应的新桶中，迁移完后可以使每个键值对排列的更加紧凑，从而减少溢出桶的使用。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716221517603.webp"></p>
+<h3 id="2-4-List"><a href="#2-4-List" class="headerlink" title="2.4 List"></a>2.4 List</h3><p>使用：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;container/list&quot;</span></span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">var</span> mylist list.List    <span class="comment">//mylist := list.New()</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//尾部插入</span></span><br><span class="line">    mylist.PushBack(<span class="string">&quot;go&quot;</span>)</span><br><span class="line">    mylist.PushBack(<span class="string">&quot;grpc&quot;</span>)</span><br><span class="line">    mylist.PushBack(<span class="string">&quot;mysql&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//头部插入</span></span><br><span class="line">    mylist.PushFront(<span class="string">&quot;gin&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//遍历打印值，正序</span></span><br><span class="line">    <span class="keyword">for</span> i := mylist.Front(); i != <span class="literal">nil</span>; i = i.Next() &#123;</span><br><span class="line">        fmt.Println(i.Value)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/7e892b96/">https://alwaysfyo.github.io/posts/7e892b96/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Golang/">Golang</a><a class="post-meta__tags" href="/tags/Golang%E7%B3%BB%E5%88%97/">Golang系列</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/dd14273d/" title="Golang-04：函数详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Golang-04：函数详解</div></div><div class="info-2"><div class="info-item-1">详解 Go 中普通函数、匿名函数、闭包及一等公民特性。</div></div></div></a><a class="pagination-related" href="/posts/58a46109/" title="Golang-02：基础知识 &amp; 数据类型详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Golang-02：基础知识 & 数据类型详解</div></div><div class="info-2"><div class="info-item-1">介绍 Go 语言优势、基础语法与数据类型。</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/dd14273d/" title="Golang-04：函数详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Golang-04：函数详解</div></div><div class="info-2"><div class="info-item-1">详解 Go 中普通函数、匿名函数、闭包及一等公民特性。</div></div></div></a><a class="pagination-related" href="/posts/c07ec88f/" title="Golang-06：错误处理详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Golang-06：错误处理详解</div></div><div class="info-2"><div class="info-item-1">详解 Go 的 error 错误处理理念与 panic、recover 机制。</div></div></div></a><a class="pagination-related" href="/posts/ea89e33/" title="Golang-10：协程的执行过程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Golang-10：协程的执行过程</div></div><div class="info-2"><div class="info-item-1">讲解 Go goroutine 协程的使用方法与执行过程。</div></div></div></a><a class="pagination-related" href="/posts/8a19c6bc/" title="Golang-12：Mutex 详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-13</div><div class="info-item-2">Golang-12：Mutex 详解</div></div><div class="info-2"><div class="info-item-1">通过示例讲解 Go 并发场景下 Mutex 加锁保证数据一致性。</div></div></div></a><a class="pagination-related" href="/posts/8592222/" title="Golang-07：指针 &amp; 结构体详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Golang-07：指针 &amp; 结构体详解</div></div><div class="info-2"><div class="info-item-1">讲解 Go 指针的定义初始化与结构体的定义和使用。</div></div></div></a><a class="pagination-related" href="/posts/bb248000/" title="Golang-05：闭包 &amp; defer 详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Golang-05：闭包 &amp; defer 详解</div></div><div class="info-2"><div class="info-item-1">讲解 Go 闭包的变量捕获与 defer 延迟执行机制。</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">101</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">53</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%9D%A1%E4%BB%B6%E4%B8%8E%E5%BE%AA%E7%8E%AF"><span class="toc-number">1.</span> <span class="toc-text">1. 条件与循环</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-If-Else"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 If Else</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-For-%E5%BE%AA%E7%8E%AF"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 For 循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-Range"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 Range</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-Switch"><span class="toc-number">1.4.</span> <span class="toc-text">1.4 Switch</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E9%9B%86%E5%90%88%E7%B1%BB%E5%9E%8B"><span class="toc-number">2.</span> <span class="toc-text">2. 集合类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%95%B0%E7%BB%84"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 数组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Slice"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 Slice</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1 定义与初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2 常用操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-3-%E5%BA%95%E5%B1%82%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.2.3 底层存储原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-4-%E5%88%86%E9%85%8D%E4%BD%8D%E7%BD%AE"><span class="toc-number">2.2.4.</span> <span class="toc-text">2.2.4 分配位置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-5-%E6%89%A9%E5%AE%B9%E8%A7%84%E5%88%99"><span class="toc-number">2.2.5.</span> <span class="toc-text">2.2.5 扩容规则</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Map"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 Map</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-1-%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">2.3.1.</span> <span class="toc-text">2.3.1 定义与初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-2-%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C"><span class="toc-number">2.3.2.</span> <span class="toc-text">2.3.2 常用操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-3-%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="toc-number">2.3.3.</span> <span class="toc-text">2.3.3 哈希表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-4-%E5%93%88%E5%B8%8C%E5%86%B2%E7%AA%81"><span class="toc-number">2.3.4.</span> <span class="toc-text">2.3.4 哈希冲突</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-5-%E5%93%88%E5%B8%8C%E6%89%A9%E5%AE%B9"><span class="toc-number">2.3.5.</span> <span class="toc-text">2.3.5 哈希扩容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-6-%E5%BA%95%E5%B1%82%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86"><span class="toc-number">2.3.6.</span> <span class="toc-text">2.3.6 底层存储原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-7-%E6%89%A9%E5%AE%B9%E8%A7%84%E5%88%99"><span class="toc-number">2.3.7.</span> <span class="toc-text">2.3.7 扩容规则</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-List"><span class="toc-number">2.4.</span> <span class="toc-text">2.4 List</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/facdeb4a/" title="知识库到 Hexo 自动发布详细设计">知识库到 Hexo 自动发布详细设计</a><time datetime="2026-10-15T13:44:00.000Z" title="发表于 2026-10-15 21:44:00">2026-10-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/b7725795/" title="AI大模型与智能测试融合-基础认知">AI大模型与智能测试融合-基础认知</a><time datetime="2026-09-01T12:00:00.000Z" title="发表于 2026-09-01 20:00:00">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/dbdf84ba/" title="4-题材炒作体系">4-题材炒作体系</a><time datetime="2026-08-30T07:04:00.000Z" title="发表于 2026-08-30 15:04:00">2026-08-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/cd47fe5d/" title="AI测试-33个需要重点关注的大语言模型评测指标（附学习建议）">AI测试-33个需要重点关注的大语言模型评测指标（附学习建议）</a><time datetime="2026-06-16T04:00:00.000Z" title="发表于 2026-06-16 12:00:00">2026-06-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/90238fde/" title="GameDevBench智能体评测">GameDevBench智能体评测</a><time datetime="2026-06-06T13:06:00.000Z" title="发表于 2026-06-06 21:06:00">2026-06-06</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

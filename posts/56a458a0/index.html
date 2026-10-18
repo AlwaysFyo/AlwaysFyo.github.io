@@ -1,0 +1,476 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Unittest 单元测试框架（二） | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="讲解 ddt、parameterized 等数据驱动参数化测试的用法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unittest 单元测试框架（二）">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/56a458a0/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="讲解 ddt、parameterized 等数据驱动参数化测试的用法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2025-06-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-17T10:18:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="Unittest系列">
+<meta property="article:tag" content="自动化测试">
+<meta property="article:tag" content="软件测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Unittest 单元测试框架（二）",
+  "url": "https://alwaysfyo.github.io/posts/56a458a0/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2025-06-29T16:00:00.000Z",
+  "dateModified": "2026-10-17T10:18:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/56a458a0/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Unittest 单元测试框架（二）',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">101</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">53</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Unittest 单元测试框架（二）</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Unittest 单元测试框架（二）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-29T16:00:00.000Z" title="发表于 2025-06-30 00:00:00">2025-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-17T10:18:00.000Z" title="更新于 2026-10-17 18:18:00">2026-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/">软件测试</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">4.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>16分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="1-数据驱动"><a href="#1-数据驱动" class="headerlink" title="1. 数据驱动"></a>1. 数据驱动</h2><h3 id="1-1-测试数据参数化"><a href="#1-1-测试数据参数化" class="headerlink" title="1.1 测试数据参数化"></a>1.1 测试数据参数化</h3><p><strong>参数化测试</strong> 是一种 “ 数据驱动测试 “ (Data-DrivenTest)，在同一个方法上测试不同的参数，以覆盖所有可能的预期分支的结果。它的测试数据可以与测试行为分离，被放入到文件、数据库或者外部介质中，再由测试程序读取。</p>
+<p>Python 标准库中的 unittest 自身不支持参数化测试，为了解决这个问题，有人专门开发了两个库：一个是 ddt，一个是 parameterized。</p>
+<blockquote>
+<p><strong>数据驱动思想：</strong>&#x6570; 据和用例进行分离，通过外部数据去生成测则试用例。</p>
+</blockquote>
+<h4 id="1-1-1-Ddt-库"><a href="#1-1-1-Ddt-库" class="headerlink" title="1.1.1 Ddt 库"></a>1.1.1 Ddt 库</h4><p>DDT 正好是 “Data-Driven Tests” (数据驱动测试) 的缩写。安装方式：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install ddt</span><br></pre></td></tr></table></figure>
+
+<p><strong>data</strong></p>
+<p>然后我们直接来看个案例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">from</span> ddt <span class="keyword">import</span> ddt, data, unpack</span><br><span class="line"></span><br><span class="line"><span class="meta">@ddt</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyTest</span>(unittest.TestCase):</span><br><span class="line"><span class="meta">    @data(<span class="params">(<span class="params"><span class="number">3</span>, <span class="number">1</span></span>), (<span class="params"><span class="number">1</span>, <span class="number">0</span></span>), (<span class="params"><span class="number">1.2</span>, <span class="number">1.0</span></span>)</span>)</span></span><br><span class="line"><span class="meta">    @unpack</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_values</span>(<span class="params">self, first, second</span>):</span><br><span class="line">        <span class="built_in">print</span>(first, second)</span><br><span class="line">        <span class="variable language_">self</span>.assertTrue(first &gt; second)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    unittest.main(verbosity=<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<p>运行后可以发现上面代码通过参数化测试分离成了 3 条测试用例，但我们不用写重复的三段代码。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706173654879.webp"></p>
+<blockquote>
+<p>需要注意的是，@data 中传入参数的变量数量，要能与下面测试用例函数的传入参数数量保持一致。</p>
+</blockquote>
+<p>我们再来看一个案例，下面这个案例 @data 中测试的参数就有 4 种，因此在下面函数的传入参数中也要定义四个变量来接受参数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">from</span> ddt <span class="keyword">import</span> ddt, data, unpack</span><br><span class="line"></span><br><span class="line"><span class="meta">@ddt</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyTest</span>(unittest.TestCase):</span><br><span class="line"><span class="meta">    @data(<span class="params">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">6</span>], [<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">9</span>], [<span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">12</span>]</span>)</span></span><br><span class="line"><span class="meta">    @unpack</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_add</span>(<span class="params">self, testdata1, testdata2, testdate3, exceptdata</span>):</span><br><span class="line">        <span class="built_in">sum</span> = testdata1 + testdata2 + testdate3</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="built_in">sum</span>, exceptdata)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    unittest.main(verbosity=<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>@data 中传入的参数可以是以元组的形式，也可以是以列表的形式，总之要以序列的形式传入。</p>
+</blockquote>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706173654880.webp"></p>
+<p><strong>file_data</strong></p>
+<p>除了通过上面通过 data 的方式进行参数化外，我们还可以使用 file_data 装饰器来解析一个方式参数的文件。例如，我现在创建一个 json 文件，并往里面写入参数数据。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;1|2|3&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;3|2|5&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;3|5|8&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="string">&quot;5|5|10&quot;</span></span><br><span class="line"><span class="punctuation">]</span></span><br></pre></td></tr></table></figure>
+
+<p>接着，我就可以通过 file_data 来读取这个 json 文件中的数据，然后拆分成多条用例使用。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">from</span> ddt <span class="keyword">import</span> ddt, file_data, unpack</span><br><span class="line"></span><br><span class="line"><span class="meta">@ddt</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyTest</span>(unittest.TestCase):</span><br><span class="line"><span class="meta">    @file_data(<span class="params"><span class="string">&#x27;data.json&#x27;</span></span>)</span></span><br><span class="line"><span class="meta">    @unpack</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_sum</span>(<span class="params">self, value</span>):</span><br><span class="line">        a, b, <span class="built_in">sum</span> = value.split(<span class="string">&#x27;|&#x27;</span>)</span><br><span class="line">        <span class="built_in">print</span>(a, b, <span class="built_in">sum</span>)</span><br><span class="line">        result = <span class="built_in">int</span>(a) + <span class="built_in">int</span>(b)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(result, <span class="built_in">int</span>(<span class="built_in">sum</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    unittest.main(verbosity=<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706173654881.webp"></p>
+<h4 id="1-1-2-Parameterized-库"><a href="#1-1-2-Parameterized-库" class="headerlink" title="1.1.2 Parameterized 库"></a>1.1.2 Parameterized 库</h4><p>参数化驱动还有另一个库，还是需要通过 pip 先进行下载:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install parameterized</span><br></pre></td></tr></table></figure>
+
+<p>而这个库使用起来则更加便捷一些，但不能像 ddt 的 file_data 装饰器一样去解析 json 等文件。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">from</span> parameterized <span class="keyword">import</span> parameterized</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyTest</span>(unittest.TestCase):</span><br><span class="line">    <span class="comment"># 1.参数化参数：列表套元组</span></span><br><span class="line">    <span class="comment"># 2.列表有几个元素，测试用例执行几次</span></span><br><span class="line">    <span class="comment"># 3.元组元素的位置匹配测试用例的形参</span></span><br><span class="line"><span class="meta">    @parameterized.expand(<span class="params">[(<span class="params"><span class="number">3</span>, <span class="number">1</span></span>), (<span class="params"><span class="number">1</span>, <span class="number">0</span></span>), (<span class="params"><span class="number">1.5</span>, <span class="number">1.0</span></span>)]</span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_values</span>(<span class="params">self, first, second</span>):</span><br><span class="line">        <span class="variable language_">self</span>.assertTrue(first &gt; second)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    unittest.main(verbosity=<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706173654882.webp"></p>
+<h3 id="1-2-Excel-存储测试数据"><a href="#1-2-Excel-存储测试数据" class="headerlink" title="1.2 Excel 存储测试数据"></a>1.2 Excel 存储测试数据</h3><p>Python 可以使用 xIrd 库来读取 Excel 文件（对 xls，xlsx 格式文件都可以读取），使用 xlwt 库来生成 Excel 文件（只支持到 excel 2003，即 xls 文件），另外 <strong>openpyxl 库</strong>同时支持读、写 excel 文件，且主要针对 Excel2007 之后的版本（.xlsx）。</p>
+<p>我们这里重点介绍一下最常用的 openpyxl 库的使用，首先还是需要先通过 pip 进行下载：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install openpyxl</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>封装能力</strong></li>
+</ul>
+<p>我们可以将解析 excel 文件的能力都存放到一个 <code>parse_excel.py</code> 文件中，方便我们调用。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> load_workbook</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ParseExcel</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, excelPath, sheetName</span>):</span><br><span class="line">        <span class="built_in">print</span>(excelPath, sheetName)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="variable language_">self</span>.wb = load_workbook(excelPath)  <span class="comment"># 通过文件路径加载文件</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;File loaded successfully.&quot;</span>)</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">f&quot;Error loading file: <span class="subst">&#123;e&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="variable language_">self</span>.sheet = <span class="variable language_">self</span>.wb[sheetName]         <span class="comment"># 指定获取的 sheet 表</span></span><br><span class="line">        <span class="variable language_">self</span>.maxRowNum = <span class="variable language_">self</span>.sheet.max_row     <span class="comment"># 获取表中的行数</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 以列表的方式返回数据</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">getDatasFromSheet</span>(<span class="params">self</span>):</span><br><span class="line">        dataList = []</span><br><span class="line">        <span class="comment"># 遍历表中的每一行</span></span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> <span class="variable language_">self</span>.sheet.rows:</span><br><span class="line">            tmpList = []</span><br><span class="line">            tmpList.append(line[<span class="number">0</span>].value)   <span class="comment"># 获取第一列值</span></span><br><span class="line">            tmpList.append(line[<span class="number">1</span>].value)   <span class="comment"># 获取第二列值</span></span><br><span class="line">            dataList.append(tmpList)</span><br><span class="line">        <span class="keyword">return</span> dataList[<span class="number">1</span>:]     <span class="comment"># 返回不包含第一行的标题</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码获取的数据，假设只有两列值。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706173654883.webp"></p>
+<ul>
+<li><strong>ddt + openpyxl</strong></li>
+</ul>
+<p>ddt 的 file_data 装饰器是无法解析 excel 文件的。</p>
+<p>因此，我们可以在其它文件中，通过调用上面封装好的函数，以列表的形式获取到 excel 中的数据，然后传入 ddt 的 data 装饰器中，从而转化成参数执行用例。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">from</span> ddt <span class="keyword">import</span> ddt, data</span><br><span class="line"><span class="keyword">from</span> parse_excel <span class="keyword">import</span> ParseExcel</span><br><span class="line"></span><br><span class="line">excelPath = <span class="string">r&#x27;测试数据.xlsx&#x27;</span></span><br><span class="line">sheetName = <span class="string">&#x27;参数表&#x27;</span></span><br><span class="line">excel = ParseExcel(excelPath, sheetName)</span><br><span class="line"></span><br><span class="line"><span class="meta">@ddt</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestDemo</span>(unittest.TestCase):</span><br><span class="line"><span class="meta">    @data(<span class="params">*excel.getDatasFromSheet(<span class="params"></span>)</span>)   </span><span class="comment"># * 号表示不定长的参数</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_print</span>(<span class="params">self, data</span>):</span><br><span class="line">        username, password = <span class="built_in">tuple</span>(data)</span><br><span class="line">        <span class="built_in">print</span>(username, password)   <span class="comment"># 打印获取的两个数据</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    unittest.main(verbosity=<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706173654884.webp"></p>
+<blockquote>
+<p><strong>@unpack 装饰器：</strong></p>
+<p>通过上面代码可以发现，这次并没有使用 unpack 装饰器，这是因为这里我们不需要通过 unpack 进行参数的拆分。而是将参数全部传入到第一个 data 参数中，自行通过代码处理这个数据，将其拆分成 username 和 password 变量。</p>
+<p>也就是说，如果不加 unpack 装饰器，则 data 装饰器获取到的数据都会传入到第一个参数中，不管你下面函数的入参定义了几个，都只会传入第一个。反之，加了 unpack 装饰器，则会自动与定义的入参一一对应起来。</p>
+</blockquote>
+<p>我们可以对上面的代码加上 unpack 装饰器，但最终执行的结果还是一样的，只是 unpack 会自动帮我们拆分参数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">from</span> ddt <span class="keyword">import</span> ddt, data, unpack</span><br><span class="line"><span class="keyword">from</span> parse_excel <span class="keyword">import</span> ParseExcel</span><br><span class="line"></span><br><span class="line">excelPath = <span class="string">r&#x27;测试数据.xlsx&#x27;</span></span><br><span class="line">sheetName = <span class="string">&#x27;参数表&#x27;</span></span><br><span class="line">excel = ParseExcel(excelPath, sheetName)</span><br><span class="line"></span><br><span class="line"><span class="meta">@ddt</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestDemo</span>(unittest.TestCase):</span><br><span class="line"><span class="meta">    @data(<span class="params">*excel.getDatasFromSheet(<span class="params"></span>)</span>)   </span><span class="comment"># * 号表示不定长的参数</span></span><br><span class="line"><span class="meta">    @unpack</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_print</span>(<span class="params">self, username, password</span>):</span><br><span class="line">        <span class="built_in">print</span>(username, password)   <span class="comment"># 打印获取的两个数据</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    unittest.main(verbosity=<span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-Mock-接入"><a href="#2-Mock-接入" class="headerlink" title="2. Mock 接入"></a>2. Mock 接入</h2><h3 id="2-1-Mock-背景"><a href="#2-1-Mock-背景" class="headerlink" title="2.1 Mock 背景"></a>2.1 Mock 背景</h3><p>在一些特殊场景下，我们一些服务可能会比较不稳定或者还没有开发完，会出现一些不可控的因素，而上游急着需要调用下游的这些服务来观察自身服务是否符合预期。</p>
+<p>那么我们可以通过 Mock 的方式，Mock 出下游（也就是通过模拟的方式，实现一个下游的替身出来），从而可以使用 Mock 的替身提前测试自身服务。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706173654885.webp"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706173654886.webp"></p>
+<blockquote>
+<p><strong>常见 Mock 适用场景：</strong></p>
+<ul>
+<li>前后端联调：当前端需要的接口后端还在开发，就可以使用 mock 模拟后端返回我们需要的数据。</li>
+<li>单元测试：当我们所要测试的接口还未开发完，而我们还要完成测试用例代码的编写，我们可以先模拟这个接口进行测试。</li>
+<li>屏蔽无关的真实服务：专注于要测试服务本身，而其它服务又不在本次测试范围内，则可以使用 mock 只模拟出我们关注的服务。</li>
+<li>依赖第三方接口：当我们的接口需要调用第三方，而第三方接口我们还未得到权限或未购买时，可使用 mock 模拟进行测试。</li>
+</ul>
+<p>注意 mock 只适合用于临时的测试，而不能代替真实场景的测试。</p>
+</blockquote>
+<p>例如，我现在有个服务需要调用下游的支付服务，通过这个下游服务的返回值来决定之后该怎么执行：</p>
+<ul>
+<li>当返回值状态码为 200，则表示支付成功，我当前服务就可以执行后续逻辑</li>
+<li>当返回值状态码为 500，则表示支付失败，需要做一些异常的处理逻辑</li>
+</ul>
+<p>如果此时下游的支付服务出现问题，或者没有开发完毕，无法提供这个返回值，而我此时有想验证一下我后续代码的处理逻辑，则可以通过 Mock 的方式模拟返回值的状态码，从而可以执行后续逻辑并进行观察。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706173654888.webp"></p>
+<h3 id="2-2-Mock-使用"><a href="#2-2-Mock-使用" class="headerlink" title="2.2 Mock 使用"></a>2.2 Mock 使用</h3><p>如果你的团队技术基础很好，开发能力很强，那么我建议你用对应语言的 Mock 框架，例如 Java 语言的 Mockito （<a target="_blank" rel="noopener" href="https://github.com/mockito/mockito%EF%BC%89%E6%A1%86%E6%9E%B6%E5%92%8C">https://github.com/mockito/mockito）框架和</a> Python 语言的 mock 框架（<a target="_blank" rel="noopener" href="https://pypi.org/project/mock/%EF%BC%89%E3%80%82">https://pypi.org/project/mock/）。</a></p>
+<p>如果你的团队技术基础相对比较薄弱，那么我推荐你看看 moco，这个框架在开发 Mock 服务的时候，提供了一种不需要任何编程语言的方式，你可以通过撰写它约束的 Json 建立报务，并通过命令启动对应的服务，这就可以快速开发和启动运行你需要的 Mock 服务（项目地址：<a target="_blank" rel="noopener" href="https://github.com/dreamhead/moco/">https://github.com/dreamhead/moco/</a>）。</p>
+<h4 id="2-2-1-unittest-mock-类"><a href="#2-2-1-unittest-mock-类" class="headerlink" title="2.2.1 unittest.mock 类"></a>2.2.1 unittest.mock 类</h4><blockquote>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://docs.python.org/dev/library/unittest.mock.html">https://docs.python.org/dev/library/unittest.mock.html</a></p>
+</blockquote>
+<p>Mock 类库是一个专门用于在 unittest 过程中制作（伪造）和修改（篡改）测试对象的类库，制作和修改的目的是避免这些对象在单元测试过程中依赖外部资源（网络资源，数据库连接，其其它服务以及耗时过长等）。</p>
+<p><strong>使用前须知</strong></p>
+<ul>
+<li>Python2.x 的版本，mock 是一个独立的模块，需要用 pip 安装</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -U mock</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>从 Python3.3 以后的版本，mock 已经合并到 unittest 模块中了，是 unittest 单元测试的一部分，直接导入过来就行</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from unittest import mock</span><br></pre></td></tr></table></figure>
+
+<p><strong>案例一</strong></p>
+<p>直接举一个简单的例子，下面这段代码的 send_url 函数中的地址不连通，因此我们可以使用 mock 的方式模拟 send_url 的返回值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> unittest <span class="keyword">import</span> mock</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">send_url</span>():</span><br><span class="line">    url = <span class="string">&#x27;http://127.0.0.1:5000/helloworld&#x27;</span></span><br><span class="line">    <span class="keyword">return</span> requests.get(url)</span><br><span class="line"></span><br><span class="line">send_url = mock.Mock(return_value=<span class="string">&#x27;hello world&#x27;</span>)</span><br><span class="line">response = send_url()</span><br><span class="line"><span class="built_in">print</span>(response)</span><br></pre></td></tr></table></figure>
+
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706173654889.webp"></p>
+<p>如果我们想在 mock 的基础上，调用回真实的函数，那么就可以在 Mock 方法中，添加一个 side_effect 属性，让其指向想调用的真实函数，这样其实就等同于直接调用这个真实的函数了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> unittest <span class="keyword">import</span> mock</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">send_url</span>():</span><br><span class="line">    url = <span class="string">&#x27;http://127.0.0.1:5000/helloworld&#x27;</span></span><br><span class="line">    <span class="keyword">return</span> requests.get(url)</span><br><span class="line"></span><br><span class="line">send_url = mock.Mock(return_value=<span class="string">&#x27;hello world&#x27;</span>, side_effect=send_url())</span><br><span class="line">response = send_url()</span><br><span class="line"><span class="built_in">print</span>(response)</span><br></pre></td></tr></table></figure>
+
+<p><strong>案例二</strong></p>
+<p>mock 里面另一种实现方式，即 patch 装饰器的使用。patch() 作为函数收装饰器，将会创建模拟，并将其传递到装饰函数。</p>
+<p>而这种方法，一般适用于单元测试当中，例如现在 <code>functions.py</code> 文件中我有一段功能函数的代码。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">add_and_multiply</span>(<span class="params">x, y</span>):</span><br><span class="line">    addition = x + y</span><br><span class="line">    multiple = multiply(x, y)</span><br><span class="line">    <span class="keyword">return</span> (addition, multiple)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">multiply</span>(<span class="params">x, y</span>):</span><br><span class="line">    <span class="keyword">return</span> x * y</span><br></pre></td></tr></table></figure>
+
+<p>而我在单元测试代码中，则可以针对上面的两个函数功能进行测试。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">import</span> functions</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyTestCase</span>(unittest.TestCase):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_add_and_multiply</span>(<span class="params">self</span>):</span><br><span class="line">        x = <span class="number">3</span></span><br><span class="line">        y = <span class="number">5</span></span><br><span class="line">        addition, multiple = functions.add_and_multiply(x, y)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="number">8</span>, addition)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="number">15</span>, multiple)</span><br></pre></td></tr></table></figure>
+
+<p>但如果有一天这个 multiply 函数变得不稳定，可能返回的结果会有差错，那么我单元测试中的代码就会报错。</p>
+<p>为了防止这种情况的发生，我们可以 mock multiply 函数的返回值，例如下面我将返回值始终 mock 成 15，那么我这个单元测试的代码就不会受到 multiply 函数不稳定的影响了，从而可以专注于当前代码逻辑的测试。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">import</span> functions</span><br><span class="line"><span class="keyword">from</span> unittest.mock <span class="keyword">import</span> patch</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyTestCase</span>(unittest.TestCase):</span><br><span class="line"><span class="meta">    @patch(<span class="params"><span class="string">&quot;functions.multiply&quot;</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_mock_add_and_multiply</span>(<span class="params">self, mock_multiply</span>):</span><br><span class="line">        x = <span class="number">3</span></span><br><span class="line">        y = <span class="number">5</span></span><br><span class="line">        mock_multiply.return_value = <span class="number">15</span></span><br><span class="line">        addition, multiple = functions.add_and_multiply(x, y)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="number">8</span>, addition)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="number">15</span>, multiple)</span><br></pre></td></tr></table></figure>
+
+<p><strong>案例三</strong></p>
+<p>现在假设有一个支付服务的场景，在 <code>pay.py</code> 文件中，存放着支付场景的处理代码，但是 pay 函数功能目前还未开发完成，不过目前明确知道该接口的返回数据是怎么定义的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">pay</span>():</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    假设这里是一个支付的功能，未开发完</span></span><br><span class="line"><span class="string">    支付成功返回：&#123;&quot;result&quot;:&quot;success&quot;, &quot;msg&quot;:&quot;支付成功&quot;]</span></span><br><span class="line"><span class="string">    支付失败返回：&#123;&quot;result&quot;:&quot;fail&quot;, &quot;msg&quot;:&quot;余额不足&quot;&#125;</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">pay_status</span>():</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    根据支付的结果 success or fail，判断跳转哪个页面</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    result = pay()</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">if</span> result[<span class="string">&quot;result&quot;</span>] == <span class="string">&quot;success&quot;</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;支付成功&quot;</span></span><br><span class="line">        <span class="keyword">elif</span> result[<span class="string">&quot;result&quot;</span>] == <span class="string">&quot;fail&quot;</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;支付失败&quot;</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;未知错误异常&quot;</span></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Error，服务端返回异常！&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>那么我们就可以模拟未开发完的接口的返回数据，从而可以检测相应返回数据的逻辑。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">from</span> unittest <span class="keyword">import</span> mock</span><br><span class="line"><span class="keyword">import</span> pay</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestPayStatus</span>(unittest.TestCase):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_01</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;测试支付成功场景&#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="comment"># 方法一：mock 一个支付成功的数据</span></span><br><span class="line">        pay.pay = mock.Mock(return_value=&#123;<span class="string">&quot;result&quot;</span>: <span class="string">&quot;success&quot;</span>, <span class="string">&quot;msg&quot;</span>: <span class="string">&quot;支付成功&quot;</span>&#125;)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 根据支付结果测试页面跳转</span></span><br><span class="line">        status = pay.pay_status()</span><br><span class="line">        <span class="built_in">print</span>(status)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(status, <span class="string">&quot;支付成功&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_01</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;测试支付成功场景&#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="comment"># 方法一mock 一个支付成功的数据</span></span><br><span class="line">        pay.pay = mock.Mock(return_value=&#123;<span class="string">&quot;result&quot;</span>: <span class="string">&quot;fail&quot;</span>, <span class="string">&quot;msg&quot;</span>: <span class="string">&quot;余额不足&quot;</span>&#125;)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 根据支付结果测试页面跳转</span></span><br><span class="line">        status = pay.pay_status()</span><br><span class="line">        <span class="built_in">print</span>(status)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(status, <span class="string">&quot;支付失败&quot;</span>)</span><br><span class="line">        </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    unittest.main()</span><br></pre></td></tr></table></figure>
+
+<p>同样，我们也可以使用 patch 装饰器来 mock 数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">from</span> unittest <span class="keyword">import</span> mock</span><br><span class="line"><span class="keyword">import</span> pay</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestPayStatus</span>(unittest.TestCase):</span><br><span class="line"><span class="meta">    @mock.patch(<span class="params"><span class="string">&quot;pay.pay&quot;</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_01</span>(<span class="params">self, mock_pay</span>):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;测试支付成功场景&#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="comment"># 方法二：mock.patch 装饰器模拟返回结果</span></span><br><span class="line">        mock_pay.return_value = &#123;<span class="string">&quot;result&quot;</span>: <span class="string">&quot;success&quot;</span>, <span class="string">&quot;msg&quot;</span>: <span class="string">&quot;支付成功&quot;</span>&#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 根据支付结果测试页面跳转</span></span><br><span class="line">        status = pay.pay_status()</span><br><span class="line">        <span class="built_in">print</span>(status)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(status, <span class="string">&quot;支付成功&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @mock.patch(<span class="params"><span class="string">&quot;pay.pay&quot;</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_02</span>(<span class="params">self, mock_pay</span>):</span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;测试支付成功场景&#x27;&#x27;&#x27;</span></span><br><span class="line">        <span class="comment"># 方法二：mock.patch 装饰器模拟返回结果</span></span><br><span class="line">        mock_pay.return_value = &#123;<span class="string">&quot;result&quot;</span>: <span class="string">&quot;fail&quot;</span>, <span class="string">&quot;msg&quot;</span>: <span class="string">&quot;支付失败&quot;</span>&#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 根据支付结果测试页面跳转</span></span><br><span class="line">        status = pay.pay_status()</span><br><span class="line">        <span class="built_in">print</span>(status)</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(status, <span class="string">&quot;支付失败&quot;</span>)</span><br><span class="line">        </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    unittest.main()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-2-Mock-技术栈选型"><a href="#2-2-2-Mock-技术栈选型" class="headerlink" title="2.2.2 Mock 技术栈选型"></a>2.2.2 Mock 技术栈选型</h4><ul>
+<li>简单是第一要素，需要将学习成本降到最低</li>
+<li>处理速度比完美的 mock 服务更重要</li>
+<li>mock 服务要能轻量化启动，并且容易销毁</li>
+</ul>
+<h2 id="3-测试报告"><a href="#3-测试报告" class="headerlink" title="3. 测试报告"></a>3. 测试报告</h2><p>Unittest 测试默认结果输出是比较简单的，即使通过指定 <code>-v</code> 参数得到详细输出，也就只是在默认输出内容的基础上，额外显示了用例名称，还达不到一份测试报告的标准，而是一份日志信息。</p>
+<h3 id="3-1-HTMLTestRunner"><a href="#3-1-HTMLTestRunner" class="headerlink" title="3.1 HTMLTestRunner"></a>3.1 HTMLTestRunner</h3><blockquote>
+<p>最新版：<a target="_blank" rel="noopener" href="https://github.com/oldani/HtmlTestRunner">https://github.com/oldani/HtmlTestRunner</a></p>
+<p>汉化版：<a target="_blank" rel="noopener" href="https://github.com/wangquansheng/HTMLTestRunner/_cn">https://github.com/wangquansheng/HTMLTestRunner\_cn</a></p>
+</blockquote>
+<p>如果想要生成 HTML 格式的报告，那么就需要额外借助第三方库（如 HTMLTestRunner）来操作。</p>
+<p>HTMLTestRunner 是一个第三方的 unittest HTML 报告库，首先我们下载 HTMLTestRunner.py，并放到对应目录下或者放到 …&#x2F;python\Lib 目录下。</p>
+<blockquote>
+<p><strong>Tips：</strong></p>
+<p>这里我们使用的是汉化版的报告库。</p>
+</blockquote>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706173654891.webp"></p>
+<p>然后可以在写测试用例的文件中导入这个 <code>HTMLTestRunner.py</code> 文件。</p>
+<ul>
+<li>HTMLTestRunner 类说明：<ul>
+<li>stream：指定报告的路径</li>
+<li>title：报告的标题</li>
+<li>description：报告的描述</li>
+</ul>
+</li>
+<li>run() 方法说明：<ul>
+<li>suit：运行的测试套件</li>
+<li>rerun：重跑次数</li>
+<li>save_last_run：是否保存最后一个结果</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">from</span> test_project.lib.HTMLTestRunner <span class="keyword">import</span> HTMLTestRunner</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestDemo</span>(unittest.TestCase):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;测试用例说明&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_success</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;执行成功&quot;&quot;&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="number">2</span> + <span class="number">3</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @unittest.skip(<span class="params"><span class="string">&quot;skip case&quot;</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_skip</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_fail</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="number">5</span>, <span class="number">6</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_error</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="string">&quot;a&quot;</span>, <span class="number">6</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestDemo2</span>(unittest.TestCase):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_success</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="number">4</span> + <span class="number">5</span>, <span class="number">9</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestDemo3</span>(unittest.TestCase):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_fail</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="number">3</span>, <span class="number">9</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    suit = unittest.TestSuite()</span><br><span class="line">    suit.addTest(TestDemo(<span class="string">&quot;test_success&quot;</span>))</span><br><span class="line">    suit.addTest(TestDemo(<span class="string">&quot;test_skip&quot;</span>))</span><br><span class="line">    suit.addTest(TestDemo(<span class="string">&quot;test_fail&quot;</span>))</span><br><span class="line">    suit.addTest(TestDemo(<span class="string">&quot;test_error&quot;</span>))</span><br><span class="line">    suit.addTest(TestDemo2(<span class="string">&quot;test_success&quot;</span>))</span><br><span class="line">    suit.addTest(TestDemo3(<span class="string">&quot;test_fail&quot;</span>))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span>(<span class="built_in">open</span>(<span class="string">&#x27;./result.html&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>)) <span class="keyword">as</span> fp:</span><br><span class="line">        runner = HTMLTestRunner(</span><br><span class="line">            stream=fp,</span><br><span class="line">            title=<span class="string">&#x27;&lt;TestDemo&gt;-unittest测试框架报告&#x27;</span>,</span><br><span class="line">            description=<span class="string">&#x27;第一个报告示例&#x27;</span>,</span><br><span class="line">        )</span><br><span class="line">        runner.run(suit, rerun=<span class="number">3</span>, save_last_run=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p>我们运行后，在当前目录下就会生成一个 <code>result.html</code> 文件，将其以浏览器的方式打开，就能看到一份视图化的测试报告了。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706173654892.webp"></p>
+<h3 id="3-2-BeautifulReport"><a href="#3-2-BeautifulReport" class="headerlink" title="3.2 BeautifulReport"></a>3.2 BeautifulReport</h3><blockquote>
+<p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/TesterlifeRaymond/BeautifulReport">https://github.com/TesterlifeRaymond/BeautifulReport</a></p>
+<p>仓库地址：<a target="_blank" rel="noopener" href="https://www.cnpython.com/pypi/beautifulreport">https://www.cnpython.com/pypi/beautifulreport</a></p>
+</blockquote>
+<p>BeautifulReport 是一个基于 unittest.TestReport 模块实现的测试用例模板，可以把我们每次测试中的结果通过 BeautifulReport 整合成一个可视化的报表。</p>
+<p><strong>安装</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install BeautifulReport</span><br></pre></td></tr></table></figure>
+
+<p><strong>案例</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> unittest</span><br><span class="line"><span class="keyword">from</span> BeautifulReport <span class="keyword">import</span> BeautifulReport</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestDemo</span>(unittest.TestCase):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;测试用例说明&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_success</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;执行成功&quot;&quot;&quot;</span></span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="number">2</span> + <span class="number">3</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @unittest.skip(<span class="params"><span class="string">&quot;skip case&quot;</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_skip</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_fail</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="number">5</span>, <span class="number">6</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_error</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="string">&quot;a&quot;</span>, <span class="number">6</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestDemo2</span>(unittest.TestCase):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_success</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="number">4</span> + <span class="number">5</span>, <span class="number">9</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">TestDemo3</span>(unittest.TestCase):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_fail</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="variable language_">self</span>.assertEqual(<span class="number">3</span>, <span class="number">9</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    suite = unittest.TestSuite()</span><br><span class="line">    suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestDemo))</span><br><span class="line"></span><br><span class="line">    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), <span class="string">&#x27;report&#x27;</span>)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(path):</span><br><span class="line">        os.mkdir(path)</span><br><span class="line">    runner = BeautifulReport(suite)</span><br><span class="line">    runner.report(filename=<span class="string">&#x27;测试报告&#x27;</span>, description=<span class="string">&#x27;生成BeautifulReport报告&#x27;</span>, log_path=<span class="string">&#x27;report&#x27;</span>)</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/56a458a0/">https://alwaysfyo.github.io/posts/56a458a0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/">软件测试</a><a class="post-meta__tags" href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a><a class="post-meta__tags" href="/tags/Unittest%E7%B3%BB%E5%88%97/">Unittest系列</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/ce2c0e1e/" title="Python-02：编码规范"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Python-02：编码规范</div></div><div class="info-2"><div class="info-item-1">讲解 pip 包管理常用命令与 Python 编码规范。</div></div></div></a><a class="pagination-related" href="/posts/66b2b478/" title="Unittest 单元测试框架（一）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Unittest 单元测试框架（一）</div></div><div class="info-2"><div class="info-item-1">介绍单元测试的概念、落地挑战与实施方法。</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/66b2b478/" title="Unittest 单元测试框架（一）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Unittest 单元测试框架（一）</div></div><div class="info-2"><div class="info-item-1">介绍单元测试的概念、落地挑战与实施方法。</div></div></div></a><a class="pagination-related" href="/posts/a39db693/" title="Selenium 框架三部曲（一）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Selenium 框架三部曲（一）</div></div><div class="info-2"><div class="info-item-1">分析 UI 自动化测试的现状、价值与学习必要性。</div></div></div></a><a class="pagination-related" href="/posts/8623e6ad/" title="Pytest 测试框架三部曲（一）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Pytest 测试框架三部曲（一）</div></div><div class="info-2"><div class="info-item-1">Pytest 系列开篇，附各测试框架教程的索引与学习路径。</div></div></div></a><a class="pagination-related" href="/posts/938b5a4b/" title="Selenium 框架三部曲（二）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-13</div><div class="info-item-2">Selenium 框架三部曲（二）</div></div><div class="info-2"><div class="info-item-1">讲解 Selenium 元素定位方法及 chropath 定位工具的使用。</div></div></div></a><a class="pagination-related" href="/posts/b6350a75/" title="Pytest 测试框架三部曲（二）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Pytest 测试框架三部曲（二）</div></div><div class="info-2"><div class="info-item-1">讲解 Pytest 模块级初始化清除等基础用法。</div></div></div></a><a class="pagination-related" href="/posts/e70822c7/" title="接口测试基础"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-24</div><div class="info-item-2">接口测试基础</div></div><div class="info-2"><div class="info-item-1">对比传统与互联网产品测试策略，介绍接口测试基础。</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">101</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">53</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8"><span class="toc-number">1.</span> <span class="toc-text">1. 数据驱动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E5%8F%82%E6%95%B0%E5%8C%96"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 测试数据参数化</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-1-Ddt-%E5%BA%93"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1.1 Ddt 库</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-2-Parameterized-%E5%BA%93"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.1.2 Parameterized 库</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-Excel-%E5%AD%98%E5%82%A8%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 Excel 存储测试数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Mock-%E6%8E%A5%E5%85%A5"><span class="toc-number">2.</span> <span class="toc-text">2. Mock 接入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Mock-%E8%83%8C%E6%99%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 Mock 背景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Mock-%E4%BD%BF%E7%94%A8"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 Mock 使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-unittest-mock-%E7%B1%BB"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1 unittest.mock 类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-Mock-%E6%8A%80%E6%9C%AF%E6%A0%88%E9%80%89%E5%9E%8B"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2 Mock 技术栈选型</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%B5%8B%E8%AF%95%E6%8A%A5%E5%91%8A"><span class="toc-number">3.</span> <span class="toc-text">3. 测试报告</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-HTMLTestRunner"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 HTMLTestRunner</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-BeautifulReport"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 BeautifulReport</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/facdeb4a/" title="知识库到 Hexo 自动发布详细设计">知识库到 Hexo 自动发布详细设计</a><time datetime="2026-10-15T13:44:00.000Z" title="发表于 2026-10-15 21:44:00">2026-10-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/b7725795/" title="AI大模型与智能测试融合-基础认知">AI大模型与智能测试融合-基础认知</a><time datetime="2026-09-01T12:00:00.000Z" title="发表于 2026-09-01 20:00:00">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/dbdf84ba/" title="4-题材炒作体系">4-题材炒作体系</a><time datetime="2026-08-30T07:04:00.000Z" title="发表于 2026-08-30 15:04:00">2026-08-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/cd47fe5d/" title="AI测试-33个需要重点关注的大语言模型评测指标（附学习建议）">AI测试-33个需要重点关注的大语言模型评测指标（附学习建议）</a><time datetime="2026-06-16T04:00:00.000Z" title="发表于 2026-06-16 12:00:00">2026-06-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/90238fde/" title="GameDevBench智能体评测">GameDevBench智能体评测</a><time datetime="2026-06-06T13:06:00.000Z" title="发表于 2026-06-06 21:06:00">2026-06-06</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

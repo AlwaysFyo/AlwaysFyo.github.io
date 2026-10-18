@@ -1,0 +1,587 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>4-题材炒作体系 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="题材炒作体系：认知底层、选股方向、周期框架、打法与风控工具">
+<meta property="og:type" content="article">
+<meta property="og:title" content="4-题材炒作体系">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/dbdf84ba/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="题材炒作体系：认知底层、选股方向、周期框架、打法与风控工具">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2026-08-30T07:04:00.000Z">
+<meta property="article:modified_time" content="2026-10-17T10:05:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="投资">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "4-题材炒作体系",
+  "url": "https://alwaysfyo.github.io/posts/dbdf84ba/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2026-08-30T07:04:00.000Z",
+  "dateModified": "2026-10-17T10:05:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/dbdf84ba/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '4-题材炒作体系',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">101</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">53</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">4-题材炒作体系</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">4-题材炒作体系</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-30T07:04:00.000Z" title="发表于 2026-08-30 15:04:00">2026-08-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-17T10:05:00.000Z" title="更新于 2026-10-17 18:05:00">2026-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%87%91%E8%9E%8D%E6%8A%95%E8%B5%84/">金融投资</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">7.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>21分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="体系地图"><a href="#体系地图" class="headerlink" title="体系地图"></a>体系地图</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[认知底层] 题材即故事</span><br><span class="line">      ↓</span><br><span class="line">[选方向] 识别主流题材 ──→ [选股] 人气为王</span><br><span class="line">      ↓</span><br><span class="line">[周期框架] 题材周期四段 + 情绪周期赚钱/亏钱效应</span><br><span class="line">      ↓</span><br><span class="line">[核心打法] 题材弱转强 · 妖股分时弱转强 · 龙头vs跟风</span><br><span class="line">      ↓</span><br><span class="line">[风控执行] 三三制仓控 · 盯盘 · 复盘 · 卖出</span><br><span class="line">      ↓</span><br><span class="line">[硬核工具] 浮筹计算</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第一章-认知底层"><a href="#第一章-认知底层" class="headerlink" title="第一章 认知底层"></a>第一章 认知底层</h2><h3 id="1-股市本质：题材即故事"><a href="#1-股市本质：题材即故事" class="headerlink" title="1. 股市本质：题材即故事"></a>1. 股市本质：题材即故事</h3><h4 id="一句话讲透"><a href="#一句话讲透" class="headerlink" title="一句话讲透"></a>一句话讲透</h4><p>股市里所有 “ 该涨 “ 的理由——价值投资、游资打板、政策扶持、产业风口——本质上都是<strong>故事</strong>。做短线的人，不赌这些故事最后会不会成真，而是趁大家被故事煽动得热血上头的时候，赚情绪的钱。</p>
+<h4 id="棋手与棋子：谁在赚钱，谁在接盘"><a href="#棋手与棋子：谁在赚钱，谁在接盘" class="headerlink" title="棋手与棋子：谁在赚钱，谁在接盘"></a>棋手与棋子：谁在赚钱，谁在接盘</h4><p>一个故事里有两类人：</p>
+<ul>
+<li><strong>棋手</strong>：讲故事的人（上市公司、机构、游资），用 “ 美好的未来 “ 推动故事发酵；</li>
+<li><strong>棋子</strong>：听故事、下注的人（散户）。</li>
+</ul>
+<p>结局很残酷——无论故事真假，<strong>棋手都赚钱</strong>；棋子只有在故事成真时才能赚到钱，故事破灭就亏钱又亏时间。</p>
+<p>所以做题材短线，第一条要认清的取舍是：<strong>别把自己当成赌故事成真的人，要做趁大家情绪狂热时赚当下钱的人。</strong></p>
+<h4 id="一个真实案例：童装股怎么靠-“-改名-“-翻身"><a href="#一个真实案例：童装股怎么靠-“-改名-“-翻身" class="headerlink" title="一个真实案例：童装股怎么靠 “ 改名 “ 翻身"></a>一个真实案例：童装股怎么靠 “ 改名 “ 翻身</h4><p>2022 年 11 月，童装公司安奈儿宣布一项技术叫 “<strong>电子束接枝</strong>“。</p>
+<p>机构听得懂，散户一脸懵——太拗口，没人追。</p>
+<p>怎么办？改个名。换成 “<strong>抗病毒面料</strong>“：</p>
+<ul>
+<li>你听过抗病毒药，但没听过抗病毒面料吧？</li>
+<li>别人抗病毒要戴口罩吃药，你直接穿件抗病毒面料的衣服就行？</li>
+<li>新奇、听起来很先进、疫情三年又特别应景。</li>
+</ul>
+<p>于是故事开始滚动：</p>
+<ol>
+<li>机构写研报、媒体写科普；</li>
+<li>公司发公告 “ 已经量产，直接卖到学校做校服了 “；</li>
+<li>剩下的交给散户想象——深圳能卖，卖到全国呢？业绩岂不是要爆表？</li>
+<li>最后游资进场，用连续涨停宣告 “ 这故事能赚钱，再不买就踏空了 “。</li>
+</ol>
+<h4 id="好故事的-3-个特征"><a href="#好故事的-3-个特征" class="headerlink" title="好故事的 3 个特征"></a>好故事的 3 个特征</h4><ul>
+<li><strong>简单</strong>：听得懂的人越多越好（” 数字确权 “ 没人懂，改成 “ 数字经济 “ 大家都懂；”ChatGPT” 改成 “ 人工智能 “）。</li>
+<li><strong>有魅力</strong>：能激发想象力，听起来科技感十足、前途远大。</li>
+<li><strong>能持续</strong>：有源源不断的刺激（政策、消息一条接一条）。</li>
+</ul>
+<h4 id="怎么看懂每天的涨停板"><a href="#怎么看懂每天的涨停板" class="headerlink" title="怎么看懂每天的涨停板"></a>怎么看懂每天的涨停板</h4><p>每天涨停复盘表上的每一只票，都在试图讲一个 “ 前途远大 “ 的故事。有的故事能讲很久（新冠特效药、人工智能），有的一日游就结束。</p>
+<p>真正值得跟踪的，是那些<strong>持续时间够长、能被资金反复炒作</strong>的主流题材——用上面 3 个特征去套，靠常识就能判断它能不能火、能火多久。</p>
+<hr>
+<h2 id="第二章-选方向与选股"><a href="#第二章-选方向与选股" class="headerlink" title="第二章 选方向与选股"></a>第二章 选方向与选股</h2><h3 id="2-游资必备：如何识别主流题材"><a href="#2-游资必备：如何识别主流题材" class="headerlink" title="2. 游资必备：如何识别主流题材"></a>2. 游资必备：如何识别主流题材</h3><h4 id="一句话讲透-1"><a href="#一句话讲透-1" class="headerlink" title="一句话讲透"></a>一句话讲透</h4><p>方向选对，事半功倍。<strong>主流题材 &#x3D; 客观硬逻辑 + 主观资金认可</strong>，两个条件缺一不可——光有好故事没人买账不行，光有资金热炒没有逻辑支撑也走不远。</p>
+<h4 id="题材的三大类型"><a href="#题材的三大类型" class="headerlink" title="题材的三大类型"></a>题材的三大类型</h4><ul>
+<li><strong>产业题材</strong>：技术变革带来的（人工智能、元宇宙、机器人）。</li>
+<li><strong>政策题材</strong>：这是中国特色的 “ 超级题材 “，因为政策自上而下，重大政策落地后，配套的执行消息会连绵不绝，所以持续性最强（雄安、科创板都是例子）。<strong>级别越高、越有开创性，持续性越强。</strong></li>
+<li><strong>突发消息题材</strong>：事件驱动（俄乌冲突、新冠），靠事件本身的持续性支撑炒作。</li>
+</ul>
+<h4 id="比-“-故事是什么-“-更重要的：谁在讲故事"><a href="#比-“-故事是什么-“-更重要的：谁在讲故事" class="headerlink" title="比 “ 故事是什么 “ 更重要的：谁在讲故事"></a>比 “ 故事是什么 “ 更重要的：谁在讲故事</h4><p>同样是发一款高端 5G 手机——小米出，冷冷清清；华为出，瞬间热搜，能炒两个月。</p>
+<p><strong>“ 谁在讲 “ 决定了故事的分量。</strong> 国企老总说 “ 估值太低 “ 没人理，如果更高层说 “ 要重视国企估值 “，市场立刻疯狂。</p>
+<h4 id="资金认可的两形态（怎么看别人信不信）"><a href="#资金认可的两形态（怎么看别人信不信）" class="headerlink" title="资金认可的两形态（怎么看别人信不信）"></a>资金认可的两形态（怎么看别人信不信）</h4><p>你没法挨个问股民信不信这个故事，但<strong>盘面会告诉你</strong>：</p>
+<ol>
+<li><strong>连板标杆</strong>：连续涨停的龙头（比如人工智能的汉王科技）。</li>
+<li><strong>抱团人气股</strong>：成交暴增、资金扎堆的票（比如三六零，平时成交不足 10 亿，炒起来 30 亿甚至 50 亿）。</li>
+</ol>
+<p>因为认可，所以下注；因为疯狂认可，所以疯狂下注，走出大牛股，又吸引更多人进场——这就是赚钱效应。</p>
+<h4 id="赚钱效应标杆的-3-个细节"><a href="#赚钱效应标杆的-3-个细节" class="headerlink" title="赚钱效应标杆的 3 个细节"></a>赚钱效应标杆的 3 个细节</h4><ol>
+<li><strong>短期翻倍</strong>：主流题材的龙头，主升浪基本都有翻倍涨幅。</li>
+<li><strong>20cm 路线</strong>：有些题材不以 10cm 连板为标杆，而以 20cm 的非连板为赚钱效应标杆（比如机器人题材的丰立智能）。</li>
+<li><strong>抱团人气股</strong>：低位爆量涨停 &#x3D; 题材起点的标杆；高位爆量涨停 &#x3D; 题材续涨的标杆。</li>
+</ol>
+<h4 id="一个现实提醒"><a href="#一个现实提醒" class="headerlink" title="一个现实提醒"></a>一个现实提醒</h4><p>注册制后 A 股从 “ 钱多票少 “ 变成 “ 钱少票多 “，活跃资金是稀缺品。<strong>冷门题材冷门股会越来越边缘化，只有站在聚光灯下的强势股才有肉吃。</strong> 扎堆小溪只能喝白水，聚焦大江大河才能吃肉。</p>
+<h3 id="3-游资大佬如何选股：人气为王"><a href="#3-游资大佬如何选股：人气为王" class="headerlink" title="3. 游资大佬如何选股：人气为王"></a>3. 游资大佬如何选股：人气为王</h3><h4 id="一句话讲透-2"><a href="#一句话讲透-2" class="headerlink" title="一句话讲透"></a>一句话讲透</h4><p>短线交易就三件事：<strong>选方向（题材）→ 选股 → 选时机</strong>。选股只有一个标准——<strong>强势人气股</strong>，也就是 “ 万众瞩目的票 “。</p>
+<h4 id="人气从哪来？两个来源"><a href="#人气从哪来？两个来源" class="headerlink" title="人气从哪来？两个来源"></a>人气从哪来？两个来源</h4><p><strong>1. 高度</strong></p>
+<p>一只票靠连续涨停打出高度，就会自动聚拢人气。捷荣技术、圣龙股份、杭州热电——没几个人说得清它们在行业里到底多重要，但它们在题材里<strong>涨得最高、最早翻倍</strong>，所以人人关注、人人想追。这就是 “ 最高最强最龙头 “。</p>
+<p><strong>2. 亮度</strong></p>
+<p>有些票天生自带辨识度，不用翻倍，一个涨停就能引发全民讨论：</p>
+<ul>
+<li><strong>行业龙头</strong>：科大讯飞、三一重工、格力、茅台——你天天见得到它的产品，一听涨停就兴奋。</li>
+<li><strong>抱团人气股</strong>：一只票平时成交不到 10 亿，突然放到 30 亿、50 亿，说明大资金在扎堆博弈，人气以巨量成交的方式呈现。</li>
+</ul>
+<h4 id="具体怎么选（10cm-20cm-两条线）"><a href="#具体怎么选（10cm-20cm-两条线）" class="headerlink" title="具体怎么选（10cm &#x2F; 20cm 两条线）"></a>具体怎么选（10cm &#x2F; 20cm 两条线）</h4><ul>
+<li><strong>10cm 方向</strong>：2 连板及以上的票都具备龙头角逐潜力，全纳入自选。</li>
+<li><strong>20cm 方向</strong>：首板就要纳入，因为 2 连板就开始角逐了。</li>
+<li>最强、次强都选——<strong>最先强的不一定最后强</strong>，龙头角逐有变数。</li>
+</ul>
+<h4 id="删自选的铁律"><a href="#删自选的铁律" class="headerlink" title="删自选的铁律"></a>删自选的铁律</h4><p>纳入自选后要持续修剪：<strong>连续崩塌、无承接的票，全部删掉</strong>——它们被资金抛弃了，成龙概率很低。</p>
+<h4 id="弱转强时的三筛选机制"><a href="#弱转强时的三筛选机制" class="headerlink" title="弱转强时的三筛选机制"></a>弱转强时的三筛选机制</h4><p>题材转弱后要找反击机会，用三道筛选：</p>
+<ol>
+<li><strong>只看主流</strong>：不做分支题材；</li>
+<li><strong>集体上涨</strong>：不是单只异动，要板块一起动；</li>
+<li><strong>优选时机</strong>：等资金回流的确定性信号。</li>
+</ol>
+<h4 id="一句大实话"><a href="#一句大实话" class="headerlink" title="一句大实话"></a>一句大实话</h4><p>选股到交易，中间有大量 “ 无用功 “——挑了十几只、观察好几天，最后只下注一两只。但这些 “ 无用功 “ 正是高手和韭菜的差别。<strong>股市只展示 “ 一买一卖 “ 的结果，从不肯展示背后的过程。</strong></p>
+<hr>
+<h2 id="第三章-周期框架"><a href="#第三章-周期框架" class="headerlink" title="第三章 周期框架"></a>第三章 周期框架</h2><h3 id="4-题材周期：一切题材炒作都适用的简单模式"><a href="#4-题材周期：一切题材炒作都适用的简单模式" class="headerlink" title="4. 题材周期：一切题材炒作都适用的简单模式"></a>4. 题材周期：一切题材炒作都适用的简单模式</h3><h4 id="一句话讲透-3"><a href="#一句话讲透-3" class="headerlink" title="一句话讲透"></a>一句话讲透</h4><p>题材和人一样有生命周期，从诞生到消亡走完<strong>四段轮回</strong>。看懂它处在哪一段，就知道该不该买、该不该卖。<strong>龙头是判断周期的唯一锚点。</strong></p>
+<h4 id="四段轮回"><a href="#四段轮回" class="headerlink" title="四段轮回"></a>四段轮回</h4><p>| 阶段 | 核心任务 | 通俗理解 |</p>
+<p>|-:———-|-:———-|-:————————–|</p>
+<p>| <strong>主升浪</strong> | 龙头角逐战 | 群雄并起，争出谁是老大 |</p>
+<p>| <strong>转弱势</strong> | 真金的考验 | 热潮退去，看谁扛得住不崩 |</p>
+<p>| <strong>弱转强</strong> | 新龙崛起 | 歇够了又涨，冒出第二个老大 |</p>
+<p>| <strong>终结者</strong> | 题材退出 | 再无新龙，集体谢幕 |</p>
+<p>口诀就一句：<strong>龙头不死，题材不止；龙头歇菜，题材不再。</strong></p>
+<h4 id="弱转强只有两条路（没有第三条）"><a href="#弱转强只有两条路（没有第三条）" class="headerlink" title="弱转强只有两条路（没有第三条）"></a>弱转强只有两条路（没有第三条）</h4><p>题材转弱后想再起来，资金回流只能靠两类票：</p>
+<ol>
+<li><strong>人气股反包</strong>：之前的老龙头跌了又拉起来。</li>
+<li><strong>连板的标杆</strong>：新的低位票连续涨停，重新竖起旗帜。</li>
+</ol>
+<p>为什么必须是 “ 有辨识度的标杆 “？因为弱势中要 “ 带着一群人刚 “，必须是个大家一眼认得出的关键人物——就像家庭困境里，站出来的一定是顶梁柱，而不是某个无名小卒。<strong>低位首板没有号召力，带动不了整个题材。</strong></p>
+<h4 id="两个实用原则"><a href="#两个实用原则" class="headerlink" title="两个实用原则"></a>两个实用原则</h4><ul>
+<li><strong>跟强不跟弱</strong>：个股在炒作中概念会偏移（比如保利联合一开始炒基建，后来被归到民爆），但<strong>只跟随最强势的那个题材</strong>来定性它。</li>
+<li><strong>妖股 &#x3D; 龙头的第二波</strong>：龙头靠板块效应，妖股缘起板块、最终摆脱板块束缚独立走强，甚至摆脱周期。</li>
+</ul>
+<h4 id="一个完整案例：2022-年-2-月基建板块"><a href="#一个完整案例：2022-年-2-月基建板块" class="headerlink" title="一个完整案例：2022 年 2 月基建板块"></a>一个完整案例：2022 年 2 月基建板块</h4><ul>
+<li>2 月 7 日爆发，当天 26 只涨停，主升浪开启，龙头角逐战开始；</li>
+<li>保利联合一路一字板到 8 板，打出空间；</li>
+<li>2 月 14 日保利联合冲高回落，题材<strong>转弱势</strong>，这时要留意谁逆势不跌（浙江建投、正平股份）；</li>
+<li>2 月 16 日浙江建投反包涨停，刺激题材<strong>弱转强</strong>，新龙崛起；</li>
+<li>之后浙江建投走妖股预期，反包 4 板；</li>
+<li>2 月 24 日诚邦股份跌停开，基建再无领头羊，题材走向<strong>终结</strong>。</li>
+</ul>
+<p>整个轮回，盯住龙头就够了。</p>
+<h3 id="5-情绪周期：如何精准判断买卖时机"><a href="#5-情绪周期：如何精准判断买卖时机" class="headerlink" title="5. 情绪周期：如何精准判断买卖时机"></a>5. 情绪周期：如何精准判断买卖时机</h3><h4 id="一句话讲透-4"><a href="#一句话讲透-4" class="headerlink" title="一句话讲透"></a>一句话讲透</h4><p>股价天天涨跌，但真正决定你能不能赚钱的，是看不见的<strong>市场情绪</strong>。情绪在 “ 赚钱效应 “ 和 “ 亏钱效应 “ 之间轮回，<strong>最好的买点只有一个：情绪弱转强</strong>。</p>
+<h4 id="赚钱效应-Vs-亏钱效应"><a href="#赚钱效应-Vs-亏钱效应" class="headerlink" title="赚钱效应 Vs 亏钱效应"></a>赚钱效应 Vs 亏钱效应</h4><p>| 状态 | 两个特征 | 通俗理解 |</p>
+<p>|-:————|-:——————-|-:————————–|</p>
+<p>| <strong>赚钱效应</strong> | 高位宽容 + 空间突破 | 追高的能赚，连板能破新高 |</p>
+<p>| <strong>亏钱效应</strong> | 高位崩塌 + 空间压缩 | 追高的被埋，连板数越来越低 |</p>
+<p>情绪会 “ 从一个点扩散到整个面 “：龙头爆亏 → 恐慌传染到跟风 → 整个市场滑向冰点（亏钱效应）；反过来，有人开始进场试错 → 从小赚到大赚 → 兴奋扩散（赚钱效应）。</p>
+<h4 id="怎么判定强弱（看几天）"><a href="#怎么判定强弱（看几天）" class="headerlink" title="怎么判定强弱（看几天）"></a>怎么判定强弱（看几天）</h4><ul>
+<li><strong>高位缓和，看 2 天</strong>：龙头断板后是直接崩，还是能震荡、能反包？能被 “ 宽容以待 “ 就是缓和信号。</li>
+<li><strong>空间突破，看 1 天</strong>：上一个连板空间卡在 4 板（谁买 4 板谁傻瓜），如果突然有资金敢顶着恐慌买 4 板、甚至突破到 5 板，就是转折点。</li>
+<li><strong>高位崩塌，看 1-2 天</strong>：空间龙头连板后直接按跌停（1 天判定），或连续大跌无承接（2 天判定）。</li>
+</ul>
+<h4 id="亏钱效应期怎么办"><a href="#亏钱效应期怎么办" class="headerlink" title="亏钱效应期怎么办"></a>亏钱效应期怎么办</h4><p>两件事：<strong>控仓控风险 + 耐心等机会。</strong> 不要硬刚周期。</p>
+<h4 id="情绪龙头怎么用"><a href="#情绪龙头怎么用" class="headerlink" title="情绪龙头怎么用"></a>情绪龙头怎么用</h4><p>空间打开后，以情绪龙头为锚点做衍生炒作：</p>
+<ul>
+<li><strong>横向</strong>：龙头代表的题材板块里，找高位人气股；</li>
+<li><strong>纵向</strong>：龙头本身带出的其他机会。</li>
+</ul>
+<p>你可以不做龙头，但<strong>一定要盯住龙头</strong>——跟风股的成败，往往取决于龙头。</p>
+<h4 id="一句提醒"><a href="#一句提醒" class="headerlink" title="一句提醒"></a>一句提醒</h4><p>没有任何方法能逆周期。<strong>赚钱效应里容易赚，亏钱效应里容易亏，这就是顺势而为。</strong> 难的不是看懂，是亏钱时愿不愿意收手。</p>
+<hr>
+<h2 id="第四章-核心打法"><a href="#第四章-核心打法" class="headerlink" title="第四章 核心打法"></a>第四章 核心打法</h2><h3 id="7-一套高胜率交易系统：题材周期弱转强"><a href="#7-一套高胜率交易系统：题材周期弱转强" class="headerlink" title="7. 一套高胜率交易系统：题材周期弱转强"></a>7. 一套高胜率交易系统：题材周期弱转强</h3><h4 id="一句话讲透-5"><a href="#一句话讲透-5" class="headerlink" title="一句话讲透"></a>一句话讲透</h4><p>有没有胜率高、简单、能反复用的方法？有——<strong>题材周期弱转强</strong>。它唯一的缺陷是<strong>机会少，不是每天都有</strong>。</p>
+<h4 id="核心模式怎么走"><a href="#核心模式怎么走" class="headerlink" title="核心模式怎么走"></a>核心模式怎么走</h4><p>题材刚起来时别急着判断是不是主流，先等一两天 “ 验货 “：连续强的才值得跟踪，一日游的两三天就现原形。等题材走弱、资金再次回流的当天，就是弱转强的买点。</p>
+<p><strong>案例：2023 年 7 月地产</strong></p>
+<ul>
+<li>7 月 24 日城中村改造利好落地，地产却高开低走，龙头荣盛发展走弱，题材转弱势；</li>
+<li>7 月 25 日资金回流，金科股份快速 3 连板、荣盛发展反包、山水比德涨停——这就是弱转强买点。</li>
+</ul>
+<h4 id="防诱多的铁律（最重要）"><a href="#防诱多的铁律（最重要）" class="headerlink" title="防诱多的铁律（最重要）"></a>防诱多的铁律（最重要）</h4><p>早盘某只票快速拉涨停，怎么判断是真强还是诱多？</p>
+<p><strong>记住：龙头强不一定真强，板块强，龙头才真强。</strong></p>
+<ul>
+<li>拉单只票，只需要小资金，骗子成本很低；</li>
+<li>拉龙头 + 一大群跟风一起涨，必须动用巨量资金，<strong>下重注的人欺骗你的概率极低</strong>。</li>
+</ul>
+<p>所以判断标准是 “ 板块是否集体走强 “，而不是 “ 某只票有多猛 “。</p>
+<h4 id="怎么下单"><a href="#怎么下单" class="headerlink" title="怎么下单"></a>怎么下单</h4><ol>
+<li><strong>人气强弱排列买</strong>：按辨识度从高到低——10cm 连板标杆（金科股份）→ 反包人气股（荣盛发展）→ 20cm 领头羊（山水比德）。</li>
+<li><strong>龙头追涨、跟风低吸</strong>：龙头确定性高，可以追涨博隔日强；跟风票一定要等冲高回落低吸博当日强。</li>
+</ol>
+<h4 id="怎么卖"><a href="#怎么卖" class="headerlink" title="怎么卖"></a>怎么卖</h4><ul>
+<li>核心龙头：拿波段，期待穿越板块弱势；</li>
+<li>跟风个股：冲高兑现吃套利（板块 “ 强转更强 “ 是小概率，多数跟风就是冲高回落）。</li>
+</ul>
+<h4 id="一个关于耐心的故事"><a href="#一个关于耐心的故事" class="headerlink" title="一个关于耐心的故事"></a>一个关于耐心的故事</h4><p>1915 年，破产的利弗莫尔只剩 “ 一颗子弹、一次扣扳机的机会 “。他盯上军工龙头伯利恒钢铁，从 50 元一直等到突破 100 元，足足等了 6 周，全仓买入，2 天涨到 145 元翻身。</p>
+<p><strong>小资金没有试错空间。总结一套高胜率模式 → 等它出现 → 重复它。除此之外，没有第二条翻身的路。</strong></p>
+<h3 id="8-个股弱转强：妖股的博弈方法"><a href="#8-个股弱转强：妖股的博弈方法" class="headerlink" title="8. 个股弱转强：妖股的博弈方法"></a>8. 个股弱转强：妖股的博弈方法</h3><h4 id="一句话讲透-6"><a href="#一句话讲透-6" class="headerlink" title="一句话讲透"></a>一句话讲透</h4><p>个股弱转强，就是 “ 分时弱转强 “。分时在妖股博弈里最重要——因为<strong>妖股是纯粹的资金博弈</strong>，不看大盘、不看题材、不看情绪，只看买卖双方在盘口上的强弱。</p>
+<h4 id="妖股和龙头的区别"><a href="#妖股和龙头的区别" class="headerlink" title="妖股和龙头的区别"></a>妖股和龙头的区别</h4><p>龙头会受到大盘、题材、情绪的影响；而妖股涨到一定高度后（比如 8 连板），已经没法用任何外在理由解释，纯粹是 “ 吹泡沫、击鼓传花 “，是资金与筹码的交换游戏。</p>
+<p>这时候，分时走势特别 “ 纯粹 “：资金买盘强它就涨，砸盘强它就跌，直接体现买卖双方的欲望。</p>
+<h4 id="核心信号：高位烂板爆量"><a href="#核心信号：高位烂板爆量" class="headerlink" title="核心信号：高位烂板爆量"></a>核心信号：高位烂板爆量</h4><p>以 2024 年深中华 A 为例：8 连板那天，早盘高开低走、反复炸板、尾盘回封，走成一个大烂板，同时爆出历史巨量。</p>
+<p>这意味着：想卖的基本都卖了，想买的用尽全力回封了。买卖双方意图都很明确——卖方觉得 “ 这么高了还没刺激，肯定跌 “，买方觉得 “ 唯一的空间板，能脱胎换骨成妖股 “。</p>
+<p><strong>烂板爆量，就是个股的 “ 弱势 “。</strong> 未来的强弱，交到场外资金手里。</p>
+<h4 id="隔日开盘-10-分钟见分晓"><a href="#隔日开盘-10-分钟见分晓" class="headerlink" title="隔日开盘 10 分钟见分晓"></a>隔日开盘 10 分钟见分晓</h4><ul>
+<li>场外资金<strong>不认可</strong> → 低开低走无承接 → 转弱；</li>
+<li>场外资金<strong>认可</strong> → 开盘快速拉涨强承接 → 弱转强。</li>
+</ul>
+<p>深中华 A 就是：次日平开，开盘 5 分钟拉到红盘 6 个点——持筹者浮盈锁仓、持币者抢筹，最终涨停，完成弱转强。</p>
+<h4 id="两个博弈节点（各有利弊）"><a href="#两个博弈节点（各有利弊）" class="headerlink" title="两个博弈节点（各有利弊）"></a>两个博弈节点（各有利弊）</h4><ol>
+<li><strong>弱势极限爆量买</strong>：拥有位置优势（买得低），但放弃确定性——隔日可能涨停也可能被按跌停。</li>
+<li><strong>强势起点加速买</strong>：拥有确定性，但失去位置优势——万一遇到诱多，当天吃大面、隔日还可能再吃面。</li>
+</ol>
+<h4 id="一句大实话-1"><a href="#一句大实话-1" class="headerlink" title="一句大实话"></a>一句大实话</h4><p>妖股没有 “ 万能买卖点 “，有的话早就失效了。真正要懂的不是点位，而是<strong>筹码与人心</strong>——你能不能判断别人的贪婪和恐惧，然后决定要不要跟着一起。</p>
+<h3 id="9-龙头-Vs-跟风：必然性与随机性"><a href="#9-龙头-Vs-跟风：必然性与随机性" class="headerlink" title="9. 龙头 Vs 跟风：必然性与随机性"></a>9. 龙头 Vs 跟风：必然性与随机性</h3><h4 id="一句话讲透-7"><a href="#一句话讲透-7" class="headerlink" title="一句话讲透"></a>一句话讲透</h4><p>题材炒作到底能不能买跟风？答案是：<strong>龙头和跟风都有机会，但博弈逻辑完全不同。</strong> 选龙头享受 “ 必然性 “，选跟风就得接受 “ 随机性 “。</p>
+<h4 id="龙头-必然性，跟风-随机性"><a href="#龙头-必然性，跟风-随机性" class="headerlink" title="龙头 &#x3D; 必然性，跟风 &#x3D; 随机性"></a>龙头 &#x3D; 必然性，跟风 &#x3D; 随机性</h4><ul>
+<li><strong>买龙头</strong>：只能追涨，但享受必然性——只要题材判断对了，它必涨。持股多点耐心，因为龙头多波段，能穿越板块弱势。</li>
+<li><strong>买跟风</strong>：享受低位低吸的位置优势，但只能接受随机性——即使龙头大涨，你买的跟风票可能坐电梯、可能不涨、可能隔好几天才涨。</li>
+</ul>
+<p>得此失彼，世间万物都是平衡的。</p>
+<h4 id="双周期框架（两个标准别混）"><a href="#双周期框架（两个标准别混）" class="headerlink" title="双周期框架（两个标准别混）"></a>双周期框架（两个标准别混）</h4><p>| 看什么 | 用什么标准 |</p>
+<p>|-:————|-:——————————————–|</p>
+<p>| <strong>题材周期</strong> | 看龙头（主升浪→转弱→弱转强→终结） |</p>
+<p>| <strong>板块效应</strong> | 看涨停板数量（涨停多&#x3D;板块强，涨停少&#x3D;板块弱） |</p>
+<p>板块强时，龙头和跟风都能涨停；板块弱时，跟风必然走弱，但<strong>龙头可以穿越弱势独立走强</strong>——这就是龙头气质。</p>
+<h4 id="龙头的变数：两种-“-成龙-“-方式"><a href="#龙头的变数：两种-“-成龙-“-方式" class="headerlink" title="龙头的变数：两种 “ 成龙 “ 方式"></a>龙头的变数：两种 “ 成龙 “ 方式</h4><ol>
+<li><strong>烂板成龙</strong>：当天爆量烂板、分歧巨大，隔日却低开高走加速涨停（如开开实业）。</li>
+<li><strong>卡位成龙</strong>：你占的位置被后来者抢走，后发先至（如科源制药后来居上压过国科恒泰）。</li>
+</ol>
+<p>所以主升浪初期别无脑认定龙头，游资选股套路比你想象的复杂。</p>
+<h4 id="两种模式，自选其一"><a href="#两种模式，自选其一" class="headerlink" title="两种模式，自选其一"></a>两种模式，自选其一</h4><ul>
+<li><strong>龙空龙</strong>：只做确定性最强的龙头，简单，但要求耐得住空仓。</li>
+<li><strong>多撒网</strong>：加入跟风策略，防止错过，但要同时看周期、看板块强弱、看辨识度，还得忍受随机性。</li>
+</ul>
+<p>跟风的两大方向：<strong>补涨</strong>（挖还没涨的低位首板）、<strong>反包</strong>（连板掉队后回封）。</p>
+<h4 id="一句大实话-2"><a href="#一句大实话-2" class="headerlink" title="一句大实话"></a>一句大实话</h4><p>卖点不是技术决定的，是题材周期决定的——同样的卖法，在周期开端能吃大肉，在周期末端会亏到怀疑人生。<strong>主升浪多拿（尤其龙头），临近终结及时兑现（尤其跟风）。</strong></p>
+<hr>
+<h2 id="第五章-风控执行"><a href="#第五章-风控执行" class="headerlink" title="第五章 风控执行"></a>第五章 风控执行</h2><h3 id="10-三三制滚动仓控"><a href="#10-三三制滚动仓控" class="headerlink" title="10. 三三制滚动仓控"></a>10. 三三制滚动仓控</h3><h4 id="一句话讲透-8"><a href="#一句话讲透-8" class="headerlink" title="一句话讲透"></a>一句话讲透</h4><p>题材炒作的人气股波动极大，能给你高收益，也能单日亏 10%-30%。活下来的人靠两招：<strong>踩准周期节奏 + 严格仓位控制。</strong> 这节讲后者。</p>
+<h4 id="三三制的仓位结构"><a href="#三三制的仓位结构" class="headerlink" title="三三制的仓位结构"></a>三三制的仓位结构</h4><p>把资金分成三份：</p>
+<ul>
+<li><strong>老仓 3 成</strong>：昨天已经在手里的仓位；</li>
+<li><strong>新仓 3 成</strong>：今天要新开的仓位；</li>
+<li><strong>预备仓 4 成</strong>：压箱底，随时应对。</li>
+</ul>
+<h4 id="两条操作主线"><a href="#两条操作主线" class="headerlink" title="两条操作主线"></a>两条操作主线</h4><p><strong>第一，老仓强势 → 开新仓</strong></p>
+<p>老仓 “ 强 “ 的表现：涨停开、高开冲涨停、平开上拉、低开高走翻红（冲涨停）。</p>
+<ul>
+<li>新仓下注后表现强势（封死涨停 &#x2F; 低吸后持续拉起打出浮盈）→ 可以动用预备仓，盘中最高能到满仓。</li>
+<li>新仓下注后表现弱势（炸板 &#x2F; 低吸后持续下杀）→ 降低预期，不再开新仓，快速处理老仓，预备仓不动。<strong>这样当天不利的新仓最多只有 3 成，损失可控。</strong></li>
+</ul>
+<p><strong>第二，老仓弱势 → 谨慎开新仓</strong></p>
+<p>老仓 “ 弱 “ 的表现：高开&#x2F;平开&#x2F;低开低走，抽不回来。</p>
+<ul>
+<li>优先处理老仓（减仓或清仓）；</li>
+<li>除非有特别好的机会，否则不开新仓，且新仓降档（3 成变 1.5 成）。</li>
+</ul>
+<h4 id="为什么这套方法好"><a href="#为什么这套方法好" class="headerlink" title="为什么这套方法好"></a>为什么这套方法好</h4><p>它<strong>攻防兼备</strong>：有利环境能一路进攻到满仓，不利环境会自动轻仓甚至空仓。缺点是偏保守，可能踏空轮动行情——但几乎不会出现巨大回撤。</p>
+<h4 id="最关键的一句"><a href="#最关键的一句" class="headerlink" title="最关键的一句"></a>最关键的一句</h4><p><strong>交易路上最大的敌人是回撤，不是卖飞或踏空。</strong></p>
+<p>多数人亏大钱不是因为技术差，而是因为亏了一笔后 “ 红了眼加仓猛干 “，把交易变成了赌博。三三制的意义，就是用规则锁住你的情绪，让账户市值曲线稳定上行，而不是大起大落。</p>
+<h3 id="11-盯盘：找主客观一致点"><a href="#11-盯盘：找主客观一致点" class="headerlink" title="11. 盯盘：找主客观一致点"></a>11. 盯盘：找主客观一致点</h3><h4 id="一句话讲透-9"><a href="#一句话讲透-9" class="headerlink" title="一句话讲透"></a>一句话讲透</h4><p>散户盯盘是 “ 眼睛看 “，游资盯盘是 “ 心里想 “。盯盘的最高境界不是看全市场，而是<strong>找到主客观一致的那个点</strong>。</p>
+<h4 id="盯盘的三个层次"><a href="#盯盘的三个层次" class="headerlink" title="盯盘的三个层次"></a>盯盘的三个层次</h4><ol>
+<li><strong>盯涨跌</strong>（散户）：盯着自己的持仓涨跌，一整天腰酸背痛，最后啥也没干成。</li>
+<li><strong>盯资金</strong>（伪专业）：追着主力资金流向跑，本质是 “ 默认大资金能赚钱 “。但事实是——公募基金连亏、游资大佬也会踩雷、庄家坐庄也会破产。<strong>体量大小从来不是活下来的关键，找到规律并顺应它才是。</strong></li>
+<li><strong>盯主客观</strong>（游资）：看你 “ 主观的预期 “ 有没有被 “ 客观的市场 “ 认可。</li>
+</ol>
+<h4 id="盯盘的核心：主客观一致"><a href="#盯盘的核心：主客观一致" class="headerlink" title="盯盘的核心：主客观一致"></a>盯盘的核心：主客观一致</h4><p>盯盘只回答两个问题：</p>
+<ol>
+<li>你主观预判的方向，市场认可了吗？（必然的选择，有没有走成必然）</li>
+<li>你筛出来的候选票，资金押注了谁？（随机的选择，资金走了哪条路）</li>
+</ol>
+<p><strong>下注，就下在主客观一致的那一刻。</strong></p>
+<h4 id="三种下注时机（以券商行情为例）"><a href="#三种下注时机（以券商行情为例）" class="headerlink" title="三种下注时机（以券商行情为例）"></a>三种下注时机（以券商行情为例）</h4><p>| 时机 | 做法 | 优劣 |</p>
+<p>|-:—————-|-:————————–|-:———————-|</p>
+<p>| <strong>客观认可前买</strong> | 凭主观判断提前埋伏券商 ETF | 位置好，但纯博弈 |</p>
+<p>| <strong>客观认可中买</strong> | 看到龙头涨停、板块跟进再跟 | 有确定性，位置一般 |</p>
+<p>| <strong>客观认可后买</strong> | 等牛市预期成明牌再追 | 确定性最高，但位置最烂 |</p>
+<h4 id="什么是-“-异动-“"><a href="#什么是-“-异动-“" class="headerlink" title="什么是 “ 异动 “"></a>什么是 “ 异动 “</h4><p>异常的波动，两层意思：<strong>跟它平时不一样</strong> + <strong>跟其他个股不一样</strong>。所有大机会，都从微不足道的异动开始。</p>
+<h4 id="一句提醒-1"><a href="#一句提醒-1" class="headerlink" title="一句提醒"></a>一句提醒</h4><p>盯盘不是把市场奉为神明盲目追随，而是<strong>做自己认知范围内的交易</strong>——先有主观判断，盯盘才有意义，否则就是无头苍蝇到处乱撞。</p>
+<h3 id="12-复盘只看-4-点"><a href="#12-复盘只看-4-点" class="headerlink" title="12. 复盘只看 4 点"></a>12. 复盘只看 4 点</h3><h4 id="一句话讲透-10"><a href="#一句话讲透-10" class="headerlink" title="一句话讲透"></a>一句话讲透</h4><p>复盘不是 “ 看看今天赚了亏了 “，而是要回答三个问题：<strong>过去发生了什么？周期走到哪一步？未来怎么演变？</strong> 游资只从 4 个方向找答案。</p>
+<h4 id="1-财经消息（客观逻辑）"><a href="#1-财经消息（客观逻辑）" class="headerlink" title="1. 财经消息（客观逻辑）"></a>1. 财经消息（客观逻辑）</h4><p>题材需要 “ 客观认可 “，客观就来自消息。尽量只看公开消息（财联社、同花顺 7×24 滚动），别听谣言吹票——那会增加博弈难度，还容易踩杀猪盘。</p>
+<p><strong>消息重要性的两个标准</strong>：</p>
+<ul>
+<li>消息本身重大（雄安、科创板、新冠、ChatGPT 这种级别）；</li>
+<li>消息关联当前主流题材（房地产主线期间，任何地产利好都被标红）。</li>
+</ul>
+<h4 id="2-涨停复盘表-成交榜（主观认可）"><a href="#2-涨停复盘表-成交榜（主观认可）" class="headerlink" title="2. 涨停复盘表 + 成交榜（主观认可）"></a>2. 涨停复盘表 + 成交榜（主观认可）</h4><p>资金认不认可题材，看这两份表：</p>
+<ul>
+<li><strong>涨停复盘表</strong>：看三个重点——连板高度（决定赚钱效应）、主流题材（决定方向）、潜在主流（迷茫时的备选）。</li>
+<li><strong>成交榜</strong>：把当天成交 10 亿以上的票都翻一遍。涨停表只能找到连板标杆，<strong>成交榜才能发现抱团人气股</strong>。看点有两个：连续爆量大涨的题材人气股（反复炒作的焦点）、忽然崛起大涨的行业龙头（新题材开端的信号）。</li>
+</ul>
+<h4 id="3-市场情绪监控表（周期判定）"><a href="#3-市场情绪监控表（周期判定）" class="headerlink" title="3. 市场情绪监控表（周期判定）"></a>3. 市场情绪监控表（周期判定）</h4><p>看两个重点：普涨普跌（绿盘超 80% 就是普跌，普跌后大盘弱转强概率超 80%）、情绪标杆（连板空间是否突破、高位股是否被宽容）。</p>
+<p>赚钱效应 &#x3D; 高位宽容 + 空间突破；亏钱效应 &#x3D; 高位崩塌 + 空间压缩。</p>
+<h4 id="4-整理自选（为盯盘做准备）"><a href="#4-整理自选（为盯盘做准备）" class="headerlink" title="4. 整理自选（为盯盘做准备）"></a>4. 整理自选（为盯盘做准备）</h4><ul>
+<li><strong>归类整理</strong>：相同题材归一类，独立逻辑归一类；</li>
+<li><strong>去弱留强</strong>：弱势分支删、连续崩塌无承接的票删。</li>
+</ul>
+<h4 id="坚持的价值"><a href="#坚持的价值" class="headerlink" title="坚持的价值"></a>坚持的价值</h4><p>这套复盘每天花半小时，一两天没感觉，但坚持半年以上，你对情绪强弱、题材周期、资金偏好的敏感度会有质变——这就是 “ 盘感 “。<strong>少看分支，多做主流，才能持久。</strong></p>
+<h3 id="13-游资五大卖点"><a href="#13-游资五大卖点" class="headerlink" title="13. 游资五大卖点"></a>13. 游资五大卖点</h3><h4 id="一句话讲透-11"><a href="#一句话讲透-11" class="headerlink" title="一句话讲透"></a>一句话讲透</h4><p>会买是徒弟，会卖是师傅。游资卖出有五个经典卖点，核心总纲就一句：<strong>龙头多拿一拿，跟风冲高砸；赚钱效应多拿，亏钱效应趁早砸。</strong></p>
+<h4 id="五大卖点"><a href="#五大卖点" class="headerlink" title="五大卖点"></a>五大卖点</h4><p><strong>卖点 1：集合竞价直接砸</strong></p>
+<p>理由只有一个——开盘价就是（接近）最高价。两种情况：</p>
+<ul>
+<li>亏钱效应中，龙头大高开（高开就是逃命机会）；</li>
+<li>赚钱效应中，跟风大高开（跟风高开往往就是顶点）。</li>
+</ul>
+<p><strong>卖点 2：快速杀跌跟风砸</strong></p>
+<p>发生在亏钱效应初期、最爆裂的时候。低开快速下杀，不砸就按跌停、砸不出去。看到苗头就要果断跑，别等回抽。</p>
+<p><strong>卖点 3：上涨无力冲高砸</strong></p>
+<p>两种情况：</p>
+<ul>
+<li>跟风票辨识度差，二次拉涨破不了分时新高——走；</li>
+<li>龙头票但板块没助攻、情绪太差，反复冲涨停都失败——它已经没涨停理由了，砸。</li>
+</ul>
+<p><strong>卖点 4：破分时均线 &#x2F; 零轴砸</strong></p>
+<p>分时只有两个支撑：<strong>分时均线</strong>和<strong>零轴</strong>。破了且快速抽不回来，说明资金放弃了维护，最有耐心的持筹者也在卖。游资的底线就是这两条线——不破可以等发酵，破了就走。</p>
+<p><strong>卖点 5：尾盘偷袭失败砸</strong></p>
+<p>尾盘偷袭上涨，是因为早盘拉涨压力大、又没利好刺激，但它是主流、会被反复炒。所以尾盘资金回流时，可以轻易砸盘大肉离场。反过来，如果尾盘偷袭失败，次日就该警惕。</p>
+<h4 id="一个最重要的心态"><a href="#一个最重要的心态" class="headerlink" title="一个最重要的心态"></a>一个最重要的心态</h4><p><strong>最完美的卖出，从来不是卖到最高点，而是 “ 卖飞 “。</strong></p>
+<p>卖飞说明你思路对了、有人愿意接盘。真正毁掉交易者的不是卖飞，而是卖飞之后的动作变形：盲目追涨买回、盲目改系统、短线变长线……守住已经赚到的，比追逐没赚到的更重要。</p>
+<hr>
+<h2 id="第六章-硬核工具"><a href="#第六章-硬核工具" class="headerlink" title="第六章 硬核工具"></a>第六章 硬核工具</h2><h3 id="14-浮筹计算"><a href="#14-浮筹计算" class="headerlink" title="14. 浮筹计算"></a>14. 浮筹计算</h3><h4 id="一句话讲透-12"><a href="#一句话讲透-12" class="headerlink" title="一句话讲透"></a>一句话讲透</h4><p>狙击涨停前，游资会先算清楚：这只票到底有多少筹码 “ 真的能随时卖出来 “。这个数算准了，就能预判封板牢不牢、会不会炸板。这就是<strong>浮筹</strong>。</p>
+<h4 id="什么是浮筹"><a href="#什么是浮筹" class="headerlink" title="什么是浮筹"></a>什么是浮筹</h4><p>筹码分两种：</p>
+<ul>
+<li><strong>限售筹码</strong>：没法随时卖（锁定期、实控人持仓）；</li>
+<li><strong>浮动筹码（浮筹）</strong>：随时能交换的。</li>
+</ul>
+<p>注意：不是所有流通股都能随时卖。以某股为例，流通 7.09 亿股，但实控人手里 1.78 亿股基本不卖，真正能动的浮筹约 5.34 亿股。但就算这 5.34 亿，一天之内也不可能全换手——ETF、机构底仓、长期套牢盘都不卖。</p>
+<h4 id="怎么估算浮筹极限"><a href="#怎么估算浮筹极限" class="headerlink" title="怎么估算浮筹极限"></a>怎么估算浮筹极限</h4><p>关键逻辑：<strong>人们在什么情况下换手最疯狂？</strong></p>
+<ol>
+<li><strong>极端大跌</strong>（怕退市，不计成本卖）；</li>
+<li><strong>极端大涨</strong>（怕跌回原点，抢着落袋）。</li>
+</ol>
+<p>所以，<strong>一只票历史上暴涨暴跌时的 “ 最高成交量 “，就约等于它实际浮筹的极限。</strong> 翻历史 K 线找最高量，就是答案。</p>
+<h4 id="三个实战玩法"><a href="#三个实战玩法" class="headerlink" title="三个实战玩法"></a>三个实战玩法</h4><p><strong>1. 回封涨停</strong></p>
+<p>涨停炸板后想回封，先算浮筹极限。比如某股历史最高量约 13 万手——等当天换手到 12 万手左右（浮筹基本放完）再点火封板，既拿到足够筹码，又没有砸盘压力，才能封死。</p>
+<p><strong>2. 尾盘偷袭</strong></p>
+<p>原理相同。某股浮筹 22 万手，全天震荡洗盘，到午后成交 17 万手、尾盘再拉到 20 万手，剩下浮筹不多了，尾盘小资金就能拉出浮盈空间。</p>
+<p><strong>3. 判断炸板</strong></p>
+<p>某股封涨停时成交 24 万手，但它浮筹极限约 54 万手——还有 30 万手没砸出来。如果板块继续发酵，这些人会锁仓；如果板块退潮，这 30 万手就会把涨停砸开。</p>
+<h4 id="底层认知"><a href="#底层认知" class="headerlink" title="底层认知"></a>底层认知</h4><p>交易系统里要分清两样东西：</p>
+<ul>
+<li><strong>必然的</strong>：有确定原理的东西（浮筹极限、封板逻辑），下注才坚定；</li>
+<li><strong>随机的</strong>：可能发生也可能不发生的部分，所以不能盲目套用。</li>
+</ul>
+<p>情绪弱势容易出爆量（恐慌多、都想跑），情绪强势容易出缩量（兴奋多、都在抢筹）。看懂价格背后的人，才能看懂价格本身。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/dbdf84ba/">https://alwaysfyo.github.io/posts/dbdf84ba/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%8A%95%E8%B5%84/">投资</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/b7725795/" title="AI大模型与智能测试融合-基础认知"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">AI大模型与智能测试融合-基础认知</div></div><div class="info-2"><div class="info-item-1">TesterHome 系列：AI 大模型与智能测试融合的基础认知</div></div></div></a><a class="pagination-related" href="/posts/cd47fe5d/" title="AI测试-33个需要重点关注的大语言模型评测指标（附学习建议）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">AI测试-33个需要重点关注的大语言模型评测指标（附学习建议）</div></div><div class="info-2"><div class="info-item-1">汇总 33 项大语言模型评测指标，覆盖速度、效率与输出质量等维度</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">101</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">53</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%93%E7%B3%BB%E5%9C%B0%E5%9B%BE"><span class="toc-number">1.</span> <span class="toc-text">体系地图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E8%AE%A4%E7%9F%A5%E5%BA%95%E5%B1%82"><span class="toc-number">2.</span> <span class="toc-text">第一章 认知底层</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%82%A1%E5%B8%82%E6%9C%AC%E8%B4%A8%EF%BC%9A%E9%A2%98%E6%9D%90%E5%8D%B3%E6%95%85%E4%BA%8B"><span class="toc-number">2.1.</span> <span class="toc-text">1. 股市本质：题材即故事</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E9%80%8F"><span class="toc-number">2.1.1.</span> <span class="toc-text">一句话讲透</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A3%8B%E6%89%8B%E4%B8%8E%E6%A3%8B%E5%AD%90%EF%BC%9A%E8%B0%81%E5%9C%A8%E8%B5%9A%E9%92%B1%EF%BC%8C%E8%B0%81%E5%9C%A8%E6%8E%A5%E7%9B%98"><span class="toc-number">2.1.2.</span> <span class="toc-text">棋手与棋子：谁在赚钱，谁在接盘</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E7%9C%9F%E5%AE%9E%E6%A1%88%E4%BE%8B%EF%BC%9A%E7%AB%A5%E8%A3%85%E8%82%A1%E6%80%8E%E4%B9%88%E9%9D%A0-%E2%80%9C-%E6%94%B9%E5%90%8D-%E2%80%9C-%E7%BF%BB%E8%BA%AB"><span class="toc-number">2.1.3.</span> <span class="toc-text">一个真实案例：童装股怎么靠 “ 改名 “ 翻身</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A5%BD%E6%95%85%E4%BA%8B%E7%9A%84-3-%E4%B8%AA%E7%89%B9%E5%BE%81"><span class="toc-number">2.1.4.</span> <span class="toc-text">好故事的 3 个特征</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E7%9C%8B%E6%87%82%E6%AF%8F%E5%A4%A9%E7%9A%84%E6%B6%A8%E5%81%9C%E6%9D%BF"><span class="toc-number">2.1.5.</span> <span class="toc-text">怎么看懂每天的涨停板</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E9%80%89%E6%96%B9%E5%90%91%E4%B8%8E%E9%80%89%E8%82%A1"><span class="toc-number">3.</span> <span class="toc-text">第二章 选方向与选股</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%B8%B8%E8%B5%84%E5%BF%85%E5%A4%87%EF%BC%9A%E5%A6%82%E4%BD%95%E8%AF%86%E5%88%AB%E4%B8%BB%E6%B5%81%E9%A2%98%E6%9D%90"><span class="toc-number">3.1.</span> <span class="toc-text">2. 游资必备：如何识别主流题材</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E9%80%8F-1"><span class="toc-number">3.1.1.</span> <span class="toc-text">一句话讲透</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E6%9D%90%E7%9A%84%E4%B8%89%E5%A4%A7%E7%B1%BB%E5%9E%8B"><span class="toc-number">3.1.2.</span> <span class="toc-text">题材的三大类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AF%94-%E2%80%9C-%E6%95%85%E4%BA%8B%E6%98%AF%E4%BB%80%E4%B9%88-%E2%80%9C-%E6%9B%B4%E9%87%8D%E8%A6%81%E7%9A%84%EF%BC%9A%E8%B0%81%E5%9C%A8%E8%AE%B2%E6%95%85%E4%BA%8B"><span class="toc-number">3.1.3.</span> <span class="toc-text">比 “ 故事是什么 “ 更重要的：谁在讲故事</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B5%84%E9%87%91%E8%AE%A4%E5%8F%AF%E7%9A%84%E4%B8%A4%E5%BD%A2%E6%80%81%EF%BC%88%E6%80%8E%E4%B9%88%E7%9C%8B%E5%88%AB%E4%BA%BA%E4%BF%A1%E4%B8%8D%E4%BF%A1%EF%BC%89"><span class="toc-number">3.1.4.</span> <span class="toc-text">资金认可的两形态（怎么看别人信不信）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B5%9A%E9%92%B1%E6%95%88%E5%BA%94%E6%A0%87%E6%9D%86%E7%9A%84-3-%E4%B8%AA%E7%BB%86%E8%8A%82"><span class="toc-number">3.1.5.</span> <span class="toc-text">赚钱效应标杆的 3 个细节</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E7%8E%B0%E5%AE%9E%E6%8F%90%E9%86%92"><span class="toc-number">3.1.6.</span> <span class="toc-text">一个现实提醒</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%B8%B8%E8%B5%84%E5%A4%A7%E4%BD%AC%E5%A6%82%E4%BD%95%E9%80%89%E8%82%A1%EF%BC%9A%E4%BA%BA%E6%B0%94%E4%B8%BA%E7%8E%8B"><span class="toc-number">3.2.</span> <span class="toc-text">3. 游资大佬如何选股：人气为王</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E9%80%8F-2"><span class="toc-number">3.2.1.</span> <span class="toc-text">一句话讲透</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%BA%E6%B0%94%E4%BB%8E%E5%93%AA%E6%9D%A5%EF%BC%9F%E4%B8%A4%E4%B8%AA%E6%9D%A5%E6%BA%90"><span class="toc-number">3.2.2.</span> <span class="toc-text">人气从哪来？两个来源</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E6%80%8E%E4%B9%88%E9%80%89%EF%BC%8810cm-20cm-%E4%B8%A4%E6%9D%A1%E7%BA%BF%EF%BC%89"><span class="toc-number">3.2.3.</span> <span class="toc-text">具体怎么选（10cm &#x2F; 20cm 两条线）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E8%87%AA%E9%80%89%E7%9A%84%E9%93%81%E5%BE%8B"><span class="toc-number">3.2.4.</span> <span class="toc-text">删自选的铁律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%B1%E8%BD%AC%E5%BC%BA%E6%97%B6%E7%9A%84%E4%B8%89%E7%AD%9B%E9%80%89%E6%9C%BA%E5%88%B6"><span class="toc-number">3.2.5.</span> <span class="toc-text">弱转强时的三筛选机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E5%A4%A7%E5%AE%9E%E8%AF%9D"><span class="toc-number">3.2.6.</span> <span class="toc-text">一句大实话</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%91%A8%E6%9C%9F%E6%A1%86%E6%9E%B6"><span class="toc-number">4.</span> <span class="toc-text">第三章 周期框架</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E9%A2%98%E6%9D%90%E5%91%A8%E6%9C%9F%EF%BC%9A%E4%B8%80%E5%88%87%E9%A2%98%E6%9D%90%E7%82%92%E4%BD%9C%E9%83%BD%E9%80%82%E7%94%A8%E7%9A%84%E7%AE%80%E5%8D%95%E6%A8%A1%E5%BC%8F"><span class="toc-number">4.1.</span> <span class="toc-text">4. 题材周期：一切题材炒作都适用的简单模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E9%80%8F-3"><span class="toc-number">4.1.1.</span> <span class="toc-text">一句话讲透</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9B%9B%E6%AE%B5%E8%BD%AE%E5%9B%9E"><span class="toc-number">4.1.2.</span> <span class="toc-text">四段轮回</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%B1%E8%BD%AC%E5%BC%BA%E5%8F%AA%E6%9C%89%E4%B8%A4%E6%9D%A1%E8%B7%AF%EF%BC%88%E6%B2%A1%E6%9C%89%E7%AC%AC%E4%B8%89%E6%9D%A1%EF%BC%89"><span class="toc-number">4.1.3.</span> <span class="toc-text">弱转强只有两条路（没有第三条）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%A4%E4%B8%AA%E5%AE%9E%E7%94%A8%E5%8E%9F%E5%88%99"><span class="toc-number">4.1.4.</span> <span class="toc-text">两个实用原则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E6%A1%88%E4%BE%8B%EF%BC%9A2022-%E5%B9%B4-2-%E6%9C%88%E5%9F%BA%E5%BB%BA%E6%9D%BF%E5%9D%97"><span class="toc-number">4.1.5.</span> <span class="toc-text">一个完整案例：2022 年 2 月基建板块</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%83%85%E7%BB%AA%E5%91%A8%E6%9C%9F%EF%BC%9A%E5%A6%82%E4%BD%95%E7%B2%BE%E5%87%86%E5%88%A4%E6%96%AD%E4%B9%B0%E5%8D%96%E6%97%B6%E6%9C%BA"><span class="toc-number">4.2.</span> <span class="toc-text">5. 情绪周期：如何精准判断买卖时机</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E9%80%8F-4"><span class="toc-number">4.2.1.</span> <span class="toc-text">一句话讲透</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B5%9A%E9%92%B1%E6%95%88%E5%BA%94-Vs-%E4%BA%8F%E9%92%B1%E6%95%88%E5%BA%94"><span class="toc-number">4.2.2.</span> <span class="toc-text">赚钱效应 Vs 亏钱效应</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E5%88%A4%E5%AE%9A%E5%BC%BA%E5%BC%B1%EF%BC%88%E7%9C%8B%E5%87%A0%E5%A4%A9%EF%BC%89"><span class="toc-number">4.2.3.</span> <span class="toc-text">怎么判定强弱（看几天）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8F%E9%92%B1%E6%95%88%E5%BA%94%E6%9C%9F%E6%80%8E%E4%B9%88%E5%8A%9E"><span class="toc-number">4.2.4.</span> <span class="toc-text">亏钱效应期怎么办</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%83%85%E7%BB%AA%E9%BE%99%E5%A4%B4%E6%80%8E%E4%B9%88%E7%94%A8"><span class="toc-number">4.2.5.</span> <span class="toc-text">情绪龙头怎么用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E6%8F%90%E9%86%92"><span class="toc-number">4.2.6.</span> <span class="toc-text">一句提醒</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E6%A0%B8%E5%BF%83%E6%89%93%E6%B3%95"><span class="toc-number">5.</span> <span class="toc-text">第四章 核心打法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E4%B8%80%E5%A5%97%E9%AB%98%E8%83%9C%E7%8E%87%E4%BA%A4%E6%98%93%E7%B3%BB%E7%BB%9F%EF%BC%9A%E9%A2%98%E6%9D%90%E5%91%A8%E6%9C%9F%E5%BC%B1%E8%BD%AC%E5%BC%BA"><span class="toc-number">5.1.</span> <span class="toc-text">7. 一套高胜率交易系统：题材周期弱转强</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E9%80%8F-5"><span class="toc-number">5.1.1.</span> <span class="toc-text">一句话讲透</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%BC%8F%E6%80%8E%E4%B9%88%E8%B5%B0"><span class="toc-number">5.1.2.</span> <span class="toc-text">核心模式怎么走</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%98%B2%E8%AF%B1%E5%A4%9A%E7%9A%84%E9%93%81%E5%BE%8B%EF%BC%88%E6%9C%80%E9%87%8D%E8%A6%81%EF%BC%89"><span class="toc-number">5.1.3.</span> <span class="toc-text">防诱多的铁律（最重要）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E4%B8%8B%E5%8D%95"><span class="toc-number">5.1.4.</span> <span class="toc-text">怎么下单</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E5%8D%96"><span class="toc-number">5.1.5.</span> <span class="toc-text">怎么卖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E5%85%B3%E4%BA%8E%E8%80%90%E5%BF%83%E7%9A%84%E6%95%85%E4%BA%8B"><span class="toc-number">5.1.6.</span> <span class="toc-text">一个关于耐心的故事</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-%E4%B8%AA%E8%82%A1%E5%BC%B1%E8%BD%AC%E5%BC%BA%EF%BC%9A%E5%A6%96%E8%82%A1%E7%9A%84%E5%8D%9A%E5%BC%88%E6%96%B9%E6%B3%95"><span class="toc-number">5.2.</span> <span class="toc-text">8. 个股弱转强：妖股的博弈方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E9%80%8F-6"><span class="toc-number">5.2.1.</span> <span class="toc-text">一句话讲透</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%96%E8%82%A1%E5%92%8C%E9%BE%99%E5%A4%B4%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">5.2.2.</span> <span class="toc-text">妖股和龙头的区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E4%BF%A1%E5%8F%B7%EF%BC%9A%E9%AB%98%E4%BD%8D%E7%83%82%E6%9D%BF%E7%88%86%E9%87%8F"><span class="toc-number">5.2.3.</span> <span class="toc-text">核心信号：高位烂板爆量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9A%94%E6%97%A5%E5%BC%80%E7%9B%98-10-%E5%88%86%E9%92%9F%E8%A7%81%E5%88%86%E6%99%93"><span class="toc-number">5.2.4.</span> <span class="toc-text">隔日开盘 10 分钟见分晓</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%A4%E4%B8%AA%E5%8D%9A%E5%BC%88%E8%8A%82%E7%82%B9%EF%BC%88%E5%90%84%E6%9C%89%E5%88%A9%E5%BC%8A%EF%BC%89"><span class="toc-number">5.2.5.</span> <span class="toc-text">两个博弈节点（各有利弊）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E5%A4%A7%E5%AE%9E%E8%AF%9D-1"><span class="toc-number">5.2.6.</span> <span class="toc-text">一句大实话</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-%E9%BE%99%E5%A4%B4-Vs-%E8%B7%9F%E9%A3%8E%EF%BC%9A%E5%BF%85%E7%84%B6%E6%80%A7%E4%B8%8E%E9%9A%8F%E6%9C%BA%E6%80%A7"><span class="toc-number">5.3.</span> <span class="toc-text">9. 龙头 Vs 跟风：必然性与随机性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E9%80%8F-7"><span class="toc-number">5.3.1.</span> <span class="toc-text">一句话讲透</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%BE%99%E5%A4%B4-%E5%BF%85%E7%84%B6%E6%80%A7%EF%BC%8C%E8%B7%9F%E9%A3%8E-%E9%9A%8F%E6%9C%BA%E6%80%A7"><span class="toc-number">5.3.2.</span> <span class="toc-text">龙头 &#x3D; 必然性，跟风 &#x3D; 随机性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8C%E5%91%A8%E6%9C%9F%E6%A1%86%E6%9E%B6%EF%BC%88%E4%B8%A4%E4%B8%AA%E6%A0%87%E5%87%86%E5%88%AB%E6%B7%B7%EF%BC%89"><span class="toc-number">5.3.3.</span> <span class="toc-text">双周期框架（两个标准别混）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%BE%99%E5%A4%B4%E7%9A%84%E5%8F%98%E6%95%B0%EF%BC%9A%E4%B8%A4%E7%A7%8D-%E2%80%9C-%E6%88%90%E9%BE%99-%E2%80%9C-%E6%96%B9%E5%BC%8F"><span class="toc-number">5.3.4.</span> <span class="toc-text">龙头的变数：两种 “ 成龙 “ 方式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%A4%E7%A7%8D%E6%A8%A1%E5%BC%8F%EF%BC%8C%E8%87%AA%E9%80%89%E5%85%B6%E4%B8%80"><span class="toc-number">5.3.5.</span> <span class="toc-text">两种模式，自选其一</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E5%A4%A7%E5%AE%9E%E8%AF%9D-2"><span class="toc-number">5.3.6.</span> <span class="toc-text">一句大实话</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E7%AB%A0-%E9%A3%8E%E6%8E%A7%E6%89%A7%E8%A1%8C"><span class="toc-number">6.</span> <span class="toc-text">第五章 风控执行</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#10-%E4%B8%89%E4%B8%89%E5%88%B6%E6%BB%9A%E5%8A%A8%E4%BB%93%E6%8E%A7"><span class="toc-number">6.1.</span> <span class="toc-text">10. 三三制滚动仓控</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E9%80%8F-8"><span class="toc-number">6.1.1.</span> <span class="toc-text">一句话讲透</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E4%B8%89%E5%88%B6%E7%9A%84%E4%BB%93%E4%BD%8D%E7%BB%93%E6%9E%84"><span class="toc-number">6.1.2.</span> <span class="toc-text">三三制的仓位结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%A4%E6%9D%A1%E6%93%8D%E4%BD%9C%E4%B8%BB%E7%BA%BF"><span class="toc-number">6.1.3.</span> <span class="toc-text">两条操作主线</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E5%A5%97%E6%96%B9%E6%B3%95%E5%A5%BD"><span class="toc-number">6.1.4.</span> <span class="toc-text">为什么这套方法好</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%80%E5%85%B3%E9%94%AE%E7%9A%84%E4%B8%80%E5%8F%A5"><span class="toc-number">6.1.5.</span> <span class="toc-text">最关键的一句</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E7%9B%AF%E7%9B%98%EF%BC%9A%E6%89%BE%E4%B8%BB%E5%AE%A2%E8%A7%82%E4%B8%80%E8%87%B4%E7%82%B9"><span class="toc-number">6.2.</span> <span class="toc-text">11. 盯盘：找主客观一致点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E9%80%8F-9"><span class="toc-number">6.2.1.</span> <span class="toc-text">一句话讲透</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AF%E7%9B%98%E7%9A%84%E4%B8%89%E4%B8%AA%E5%B1%82%E6%AC%A1"><span class="toc-number">6.2.2.</span> <span class="toc-text">盯盘的三个层次</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AF%E7%9B%98%E7%9A%84%E6%A0%B8%E5%BF%83%EF%BC%9A%E4%B8%BB%E5%AE%A2%E8%A7%82%E4%B8%80%E8%87%B4"><span class="toc-number">6.2.3.</span> <span class="toc-text">盯盘的核心：主客观一致</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E4%B8%8B%E6%B3%A8%E6%97%B6%E6%9C%BA%EF%BC%88%E4%BB%A5%E5%88%B8%E5%95%86%E8%A1%8C%E6%83%85%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="toc-number">6.2.4.</span> <span class="toc-text">三种下注时机（以券商行情为例）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-%E2%80%9C-%E5%BC%82%E5%8A%A8-%E2%80%9C"><span class="toc-number">6.2.5.</span> <span class="toc-text">什么是 “ 异动 “</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E6%8F%90%E9%86%92-1"><span class="toc-number">6.2.6.</span> <span class="toc-text">一句提醒</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E5%A4%8D%E7%9B%98%E5%8F%AA%E7%9C%8B-4-%E7%82%B9"><span class="toc-number">6.3.</span> <span class="toc-text">12. 复盘只看 4 点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E9%80%8F-10"><span class="toc-number">6.3.1.</span> <span class="toc-text">一句话讲透</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E8%B4%A2%E7%BB%8F%E6%B6%88%E6%81%AF%EF%BC%88%E5%AE%A2%E8%A7%82%E9%80%BB%E8%BE%91%EF%BC%89"><span class="toc-number">6.3.2.</span> <span class="toc-text">1. 财经消息（客观逻辑）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%B6%A8%E5%81%9C%E5%A4%8D%E7%9B%98%E8%A1%A8-%E6%88%90%E4%BA%A4%E6%A6%9C%EF%BC%88%E4%B8%BB%E8%A7%82%E8%AE%A4%E5%8F%AF%EF%BC%89"><span class="toc-number">6.3.3.</span> <span class="toc-text">2. 涨停复盘表 + 成交榜（主观认可）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%B8%82%E5%9C%BA%E6%83%85%E7%BB%AA%E7%9B%91%E6%8E%A7%E8%A1%A8%EF%BC%88%E5%91%A8%E6%9C%9F%E5%88%A4%E5%AE%9A%EF%BC%89"><span class="toc-number">6.3.4.</span> <span class="toc-text">3. 市场情绪监控表（周期判定）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%95%B4%E7%90%86%E8%87%AA%E9%80%89%EF%BC%88%E4%B8%BA%E7%9B%AF%E7%9B%98%E5%81%9A%E5%87%86%E5%A4%87%EF%BC%89"><span class="toc-number">6.3.5.</span> <span class="toc-text">4. 整理自选（为盯盘做准备）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9D%9A%E6%8C%81%E7%9A%84%E4%BB%B7%E5%80%BC"><span class="toc-number">6.3.6.</span> <span class="toc-text">坚持的价值</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-%E6%B8%B8%E8%B5%84%E4%BA%94%E5%A4%A7%E5%8D%96%E7%82%B9"><span class="toc-number">6.4.</span> <span class="toc-text">13. 游资五大卖点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E9%80%8F-11"><span class="toc-number">6.4.1.</span> <span class="toc-text">一句话讲透</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%94%E5%A4%A7%E5%8D%96%E7%82%B9"><span class="toc-number">6.4.2.</span> <span class="toc-text">五大卖点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E6%9C%80%E9%87%8D%E8%A6%81%E7%9A%84%E5%BF%83%E6%80%81"><span class="toc-number">6.4.3.</span> <span class="toc-text">一个最重要的心态</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E7%AB%A0-%E7%A1%AC%E6%A0%B8%E5%B7%A5%E5%85%B7"><span class="toc-number">7.</span> <span class="toc-text">第六章 硬核工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#14-%E6%B5%AE%E7%AD%B9%E8%AE%A1%E7%AE%97"><span class="toc-number">7.1.</span> <span class="toc-text">14. 浮筹计算</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E8%AE%B2%E9%80%8F-12"><span class="toc-number">7.1.1.</span> <span class="toc-text">一句话讲透</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%B5%AE%E7%AD%B9"><span class="toc-number">7.1.2.</span> <span class="toc-text">什么是浮筹</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E4%BC%B0%E7%AE%97%E6%B5%AE%E7%AD%B9%E6%9E%81%E9%99%90"><span class="toc-number">7.1.3.</span> <span class="toc-text">怎么估算浮筹极限</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E4%B8%AA%E5%AE%9E%E6%88%98%E7%8E%A9%E6%B3%95"><span class="toc-number">7.1.4.</span> <span class="toc-text">三个实战玩法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BA%95%E5%B1%82%E8%AE%A4%E7%9F%A5"><span class="toc-number">7.1.5.</span> <span class="toc-text">底层认知</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/facdeb4a/" title="知识库到 Hexo 自动发布详细设计">知识库到 Hexo 自动发布详细设计</a><time datetime="2026-10-15T13:44:00.000Z" title="发表于 2026-10-15 21:44:00">2026-10-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/b7725795/" title="AI大模型与智能测试融合-基础认知">AI大模型与智能测试融合-基础认知</a><time datetime="2026-09-01T12:00:00.000Z" title="发表于 2026-09-01 20:00:00">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/dbdf84ba/" title="4-题材炒作体系">4-题材炒作体系</a><time datetime="2026-08-30T07:04:00.000Z" title="发表于 2026-08-30 15:04:00">2026-08-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/cd47fe5d/" title="AI测试-33个需要重点关注的大语言模型评测指标（附学习建议）">AI测试-33个需要重点关注的大语言模型评测指标（附学习建议）</a><time datetime="2026-06-16T04:00:00.000Z" title="发表于 2026-06-16 12:00:00">2026-06-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/90238fde/" title="GameDevBench智能体评测">GameDevBench智能体评测</a><time datetime="2026-06-06T13:06:00.000Z" title="发表于 2026-06-06 21:06:00">2026-06-06</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

@@ -1,0 +1,643 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Python-02：编码规范 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="讲解 pip 包管理常用命令与 Python 编码规范。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python-02：编码规范">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/ce2c0e1e/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="讲解 pip 包管理常用命令与 Python 编码规范。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2025-06-30T15:18:00.000Z">
+<meta property="article:modified_time" content="2025-07-17T15:02:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Python系列">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Python-02：编码规范",
+  "url": "https://alwaysfyo.github.io/posts/ce2c0e1e/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2025-06-30T15:18:00.000Z",
+  "dateModified": "2025-07-17T15:02:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/ce2c0e1e/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Python-02：编码规范',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">101</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">53</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Python-02：编码规范</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Python-02：编码规范</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-30T15:18:00.000Z" title="发表于 2025-06-30 23:18:00">2025-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-07-17T15:02:00.000Z" title="更新于 2025-07-17 23:02:00">2025-07-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h2 id="1-Python-包管理"><a href="#1-Python-包管理" class="headerlink" title="1. Python 包管理"></a>1. Python 包管理</h2><blockquote>
+<p>官网地址：<a target="_blank" rel="noopener" href="https://pypi.org/project/pip/">https://pypi.org/project/pip/</a></p>
+</blockquote>
+<p>pip 是 Python 中常用的软件包管理工具（安装，升级，卸载等），跟 CentOS 中 yum 类似。Python2.7.9+ 或 Python3.4+ 以上版本都自带 pip 工具。</p>
+<h3 id="1-1-常用命令"><a href="#1-1-常用命令" class="headerlink" title="1.1 常用命令"></a>1.1 <strong>常用命令</strong></h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pip –version&#x2F;-V</td>
+<td>显示当前 pip 版本</td>
+</tr>
+<tr>
+<td>pip help [install]</td>
+<td>查看 install 命令的帮助手册</td>
+</tr>
+<tr>
+<td>pip install xxx yyy</td>
+<td>安装软件包，可以指定版本进行安装</td>
+</tr>
+<tr>
+<td>pip download xxx</td>
+<td>下载软件包</td>
+</tr>
+<tr>
+<td>pip uninstall xxx</td>
+<td>卸载软件包</td>
+</tr>
+<tr>
+<td>pip list</td>
+<td>查看当前系统上已经安装的软件包</td>
+</tr>
+<tr>
+<td>pip list -o</td>
+<td>查看可升级的软件包</td>
+</tr>
+<tr>
+<td>pip install –upgrade&#x2F;-U pip</td>
+<td>对 pip 进行升级操作</td>
+</tr>
+<tr>
+<td>pip show xxx</td>
+<td>显示安装包信息</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-常用的国内镜像源"><a href="#1-2-常用的国内镜像源" class="headerlink" title="1.2 常用的国内镜像源"></a>1.2 <strong>常用的国内镜像源</strong></h3><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>阿里云</td>
+<td><a target="_blank" rel="noopener" href="https://mirrors.aliyun.com/pypi/simple/">https://mirrors.aliyun.com/pypi/simple/</a></td>
+</tr>
+<tr>
+<td>豆瓣</td>
+<td><a target="_blank" rel="noopener" href="http://pypi.douban.com/simple/">http://pypi.douban.com/simple/</a></td>
+</tr>
+<tr>
+<td>清华大学</td>
+<td><a target="_blank" rel="noopener" href="https://pypi.tuna.tsinghua.edu.cn/simple/">https://pypi.tuna.tsinghua.edu.cn/simple/</a></td>
+</tr>
+<tr>
+<td>中国科学技术大学</td>
+<td><a target="_blank" rel="noopener" href="http://pypi.mirrors.ustc.edu.cn/simple/">http://pypi.mirrors.ustc.edu.cn/simple/</a></td>
+</tr>
+<tr>
+<td>华中科技大学</td>
+<td><a target="_blank" rel="noopener" href="http://pypi.hustunique.com/">http://pypi.hustunique.com/</a></td>
+</tr>
+</tbody></table>
+<p><strong>命令行下载</strong></p>
+<p>我们可以通过在 pip install 后面加上镜像源地址来提升下载速度，例如我从阿里云的镜像源来下载 django：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -i https://mirrors.aliyun.com/pypi/simple/ django</span><br></pre></td></tr></table></figure>
+
+<p>将以上的  替换为你的包名即可，<strong>注意指定私有源时别忘了加上 simple，否则找不到版本。</strong></p>
+<p><strong>默认配置</strong></p>
+<p>如果不想每次下载都加上地址的话，则可以设置永久的镜像源：</p>
+<ul>
+<li>在 linux 和 mac 下，需要在 <code>~/.pip</code> 路径下找到 <code>pip.conf</code> 文件</li>
+<li>在 windows 下，需要在用户目录下的 <code>pip</code> 文件夹中找到 <code>pip.ini</code> 文件</li>
+</ul>
+<p>然后在文件中修改镜像源地址，例如下面我修改成清华大学的镜像源。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">index-url = https://pypi.tuna.tsinghua.edu.cn/simple/</span><br><span class="line">[install]</span><br><span class="line">trusted-host = https://pypi.tuna.tsinghua.edu.cn</span><br></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[global]</span></span><br><span class="line"><span class="attr">index-url</span>=https://pypi.tuna.tsinghua.edu.cn/simple/</span><br><span class="line"><span class="attr">extra-index-url</span>=</span><br><span class="line">        http://pypi.douban.com/simple</span><br><span class="line">        http://mirrors.aliyun.com/pypi/simple/</span><br><span class="line">        http://pypi.mirrors.ustc.edu.cn/simple/</span><br><span class="line"><span class="section">[install]</span></span><br><span class="line"><span class="attr">trusted-host</span>=</span><br><span class="line">        pypi.douban.com</span><br><span class="line">        mirrors.aliyun.com</span><br><span class="line">        pypi.tuna.tsinghua.edu.cn</span><br><span class="line">        pypi.mirrors.ustc.edu.cn</span><br></pre></td></tr></table></figure>
+
+<p>另外，也可以通过 <code>pip config get global.index-url</code> 命令查看当前使用的镜像源地址，然后可以通过 <code>pip config set global.index-url xxx</code> 命令直接进行设置。</p>
+<h3 id="1-3-导出依赖包"><a href="#1-3-导出依赖包" class="headerlink" title="1.3 导出依赖包"></a>1.3 <strong>导出依赖包</strong></h3><p>如果我们想保存当前虚拟环境所依赖的包然后复制到其它虚拟环境使用的话，则可以使用如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip freeze &gt; requirements.txt</span><br></pre></td></tr></table></figure>
+
+<p>这样我们就可以在目录下获得到一个 requirements.txt 文件，里面存放着该虚拟环境用到的依赖包。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713182150798.webp"></p>
+<p>我们可以复制这个 requirements.txt 文件到其它虚拟环境中的目录下，然后执行下面的命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<p>这样其它的虚拟环境也可以复制我当前虚拟环境用到的依赖包，从而快速配置好所需的开发环境。</p>
+<h2 id="2-编码规范工具"><a href="#2-编码规范工具" class="headerlink" title="2. 编码规范工具"></a>2. 编码规范工具</h2><h3 id="2-1-知名规范"><a href="#2-1-知名规范" class="headerlink" title="2.1 知名规范"></a>2.1 <strong>知名规范</strong></h3><ul>
+<li><strong>PEP 8</strong></li>
+</ul>
+<blockquote>
+<p>文档地址：<a target="_blank" rel="noopener" href="https://www.python.org/dev/peps/pep-0008/">https://www.python.org/dev/peps/pep-0008/</a></p>
+<p>如何参照 PEP 8 编写漂亮的 Python 代码：<a target="_blank" rel="noopener" href="https://realpython.com/python-pep8/">https://realpython.com/python-pep8/</a></p>
+</blockquote>
+<p>PEP 8 可以算是 Python 官方的标准编码规范，它是用于规范 Python 主发行版中的标准库的代码，所以这个编码规范是值得一看。</p>
+<ul>
+<li><strong>Google 的 Python 风格指南</strong></li>
+</ul>
+<blockquote>
+<p>文档地址：<a target="_blank" rel="noopener" href="https://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/">https://zh-google-styleguide.readthedocs.io/en/latest/google-python-styleguide/</a></p>
+</blockquote>
+<p>Google 的 Python 风格也是遵循 PEP 8 规范。</p>
+<ul>
+<li><strong>Pocoo 风格指南</strong></li>
+</ul>
+<blockquote>
+<p>文档地址：<a target="_blank" rel="noopener" href="http://m.phperz.com/article/15/0824/150978.html">http://m.phperz.com/article/15/0824/150978.html</a></p>
+</blockquote>
+<p>Pocoo 团队编码风格指南严格遵循了 PEP 8 的要求，但略有一些不同之处，并进行了一定的扩展延伸。</p>
+<h3 id="2-2-PEP-8"><a href="#2-2-PEP-8" class="headerlink" title="2.2 PEP 8"></a>2.2 PEP 8</h3><ul>
+<li><strong>PyCharm IDE 内置 PEP 8 检测器</strong></li>
+</ul>
+<p>PyCharm 已经内置了 PEP 8 规范检测器，它会自动对编码不规范的地方进行检查，然后指出错误，并推荐修改方式。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713182150799.webp"></p>
+<ul>
+<li><strong>安装第三方 PEP 8 工具</strong></li>
+</ul>
+<p>Autopep8 是一个将 Python 代码自动排版为 PEP 8 风格的小工具，它使用 PEP 8 工具来决定代码中的哪部分需要被排版。</p>
+<p>打开终端，使用 pip 命令安装 Autopep8：</p>
+<p>Autopep8 是一个命令行工具，可以对某个文件进行代码格式化，命令如下：</p>
+<h3 id="2-3-PyCharm-IDE-配置集成-Autopep8"><a href="#2-3-PyCharm-IDE-配置集成-Autopep8" class="headerlink" title="2.3 PyCharm IDE 配置集成 Autopep8"></a>2.3 <strong>PyCharm IDE 配置集成 Autopep8</strong></h3><p>PyCharm 配置 Autopep8 方法如下。</p>
+<p>第一步：”Settings” -&gt; “Tools” -&gt; “External Tools” -&gt; 点击加号添加工具，然后输入下列信息：</p>
+<ul>
+<li>Name：autopep8</li>
+<li>Tools settings：<ul>
+<li>Programs：autopep8（如果不行，就输入程序安装路径全名比如 &#x2F;Users&#x2F;venv&#x2F;bin&#x2F;autopep8）</li>
+<li>Parameters：–in-place –aggressive –aggressive $FilePath$</li>
+<li>Working directory：$ProjectFileDir$<br><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713182150800.webp"><br>第二步：在想要进行代码格式化的文件中鼠标右键，在 “External Tools” 选项下找到刚刚配置好的 “autopep8” 工具。</li>
+</ul>
+</li>
+</ul>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713182150801.webp"></p>
+<h2 id="3-编码规范"><a href="#3-编码规范" class="headerlink" title="3. 编码规范"></a>3. 编码规范</h2><h3 id="3-1-Python-之禅：19-条指导原则"><a href="#3-1-Python-之禅：19-条指导原则" class="headerlink" title="3.1 Python 之禅：19 条指导原则"></a>3.1 Python 之禅：19 条指导原则</h3><ol>
+<li>优美胜于丑陋；</li>
+<li>明了胜于晦涩；</li>
+<li>简单胜于复杂；</li>
+<li>复杂胜于晦涩；</li>
+<li>扁平胜于嵌套；</li>
+<li>间隔胜于紧凑；</li>
+<li>可读性很重要；</li>
+<li>特例不足以特殊到违背这些原则；</li>
+<li>实用性胜过纯粹；</li>
+<li>永远不要默默地忽视错误；</li>
+<li>除非明确需要这样做；</li>
+<li>面对模棱两可，拒绝猜测；</li>
+<li>解决问题最直接的方法应该有一种，最好只有一种；</li>
+<li>当然这是没法一蹴而就的，除非你是荷兰人；</li>
+<li>做也许好过不做；</li>
+<li>但不想就做还不如不做；</li>
+<li>如果方案难以描述明白，那么一定是个糟糕的方案；</li>
+<li>如果实现容易描述，那可能是个好方案；</li>
+<li>命名空间是一种绝妙的理念，多加利用！</li>
+</ol>
+<p><strong>优美胜于丑陋</strong></p>
+<p>Python 具有语法简单、代码可读性强和命令类似英语等特点，这让编写 Python 代码比使用其他编程语言更容易、更高效。</p>
+<p>重构前：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> a:</span><br><span class="line">    <span class="keyword">if</span> b:</span><br><span class="line">        <span class="keyword">return</span> c</span><br></pre></td></tr></table></figure>
+
+<p>重构后：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> a <span class="keyword">and</span> b:</span><br><span class="line">    <span class="keyword">return</span> c</span><br></pre></td></tr></table></figure>
+
+<p><strong>明了胜于晦涩</strong></p>
+<p>在 Python 中，良好的命名约定能让你的代码更清晰明了。</p>
+<p>一般来说，避免使用以下名称：</p>
+<ul>
+<li><p>太宽泛，如 my_list</p>
+</li>
+<li><p>太冗长，如 list_of_machine_learning_data_set</p>
+</li>
+<li><p>太模糊，如 “1”、”I”、”o”、”O”</p>
+</li>
+<li><p>Python 包、模块名应该全部小写</p>
+</li>
+<li><p>当需要使用多个单词时，使用下划线分割它们</p>
+</li>
+<li><p>类名应遵循 UpperCaseCamelCase 规范</p>
+</li>
+<li><p>变量、方法、函数应该采用小写（如果需要，用下划线分割）</p>
+</li>
+<li><p>常量名必须全大写（如果需要，用下划线分割）</p>
+<p>  **一切都必须清晰易懂。</p>
+</li>
+</ul>
+<p><strong>简单胜于复杂</strong></p>
+<p>重构前：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> sold &gt; DISCOUNT_AMOUNT:</span><br><span class="line">    total = sold + DISCOUNT_PRICE</span><br><span class="line">    label = <span class="string">f&#x27;Total: <span class="subst">&#123;total&#125;</span>&#x27;</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    total = sold * PRICE</span><br><span class="line">    label = <span class="string">f&#x27;Total: <span class="subst">&#123;total&#125;</span>&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>重构后：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> sold &gt; DISCOUNT_AMOUNT:</span><br><span class="line">    total = sold + DISCOUNT_PRICE</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    total = sold * PRICE</span><br><span class="line">label = <span class="string">f&#x27;Total: <span class="subst">&#123;total&#125;</span>&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>重构前：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">process_payment</span>(<span class="params">payment</span>):</span><br><span class="line">    <span class="keyword">if</span> payment.currency == <span class="string">&#x27;USD&#x27;</span>:</span><br><span class="line">        process_standard_payment(payment)</span><br><span class="line">    <span class="keyword">elif</span> payment.currency == <span class="string">&#x27;EUR&#x27;</span>:</span><br><span class="line">        process_standard_payment(payment)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        process_international_payment(payment)</span><br></pre></td></tr></table></figure>
+
+<p>重构后：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">process_payment</span>(<span class="params">payment</span>):</span><br><span class="line">    <span class="keyword">if</span> payment.currency == <span class="string">&#x27;USD&#x27;</span> <span class="keyword">or</span> payment.currency == <span class="string">&#x27;EUR&#x27;</span>:</span><br><span class="line">        process_standard_payment(payment)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        process_international_payment(payment)</span><br></pre></td></tr></table></figure>
+<h3 id="3-2-常用编码规范"><a href="#3-2-常用编码规范" class="headerlink" title="3.2 常用编码规范"></a>3.2 常用编码规范</h3><ol>
+<li><p><strong>编码</strong></p>
+<ul>
+<li>如无特殊情况，文件一律使用 UTF-8 编码</li>
+<li>如无特殊情况，文件头部必须加入 <code>#-*-coding:utf-8-*- </code> 标识</li>
+</ul>
+</li>
+<li><p><strong>缩进</strong></p>
+<ul>
+<li>统一使用 4 个空格进行缩进，不建议使用 TAB，更不要 TAB 和空格混用。</li>
+</ul>
+</li>
+<li><p><strong>引号</strong></p>
+<ul>
+<li>自然语言使用双引号，例如：u”你好世界”</li>
+<li>机器标识使用单引号，例如：dict 里的 key，即 dict[‘key’] &#x3D; value</li>
+<li>正则表达式使用原生的双引号 r”…”</li>
+<li>文档字符串（docstring）使用三个双引号 “””……”””</li>
+</ul>
+</li>
+<li><p><strong>空行</strong></p>
+<ul>
+<li>编码格式声明、模块导入、常量和全局变量声明、顶级定义和执行代码之间空两行</li>
+<li>顶级定义之间空两行，方法定义之间空一行</li>
+<li>在函数或方法内部，可以在必要的地方空一行以增强节奏感，但应避免连续空行</li>
+</ul>
+</li>
+<li><p><strong>文档编排</strong></p>
+<p> 模块内容的顺序：模块说明和 docstring - import - globals (全局变量) &amp; constants (常量) - 其他定义。其中 import 部分，又按标准库（内置库）、第三方库（扩展库）和自己编写顺序依次排放，之间空一行。</p>
+<ul>
+<li>不要在一句 import 多个库，比如 import os，sys 不推荐。</li>
+</ul>
+</li>
+<li><p><strong>命名规范</strong></p>
+<ul>
+<li>模块尽量使用小写命名，首字母保持小写；包名尽量不要用下划线分隔</li>
+<li>类名使用驼峰（CamelCase）命名风格，首字母大写，私有类可用一个下划线开头</li>
+<li>函数名一律小写，如有多个单词，用下划线隔开</li>
+<li>私有函数可用一个下划线开头</li>
+<li>变量名尽量小写，如有多个单词，用下划线隔开</li>
+<li>常量采用全大写，如有多个单词，使用下划线隔开</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-3-常用规范示例"><a href="#3-3-常用规范示例" class="headerlink" title="3.3 常用规范示例"></a>3.3 常用规范示例</h3><ul>
+<li><strong>变量和函数</strong></li>
+</ul>
+<p>使用小写字母命名函数和变量，并用下划线分隔单词，提高代码可读性。</p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">name = <span class="string">&quot;Python&quot;</span> <span class="comment">#变量名</span></span><br><span class="line">job_title = <span class="string">&quot;Software Engineer&quot;</span> <span class="comment">#带有下划线的变量名</span></span><br><span class="line">populated_countries_list = [] <span class="comment">#带有下划线的变量名</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>下划线定义</strong><br>  在 Python 中，有以下几种方式来定义变量：</p>
+<ul>
+<li>xx：公有变量</li>
+<li>_xx：单前置下划线，私有化属性或方法，类对象和子类可以访问，from somemodule import * 禁止导入</li>
+<li>__xx：双前置下划线，私有化属性或方法，无法在外部直接访问</li>
+<li>__xx__：双前后下划线，系统定义名字，例如 __init__</li>
+<li>xx_：单后置下划线，用于避免与 Python 关键词的冲突</li>
+</ul>
+</li>
+<li><p><strong>函数</strong></p>
+</li>
+</ul>
+<p>函数的声明和变量一样也是通过小写字母和单下划线进行连接，对于函数私有化也是和声明变量类似。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_data</span>():</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p>函数的开头使用单下划线，将其进行私有化。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_data</span>():</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>类的命名规范</strong></li>
+</ul>
+<p>类的名称应该像大多数其他语言一样使用驼峰大小写。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">UserInformation</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">get_user</span>(<span class="params"><span class="built_in">id</span></span>):</span><br><span class="line">        db = get_db_connection()</span><br><span class="line">        user = execute_query_for_user(<span class="built_in">id</span>)</span><br><span class="line">        <span class="keyword">return</span> user</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>常量的命名规范</strong></li>
+</ul>
+<p>通常应该用大写字母定义常量名称。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TOTAL = <span class="number">56</span></span><br><span class="line">TIMOUT = <span class="number">6</span></span><br><span class="line">MAX_OVERFLOW = <span class="number">7</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>空格的使用</strong></p>
+<ul>
+<li>总体原则，避免不必要的空格</li>
+<li>各种右括号前不要加空格</li>
+<li>逗号、冒号、分号前不要加空格</li>
+<li>函数的左括号前不要加空格，如 Func (1)</li>
+<li>数组的左括号前不要加空格，如 list [2]</li>
+<li>函数默认参数的赋值符左右省略空格</li>
+</ul>
+</li>
+<li><p><strong>注释及文档字符串</strong></p>
+<p>  总体原则，错误的注释不如没有注释。所以当一段代码发生变化时，第一件事就是要修改注释！注释必须使用英文，最好是完整的句子，首字母大写，句后要有结束符。</p>
+<ul>
+<li>块注释，在一段代码前增加的注释，在 <code>#</code> 后加一空格。</li>
+<li>行注释，在一句代码后加注释。比如：<code>x = x + 1 # Increment x</code>，但是这种方式尽量少使用。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-4-代码整洁之道：编写-Pythonic-代码"><a href="#3-4-代码整洁之道：编写-Pythonic-代码" class="headerlink" title="3.4 代码整洁之道：编写 Pythonic 代码"></a>3.4 代码整洁之道：编写 Pythonic 代码</h3><p>docstrings 文档字符串通常在方法，类和模块的开头使用，并且 docstring 是该对象的 __doc__ 特殊属性，一般采用”三重双引号”，下面列举在 Python 代码中编写 docstrings 的一些最佳实践。</p>
+<ul>
+<li><strong>单行 docstring</strong><ul>
+<li>即使字符串只有一行，也使用三重引号</li>
+<li>三重引号中的字符串前后不应有任何空行</li>
+<li>使用句点 (.) 结束 docstring 中的语句</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">get_prime_number</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Get list of prime numbers between 1 to 100.&quot;&quot;&quot;</span><span class="string">&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>多行的 docstring</strong><ul>
+<li>第一行是函数或类的简要描述</li>
+<li>每一行语句的末尾有一个句号</li>
+<li>文档字符串中的简要描述和摘要之间有一行空白</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">call_weather_api</span>(<span class="params">url，location</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Get the weather of specific location.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    Calling weather api to check for weather by using weather api and location. Make sure you provide city name only， country and county names won&#x27;t be accepted and will throw exception if not found the city name.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    :param url:URL of the api to get weather.</span></span><br><span class="line"><span class="string">    :type url: str</span></span><br><span class="line"><span class="string">    :param location:Location of the city to get the weather.</span></span><br><span class="line"><span class="string">    :type location: str</span></span><br><span class="line"><span class="string">    :return: Give the weather information of given location.</span></span><br><span class="line"><span class="string">    :rtype: str&quot;&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>模块级别的 docstring</strong></li>
+</ul>
+<p>一般在文件的顶部放置一个模块级的 docstring 来简要描述模块的使用，这些注释应该放在在导包之前，模块文档字符串应该表明模块的使用方法和功能。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">This module contains all of the network related requests.</span></span><br><span class="line"><span class="string">This module will check for all the exceptions while making the network</span></span><br><span class="line"><span class="string">calls and raise exceptions for any unknown exception.</span></span><br><span class="line"><span class="string">Make sure that when you use this module，</span></span><br><span class="line"><span class="string">you handle these exceptions in client code as:</span></span><br><span class="line"><span class="string">NetworkError exception for network calls.</span></span><br><span class="line"><span class="string">NetworkNot Found exception if network not found.</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> urllib3</span><br><span class="line"><span class="keyword">import</span> json</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>类级别的 docstring</strong></li>
+</ul>
+<p>类 docstring 主要用于简要描述类的使用及其总体功能，下面列举如问编写类文档字符串。</p>
+<p><strong>单行类 docstring</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Student</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Student class information.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    This class handle actions performed by a student.</span></span><br><span class="line"><span class="string">    This class provides information about student full name， agoe，</span></span><br><span class="line"><span class="string">    roll-number and other information，</span></span><br><span class="line"><span class="string">    Usage:</span></span><br><span class="line"><span class="string">        import student</span></span><br><span class="line"><span class="string">        student = student.Student()</span></span><br><span class="line"><span class="string">        student.get_name()</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>多行类 docstring</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Student</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    Student class information.</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    This class handle actions performed by a student.</span></span><br><span class="line"><span class="string">    This class provides information about student full name， agoe，</span></span><br><span class="line"><span class="string">    roll-number and other information，</span></span><br><span class="line"><span class="string">    Usage:</span></span><br><span class="line"><span class="string">        import student</span></span><br><span class="line"><span class="string">        student = student.Student()</span></span><br><span class="line"><span class="string">        student.get_name()</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>统一的编程规范能提高开发效率。而开发效率，关乎三类对象：阅读者、编程者和机器。</p>
+<p>优先级是：阅读者的体验 &gt;&gt; 编程者的体验 &gt;&gt; 机器的体验。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/ce2c0e1e/">https://alwaysfyo.github.io/posts/ce2c0e1e/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Python/">Python</a><a class="post-meta__tags" href="/tags/Python%E7%B3%BB%E5%88%97/">Python系列</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/3d587e7c/" title="Python-03：基础内容"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Python-03：基础内容</div></div><div class="info-2"><div class="info-item-1">记录 Python 变量命名、数据类型与注释等基础内容。</div></div></div></a><a class="pagination-related" href="/posts/56a458a0/" title="Unittest 单元测试框架（二）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Unittest 单元测试框架（二）</div></div><div class="info-2"><div class="info-item-1">讲解 ddt、parameterized 等数据驱动参数化测试的用法。</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/3d587e7c/" title="Python-03：基础内容"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Python-03：基础内容</div></div><div class="info-2"><div class="info-item-1">记录 Python 变量命名、数据类型与注释等基础内容。</div></div></div></a><a class="pagination-related" href="/posts/2ae7ac9f/" title="Python-10：异常类型 &amp; 正则表达式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Python-10：异常类型 &amp; 正则表达式</div></div><div class="info-2"><div class="info-item-1">详解 Python 语法与运行时异常类型及正则表达式用法。</div></div></div></a><a class="pagination-related" href="/posts/9b394d56/" title="Python 开源项目"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-25</div><div class="info-item-2">Python 开源项目</div></div><div class="info-2"><div class="info-item-1">汇总 Python-100-Days 等 Python 开源项目信息。</div></div></div></a><a class="pagination-related" href="/posts/b194fc91/" title="Python-01：介绍及环境搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Python-01：介绍及环境搭建</div></div><div class="info-2"><div class="info-item-1">介绍 Python 的背景、优缺点、应用场景与环境搭建。</div></div></div></a><a class="pagination-related" href="/posts/d60c0503/" title="Python-08：网络编程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Python-08：网络编程</div></div><div class="info-2"><div class="info-item-1">讲解浏览器工作过程等网络基础与 Python 网络编程。</div></div></div></a><a class="pagination-related" href="/posts/9cfa66ba/" title="Python-11：常见设计模式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Python-11：常见设计模式</div></div><div class="info-2"><div class="info-item-1">介绍设计模式的分类并详解单例等常见设计模式。</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">101</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">53</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Python-%E5%8C%85%E7%AE%A1%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">1. Python 包管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 常用命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%B8%B8%E7%94%A8%E7%9A%84%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F%E6%BA%90"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 常用的国内镜像源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E5%AF%BC%E5%87%BA%E4%BE%9D%E8%B5%96%E5%8C%85"><span class="toc-number">1.3.</span> <span class="toc-text">1.3 导出依赖包</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83%E5%B7%A5%E5%85%B7"><span class="toc-number">2.</span> <span class="toc-text">2. 编码规范工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E7%9F%A5%E5%90%8D%E8%A7%84%E8%8C%83"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 知名规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-PEP-8"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 PEP 8</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-PyCharm-IDE-%E9%85%8D%E7%BD%AE%E9%9B%86%E6%88%90-Autopep8"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 PyCharm IDE 配置集成 Autopep8</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83"><span class="toc-number">3.</span> <span class="toc-text">3. 编码规范</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Python-%E4%B9%8B%E7%A6%85%EF%BC%9A19-%E6%9D%A1%E6%8C%87%E5%AF%BC%E5%8E%9F%E5%88%99"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 Python 之禅：19 条指导原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%B8%B8%E7%94%A8%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 常用编码规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%B8%B8%E7%94%A8%E8%A7%84%E8%8C%83%E7%A4%BA%E4%BE%8B"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 常用规范示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E4%BB%A3%E7%A0%81%E6%95%B4%E6%B4%81%E4%B9%8B%E9%81%93%EF%BC%9A%E7%BC%96%E5%86%99-Pythonic-%E4%BB%A3%E7%A0%81"><span class="toc-number">3.4.</span> <span class="toc-text">3.4 代码整洁之道：编写 Pythonic 代码</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/facdeb4a/" title="知识库到 Hexo 自动发布详细设计">知识库到 Hexo 自动发布详细设计</a><time datetime="2026-10-15T13:44:00.000Z" title="发表于 2026-10-15 21:44:00">2026-10-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/b7725795/" title="AI大模型与智能测试融合-基础认知">AI大模型与智能测试融合-基础认知</a><time datetime="2026-09-01T12:00:00.000Z" title="发表于 2026-09-01 20:00:00">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/dbdf84ba/" title="4-题材炒作体系">4-题材炒作体系</a><time datetime="2026-08-30T07:04:00.000Z" title="发表于 2026-08-30 15:04:00">2026-08-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/cd47fe5d/" title="AI测试-33个需要重点关注的大语言模型评测指标（附学习建议）">AI测试-33个需要重点关注的大语言模型评测指标（附学习建议）</a><time datetime="2026-06-16T04:00:00.000Z" title="发表于 2026-06-16 12:00:00">2026-06-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/90238fde/" title="GameDevBench智能体评测">GameDevBench智能体评测</a><time datetime="2026-06-06T13:06:00.000Z" title="发表于 2026-06-06 21:06:00">2026-06-06</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

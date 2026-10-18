@@ -1,0 +1,555 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Golang-01：如何快速运行 Golang 程序 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="对比 GOPATH 与 Go Modules 两种开发模式及程序运行方式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Golang-01：如何快速运行 Golang 程序">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/271ba3d/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="对比 GOPATH 与 Go Modules 两种开发模式及程序运行方式。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2025-06-30T15:22:00.000Z">
+<meta property="article:modified_time" content="2026-10-17T10:18:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="Golang">
+<meta property="article:tag" content="Golang系列">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Golang-01：如何快速运行 Golang 程序",
+  "url": "https://alwaysfyo.github.io/posts/271ba3d/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2025-06-30T15:22:00.000Z",
+  "dateModified": "2026-10-17T10:18:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/271ba3d/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Golang-01：如何快速运行 Golang 程序',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">101</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">53</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">Golang-01：如何快速运行 Golang 程序</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Golang-01：如何快速运行 Golang 程序</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-06-30T15:22:00.000Z" title="发表于 2025-06-30 23:22:00">2025-06-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-17T10:18:00.000Z" title="更新于 2026-10-17 18:18:00">2026-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><blockquote>
+<p><strong>本篇文章只针对本地电脑环境的配置入门学习，如果是涉及到工作开发环境的配置，请移步至更详细的官方文档哦：<a target="_blank" rel="noopener" href="https://bytedance.larkoffice.com/wiki/wikcnFX03KIgG6B6IWXHZhWy7Db#">[Golang] 开发环境配置</a></strong></p>
+</blockquote>
+<h2 id="1-Go-path-go-Modules-开发模式对比"><a href="#1-Go-path-go-Modules-开发模式对比" class="headerlink" title="1. Go path&#x2F;go Modules 开发模式对比"></a>1. Go path&#x2F;go Modules 开发模式对比</h2><blockquote>
+<p><strong>注意：</strong></p>
+<p>能使用 go modules 模式就使用该模式，即使以前没有使用该模式也可以设置成该模式。</p>
+</blockquote>
+<p><strong>传统 gopath 模式 - 不做包管理</strong></p>
+<p>在早期 go 版本中，创建项目是需要创建到 go&#x2F;src 目录之下，否则无法 import。我们打开 GoLand 然后创建新的 project 时就可以看到 Go (GOPATH) 这个选项，它就是符合旧的 go 版本，默认创建到 go&#x2F;src 之下。</p>
+<p>另外，旧版本下还需要设置 <code>GO111MODULE=off</code>，不然运行时会报错。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637504.webp"></p>
+<p>该模式下，import 查找文件时会先查找 gopath&#x2F;src 这个目录下的文件，其次再到 goroot&#x2F;src 目录下查找。</p>
+<p><strong>gomodules 模式 - 会做包管理</strong></p>
+<p>注意，这个模式下就需要设置 <code>GO111MODULE=on</code>。</p>
+<p>如果创建 project 时，我们选择了第一个 Go 这个选项。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637505.webp"></p>
+<p>那么创建出的项目就会多一个 go.mod 文件。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637506.webp"></p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637507.webp"></p>
+<h2 id="2-下载-Golang"><a href="#2-下载-Golang" class="headerlink" title="2. 下载 Golang"></a>2. 下载 Golang</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://golang.google.cn/">https://golang.google.cn/</a></p>
+</blockquote>
+<p>到官网将 Golang sdk 下载下来，然后打开安装包，选择好安装路径，直接安装即可。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637508.webp"></p>
+<h2 id="3-配置-Golang-环境"><a href="#3-配置-Golang-环境" class="headerlink" title="3. 配置 Golang 环境"></a>3. 配置 Golang 环境</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://goproxy.io/">https://goproxy.io/</a></p>
+</blockquote>
+<blockquote>
+<p>GOROOT 就是 Go 软件的位置，GOPATH 就是我们自己写 go 代码的位置，GOBIN 一般就是指 GOPATH 下创建的 bin 目录。</p>
+</blockquote>
+<h3 id="3-1-Windows"><a href="#3-1-Windows" class="headerlink" title="3.1 Windows"></a>3.1 Windows</h3><ol>
+<li><strong>第一步</strong></li>
+</ol>
+<p>找到电脑属性配置界面，直接打开文件夹，左边栏中右键 “ 此电脑 “ 并点击 “ 属性 “ 即可。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637509.webp"></p>
+<ol start="2">
+<li><strong>第二步</strong></li>
+</ol>
+<p>找到 “ 高级系统设置 “，点击 “ 环境变量 “。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637510.webp"></p>
+<ol start="3">
+<li><strong>第三步</strong></li>
+</ol>
+<p>将安装后的目录 <code>\go\bin</code> 添加到 “ 环境变量 “ 里的 “ 系统变量 “ 中的 “Path” 变量中。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637511.webp"></p>
+<p>同时，添加 GOROOT 变量。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637512.webp"></p>
+<p>另外，也可以设置自己存放 go 文件的文件夹作为 GOPATH 路径，但是高版本已经不用 go path 来管理项目了，而是用 go mod 依赖来管理。</p>
+<ol start="4">
+<li><strong>第四步</strong></li>
+</ol>
+<p>配置国内镜像加速。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637513.webp"></p>
+<h3 id="3-2-MacOS"><a href="#3-2-MacOS" class="headerlink" title="3.2 MacOS"></a>3.2 MacOS</h3><ol>
+<li><strong>第一步</strong></li>
+</ol>
+<p>配置国内镜像加速。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">go env -w GO111MODULE=on </span><br><span class="line">go env -w GOPROXY=https://goproxy.cn,https://goproxy.io,direct</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>第二步</strong></li>
+</ol>
+<p>创建项目代码的文件夹。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># project目录下有php、go、java、c、python文件夹，分别用于存放各语言的项目</span></span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">mkdir</span> -p /Users/project/go</span><br><span class="line"><span class="built_in">sudo</span> <span class="built_in">chmod</span> -R 777 /Users/project</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><strong>第三步</strong></li>
+</ol>
+<p>配置 GOROOT、GOPATH、GOBIN。</p>
+<p>可以通过 <code>go env</code> 查看当前 go 的相关设置，通过 <code>go env -w</code> 来设置 go 的相关环境变量，这里我们用文件去控制：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.bash_profile</span><br></pre></td></tr></table></figure>
+
+<p>添加下面内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># go语言相关配置</span><br><span class="line">export GOROOT=/usr/local/go</span><br><span class="line">export GOPATH=/Users/project/go</span><br><span class="line">export GOBIN=$GOPATH/bin</span><br><span class="line">export GOPROXY=https://goproxy.cn,direct</span><br><span class="line">export PATH=.:$PATH:$GOBIN</span><br></pre></td></tr></table></figure>
+
+<p>加载刚刚修改的配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~/.bash_profile</span><br></pre></td></tr></table></figure>
+
+<p>注：如果执行 <code>source ~/.bash_profile</code> 命令式报错：”no such file or directory: &#x2F;Users&#x2F;haveyb&#x2F;.profile”，通过 touch 命令创建一个即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">touch</span> /Users/haveyb/.profile</span><br></pre></td></tr></table></figure>
+
+<p>然后重新执行 <code>source ~/.bash_profile</code></p>
+<p>执行完后，可以通过执行 <code>go env</code> 命令查看是否设置成功。</p>
+<h2 id="4-安装并配置-Git-环境"><a href="#4-安装并配置-Git-环境" class="headerlink" title="4. 安装并配置 Git 环境"></a>4. 安装并配置 Git 环境</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://git-scm.com/downloads">https://git-scm.com/downloads</a></p>
+</blockquote>
+<p>下载完安装包后打开，全部点击下一步即可。</p>
+<blockquote>
+<p>注意，记住自己将 git 安装到哪个路径了。</p>
+</blockquote>
+<p>然后将 git 目录下的 bin 路径，添加到 “ 环境变量 “ 中，同样是 “ 系统变量 “ 里的 “Path” 中。</p>
+<h2 id="5-安装-Vscode-并配置环境"><a href="#5-安装-Vscode-并配置环境" class="headerlink" title="5. 安装 Vscode 并配置环境"></a>5. 安装 Vscode 并配置环境</h2><blockquote>
+<p>下载地址：<a target="_blank" rel="noopener" href="https://code.visualstudio.com/">https://code.visualstudio.com/</a></p>
+</blockquote>
+<p>直接打开安装包，一直下一步即可。</p>
+<h3 id="5-1-下载-Vscode-插件"><a href="#5-1-下载-Vscode-插件" class="headerlink" title="5.1 下载 Vscode 插件"></a>5.1 下载 Vscode 插件</h3><ul>
+<li>安装 go 插件</li>
+<li>安装 coderunner<ul>
+<li>可以帮我们快速编译并运行，不用再 go build 等操作</li>
+</ul>
+</li>
+<li>更新 go 插件，<code>ctrl+shift+p</code>，go: install + update tools</li>
+</ul>
+<h3 id="5-2-初始化并运行第一个-Hello-World-文件"><a href="#5-2-初始化并运行第一个-Hello-World-文件" class="headerlink" title="5.2 初始化并运行第一个 Hello World 文件"></a>5.2 初始化并运行第一个 Hello World 文件</h3><blockquote>
+<p>小 Tips</p>
+<ol>
+<li>显示&#x2F;隐藏边栏，<code>ctrl+b </code></li>
+<li>显示&#x2F;隐藏信息栏或终端，<code>ctrl+反引号 </code></li>
+</ol>
+<p><strong>另外，每次运行程序前都需要先保存文件再运行。</strong></p>
+</blockquote>
+<p>在项目文件夹下，创建一个 main.go 文件，然后输入下面代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;Hello World&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时会显示 package main 这行出现错误，我们需要 go mod init 一下。</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637514.webp"></p>
+<p>可以发现源文件已经不会跳出报错信息：</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637515.webp"></p>
+<p><code>go.mod</code> 文件内容：</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637516.webp"></p>
+<p>如果需要下载包：</p>
+<ul>
+<li><strong>go get xxx：</strong> go get -u github.com&#x2F;gin-gonic&#x2F;gin</li>
+</ul>
+<h3 id="5-3-调试-Go-程序"><a href="#5-3-调试-Go-程序" class="headerlink" title="5.3 调试 Go 程序"></a>5.3 调试 Go 程序</h3><ol>
+<li><p>设置断点</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637517.webp"></p>
+</li>
+<li><p>启动调试</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637518.webp"></p>
+</li>
+<li><p>查看变量值</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637519.webp"></p>
+</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Test</span><span class="params">()</span></span> &#123;</span><br><span class="line">        x := <span class="number">1</span></span><br><span class="line">        y := <span class="number">2</span></span><br><span class="line">        fmt.Printf(<span class="string">&quot;x: %v\n&quot;</span>, x)</span><br><span class="line">        fmt.Printf(<span class="string">&quot;y: %v\n&quot;</span>, y)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">        a := <span class="number">1</span></span><br><span class="line">        b := <span class="string">&quot;hello&quot;</span></span><br><span class="line">        c := <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">        fmt.Printf(<span class="string">&quot;a: %v\n&quot;</span>, a)</span><br><span class="line">        fmt.Printf(<span class="string">&quot;b: %v\n&quot;</span>, b)</span><br><span class="line">        fmt.Printf(<span class="string">&quot;c: %v\n&quot;</span>, c)</span><br><span class="line"></span><br><span class="line">        Test()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：调试程序需要 go mod 初始化项目</p>
+</blockquote>
+<h3 id="5-4-Vscode-常用快捷键"><a href="#5-4-Vscode-常用快捷键" class="headerlink" title="5.4 Vscode 常用快捷键"></a>5.4 Vscode 常用快捷键</h3><ol>
+<li>pkgm：<code>main包+main主函数</code></li>
+<li>ff：<code>fmt.Printf(&quot;&quot;, var)</code></li>
+<li>for：<code>for i := 0; i &lt; count; i++ {}</code></li>
+<li>forr：<code>for _, v := range v {}</code></li>
+<li>fmain：<code>func main() {}</code></li>
+<li>a.print!：<code>fmt.Printf(&quot;a: %v\n&quot;, a)</code></li>
+</ol>
+<h3 id="5-5-使用-Vscode-工作区"><a href="#5-5-使用-Vscode-工作区" class="headerlink" title="5.5 使用 Vscode 工作区"></a>5.5 使用 Vscode 工作区</h3><ol>
+<li><p>添加工作区</p>
+<p> 直接在 vscode 中选择一个文件夹，添加到工作区中。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637520.webp"></p>
+<p> 我们这里选择新创建一个 my_workspace 文件夹，然后添加到工作区中。</p>
+</li>
+<li><p>保存工作区</p>
+<p> 接下来将这个工作区，保存到我们的 my_workspace 文件夹中。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637521.webp"></p>
+<p> 注意，要保存到 my_workspace 文件夹中。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637522.webp"></p>
+<p> 这样，这个文件夹中就多了一个文件，我们可以直接点击这个文件来打开 vscode，进入到我们的工作区中。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637523.webp"></p>
+</li>
+<li><p>初始化项目</p>
+<p> 现在我们就可以在这个工作区中创建多个项目，然后分别在这些项目中初始化，并且每个项目之间不会互相干扰。</p>
+<p> <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637524.webp"></p>
+<p> 这样一来，就可以在一个窗口下处理多个项目，而不用反反复复打开项目文件进行编码。</p>
+</li>
+</ol>
+<h2 id="6-运行多个-Go-文件"><a href="#6-运行多个-Go-文件" class="headerlink" title="6. 运行多个 Go 文件"></a>6. 运行多个 Go 文件</h2><p>如果想运行多个文件，比如现在有两个 go 文件，我需要在主函数中获取这两个文件中的函数并运行。</p>
+<p>另外，我将这两个文件放在同一个文件夹下：</p>
+<p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250716202637525.webp"></p>
+<p><strong>注意：</strong> 这两个文件所属 package 就是它们所属的文件夹名称，并且 main.go 需要在最外面这一层。</p>
+<p>我在 main.go 函数调用这两个函数，需要先引入它们所属的包，然后再调用包里的函数。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;fmt&quot;</span></span><br><span class="line">    <span class="string">&quot;testproject1/service&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;Hello World&quot;</span>)</span><br><span class="line">    service.TestOrder()</span><br><span class="line">    service.TestUser()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-编码规范"><a href="#7-编码规范" class="headerlink" title="7. 编码规范"></a>7. 编码规范</h2><ol>
+<li>代码规范不是强制的，也就是你不遵循代码规范写出来的代码运行也是完全没有问题的</li>
+<li>代码规范目的是方便团队形成一个统一的代码⻛格，提高代码的可读性，规范性和统一性。本规范将从命名规范，注释规范，代码⻛格和 Go 语言提供的常用的工具这几个方面做一个说明。</li>
+<li>规范并不是唯一的，也就是说理论上每个公司都可以制定自己的规范，不过一般来说整体上规范差异不会很 大。</li>
+</ol>
+<p>命名是代码规范中很重要的一部分，统一的命名规则有利于提高的代码的可读性，好的命名仅仅通过命名就可以获取到足够多的信息。</p>
+<ol>
+<li>当命名（包括常量、变量、类型、函数名、结构字段等等）以一个大写字⺟开头，如：Group 1，那么使用这种形式的标识符的对象就<strong>可以被外部包的代码所使用</strong>（客户端程序需要先导入这个包），这被称为导出（像面向对象语言中的 public）；</li>
+<li><strong>命名如果以小写字⺟开头，则对包外是不可⻅的，但是他们在整个包的内部是可⻅并且可用的</strong>（像面向对象语言中的 private ）</li>
+</ol>
+<h3 id="包名-：package"><a href="#包名-：package" class="headerlink" title="包名 ：package"></a>包名 ：package</h3><p>保持 package 的名字和目录保持一致，尽量采取有意义的包名，简短，有意义，尽量和标准库不要冲突。包名应该为<strong>小写</strong>单词，不要使用下划线或者混合大小写。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> model</span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="文件名"><a href="#文件名" class="headerlink" title="文件名"></a>文件名</h3><p>尽量采取有意义的文件名，简短，有意义，应该为<strong>小写</strong>单词，使用<strong>下划线</strong>分隔各个单词。</p>
+<h3 id="结构体命名"><a href="#结构体命名" class="headerlink" title="结构体命名"></a>结构体命名</h3><ul>
+<li>采用驼峰命名法，首字⺟根据访问控制大写或者小写</li>
+<li>Struct 申明和初始化格式采用多行，例如下面：</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span>&#123;</span><br><span class="line"></span><br><span class="line">	Username <span class="type">string</span></span><br><span class="line">	</span><br><span class="line">	Email <span class="type">string</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">u := User&#123;</span><br><span class="line"></span><br><span class="line">	Username: <span class="string">&quot;bobby&quot;</span>,</span><br><span class="line">	</span><br><span class="line">	Email: <span class="string">&quot;[bobby@imooc.com](mailto:bobby@imooc.com)&quot;</span>,</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="接口命名"><a href="#接口命名" class="headerlink" title="接口命名"></a>接口命名</h3><ul>
+<li>命名规则基本和上面的结构体类型</li>
+<li>单个函数的结构名以 “er” 作为后缀，例如 Reader , Writer 。</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Reader <span class="keyword">interface</span> &#123;</span><br><span class="line"></span><br><span class="line">	Read(p []<span class="type">byte</span>) (n <span class="type">int</span>, err <span class="type">error</span>)</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="变量命名"><a href="#变量命名" class="headerlink" title="变量命名"></a>变量命名</h3><ul>
+<li>和结构体类似，变量名称一般遵循驼峰法，首字⺟根据访问控制原则大写或者小写，但遇到特有名词时，需要遵循以下规则：</li>
+<li>如果变量为私有，且特有名词为首个单词，则使用小写，如 apiClient</li>
+<li>其它情况都应当使用该名词原有的写法，如 APIClient、repoID、UserID</li>
+<li>错误示例：UrlArray，应该写成 urlArray 或者 URLArray</li>
+<li>若变量类型为 bool 类型，则名称应以 Has, Is, Can 或 Allow 开头</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> isExist <span class="type">bool</span></span><br><span class="line"><span class="keyword">var</span> hasConflict <span class="type">bool</span></span><br><span class="line"><span class="keyword">var</span> canManage <span class="type">bool</span></span><br><span class="line"><span class="keyword">var</span> allowGitHook <span class="type">bool</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="常量命名"><a href="#常量命名" class="headerlink" title="常量命名"></a>常量命名</h3><p>常量均需使用全部大写字⺟组成，并使用下划线分词</p>
+<p>如果是枚举类型的常量，需要先创建相应类型：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Scheme <span class="type">string</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line"></span><br><span class="line">	HTTP Scheme = <span class="string">&quot;http&quot;</span></span><br><span class="line">	</span><br><span class="line">	HTTPS Scheme = <span class="string">&quot;https&quot;</span></span><br><span class="line"></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>Go 提供 C ⻛格的 <code>/* */ </code> 块注释和 C ++ ⻛格的 <code>//</code> 行注释。行注释是常态；块注释主要显示为包注释，但在表达式中很有用或禁用大量代码。</p>
+<ul>
+<li>单行注释是最常⻅的注释形式，你可以在任何地方使用以 &#x2F;&#x2F; 开头的单行注释</li>
+<li>多行注释也叫块注释，均已以 <code>/*</code> 开头，并以 <code>*/</code> 结尾，且不可以嵌套使用，多行注释一般用于包的文档描述或注释成块的代码片段</li>
+</ul>
+<p>go 语言自带的 godoc 工具可以根据注释生成文档，生成可以自动生成对应的网站（<a target="_blank" rel="noopener" href="https://golang.org/">golang.org</a> 就是使用 godoc 工具直接生成的），注释的质量决定了生成的文档的质量。每个包都应该有一个包注释，在 package 子句之前有一个块注释。对于多文件包，包注释只需要存在于一个文件中，任何一个都可以。包评论应该介绍包，并提供与整个包相关的信息。它将首先出现在 godoc ⻚面上，并应设置下面的详细文档。</p>
+<h3 id="包注释"><a href="#包注释" class="headerlink" title="包注释"></a>包注释</h3><p>每个包都应该有一个包注释，一个位于 package 子句之前的块注释或行注释。包如果有多个 go 文件，只需要出现在一个 go 文件中（一般是和包同名的文件）即可。包注释应该包含下面基本信息 (请严格按照这个顺序，简介，创建人，创建时间）：</p>
+<ul>
+<li>包的基本简介（包名，简介）</li>
+<li>创建者，格式：创建人： rtx 名</li>
+<li>创建时间，格式：创建时间： yyyyMMdd</li>
+</ul>
+<h3 id="结构（接口）注释"><a href="#结构（接口）注释" class="headerlink" title="结构（接口）注释"></a>结构（接口）注释</h3><p>每个自定义的结构体或者接口都应该有注释说明，该注释对结构进行简要介绍，放在结构体定义的前一行，格式为：结构体名，结构体说明。同时结构体内的每个成员变量都要有说明，该说明放在成员变量的后面（注意对⻬），实例如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span>&#123;</span><br><span class="line"></span><br><span class="line">	Username <span class="type">string</span></span><br><span class="line">	</span><br><span class="line">	Email <span class="type">string</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数（方法）注释"><a href="#函数（方法）注释" class="headerlink" title="函数（方法）注释"></a>函数（方法）注释</h3><p>每个函数，或者方法（结构体或者接口下的函数称为方法）都应该有注释说明，函数的注释应该包括三个方面（严格按照此顺序撰写）：</p>
+<ul>
+<li>简要说明，格式说明：以函数名开头，”，” 分隔说明部分</li>
+<li>参数列表：每行一个参数，参数名开头，”，” 分隔说明部分</li>
+<li>返回值：每行一个返回值</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewAttrModel</span><span class="params">(ctx *common.Context)</span></span> *AttrModel &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码逻辑注释"><a href="#代码逻辑注释" class="headerlink" title="代码逻辑注释"></a>代码逻辑注释</h3><p>对于一些关键位置的代码逻辑，或者局部较为复杂的逻辑，需要有相应的逻辑说明，方便其他开发者阅读该段代码，实例如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">xxxxx</span><br><span class="line"></span><br><span class="line">xxxxxxx</span><br><span class="line"></span><br><span class="line">xxxxxxx</span><br></pre></td></tr></table></figure>
+
+<h3 id="注释⻛格"><a href="#注释⻛格" class="headerlink" title="注释⻛格"></a>注释⻛格</h3><p>统一使用中文注释，对于中英文字符之间严格使用空格分隔，这个不仅仅是中文和英文之间，英文和中文标点之间也都要使用空格分隔，例如：</p>
+<p>上面 Redis 、 id 、 DB 和其他中文字符之间都是用了空格分隔。</p>
+<ul>
+<li>建议全部使用单行注释</li>
+<li>和代码的规范一样，单行注释不要过⻓，禁止超过 120 字符。</li>
+</ul>
+<p>Import 在多行的情况下，goimports 会自动帮你格式化，但是我们这里还是规范一下 import 的一些规范，如果你在一个文件里面引入了一个 package，还是建议采用如下格式：</p>
+<p>如果你的包引入了三种类型的包，标准库包，程序内部包，第三方包，建议采用如下方式进行组织你的包：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	</span><br><span class="line">	<span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">	<span class="string">&quot;strings&quot;</span></span><br><span class="line">	</span><br><span class="line">	<span class="string">&quot;myproject/models&quot;</span></span><br><span class="line">	<span class="string">&quot;myproject/controller&quot;</span></span><br><span class="line">	<span class="string">&quot;myproject/utils&quot;</span></span><br><span class="line">	</span><br><span class="line">	<span class="string">&quot;[github.com/astaxie/beego](http://github.com/astaxie/beego)&quot;</span></span><br><span class="line">	<span class="string">&quot;[github.com/go-sql-driver/mysql](http://github.com/go-sql-driver/mysql)&quot;</span></span><br><span class="line"></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>有顺序的引入包，不同的类型采用空格分离，第一种实标准库，第二是项目包，第三是第三方包。在项目中不要使用相对路径引入包：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&quot;../net&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;[github.com/repo/proj/src/net”](http://github.com/repo/proj/src/net%E2%80%9D)</span></span><br></pre></td></tr></table></figure>
+
+<p>但是如果是引入本项目中的其他包，最好使用相对路径。</p>
+<ul>
+<li>错误处理的原则就是不能丢弃任何有返回 err 的调用，不要使用 _ 丢弃，必须全部处理。接收到错误，要么返回 err，或者使用 log 记录下来</li>
+<li>尽早 return：一旦有错误发生，⻢上返回</li>
+<li>尽量不要使用 panic，除非你知道你在做什么</li>
+<li>错误描述如果是英文必须为小写，不需要标点结尾</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line"></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/alwaysyo">张小剩</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://alwaysfyo.github.io/posts/271ba3d/">https://alwaysfyo.github.io/posts/271ba3d/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank">CC-BY-SA-3.0</a> 许可协议。转载请注明来源 <a href="https://alwaysfyo.github.io" target="_blank">张小剩的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Golang/">Golang</a><a class="post-meta__tags" href="/tags/Golang%E7%B3%BB%E5%88%97/">Golang系列</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/b194fc91/" title="Python-01：介绍及环境搭建"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Python-01：介绍及环境搭建</div></div><div class="info-2"><div class="info-item-1">介绍 Python 的背景、优缺点、应用场景与环境搭建。</div></div></div></a><a class="pagination-related" href="/posts/9cfa66ba/" title="Python-11：常见设计模式"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Python-11：常见设计模式</div></div><div class="info-2"><div class="info-item-1">介绍设计模式的分类并详解单例等常见设计模式。</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/8592222/" title="Golang-07：指针 &amp; 结构体详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Golang-07：指针 &amp; 结构体详解</div></div><div class="info-2"><div class="info-item-1">讲解 Go 指针的定义初始化与结构体的定义和使用。</div></div></div></a><a class="pagination-related" href="/posts/8a19c6bc/" title="Golang-12：Mutex 详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-07-13</div><div class="info-item-2">Golang-12：Mutex 详解</div></div><div class="info-2"><div class="info-item-1">通过示例讲解 Go 并发场景下 Mutex 加锁保证数据一致性。</div></div></div></a><a class="pagination-related" href="/posts/bb248000/" title="Golang-05：闭包 &amp; defer 详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Golang-05：闭包 &amp; defer 详解</div></div><div class="info-2"><div class="info-item-1">讲解 Go 闭包的变量捕获与 defer 延迟执行机制。</div></div></div></a><a class="pagination-related" href="/posts/c07ec88f/" title="Golang-06：错误处理详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Golang-06：错误处理详解</div></div><div class="info-2"><div class="info-item-1">详解 Go 的 error 错误处理理念与 panic、recover 机制。</div></div></div></a><a class="pagination-related" href="/posts/10000db5/" title="Golang-09：reflect 反射详解"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Golang-09：reflect 反射详解</div></div><div class="info-2"><div class="info-item-1">介绍 Go 反射在运行时访问与修改程序信息的能力及用法。</div></div></div></a><a class="pagination-related" href="/posts/ea89e33/" title="Golang-10：协程的执行过程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">Golang-10：协程的执行过程</div></div><div class="info-2"><div class="info-item-1">讲解 Go goroutine 协程的使用方法与执行过程。</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">101</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">53</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Go-path-go-Modules-%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E5%AF%B9%E6%AF%94"><span class="toc-number">1.</span> <span class="toc-text">1. Go path&#x2F;go Modules 开发模式对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%B8%8B%E8%BD%BD-Golang"><span class="toc-number">2.</span> <span class="toc-text">2. 下载 Golang</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%85%8D%E7%BD%AE-Golang-%E7%8E%AF%E5%A2%83"><span class="toc-number">3.</span> <span class="toc-text">3. 配置 Golang 环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Windows"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 Windows</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-MacOS"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 MacOS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%AE%89%E8%A3%85%E5%B9%B6%E9%85%8D%E7%BD%AE-Git-%E7%8E%AF%E5%A2%83"><span class="toc-number">4.</span> <span class="toc-text">4. 安装并配置 Git 环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%AE%89%E8%A3%85-Vscode-%E5%B9%B6%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83"><span class="toc-number">5.</span> <span class="toc-text">5. 安装 Vscode 并配置环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E4%B8%8B%E8%BD%BD-Vscode-%E6%8F%92%E4%BB%B6"><span class="toc-number">5.1.</span> <span class="toc-text">5.1 下载 Vscode 插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E5%88%9D%E5%A7%8B%E5%8C%96%E5%B9%B6%E8%BF%90%E8%A1%8C%E7%AC%AC%E4%B8%80%E4%B8%AA-Hello-World-%E6%96%87%E4%BB%B6"><span class="toc-number">5.2.</span> <span class="toc-text">5.2 初始化并运行第一个 Hello World 文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E8%B0%83%E8%AF%95-Go-%E7%A8%8B%E5%BA%8F"><span class="toc-number">5.3.</span> <span class="toc-text">5.3 调试 Go 程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-Vscode-%E5%B8%B8%E7%94%A8%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="toc-number">5.4.</span> <span class="toc-text">5.4 Vscode 常用快捷键</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-%E4%BD%BF%E7%94%A8-Vscode-%E5%B7%A5%E4%BD%9C%E5%8C%BA"><span class="toc-number">5.5.</span> <span class="toc-text">5.5 使用 Vscode 工作区</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E8%BF%90%E8%A1%8C%E5%A4%9A%E4%B8%AA-Go-%E6%96%87%E4%BB%B6"><span class="toc-number">6.</span> <span class="toc-text">6. 运行多个 Go 文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83"><span class="toc-number">7.</span> <span class="toc-text">7. 编码规范</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%85%E5%90%8D-%EF%BC%9Apackage"><span class="toc-number">7.1.</span> <span class="toc-text">包名 ：package</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%90%8D"><span class="toc-number">7.2.</span> <span class="toc-text">文件名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%91%BD%E5%90%8D"><span class="toc-number">7.3.</span> <span class="toc-text">结构体命名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E5%91%BD%E5%90%8D"><span class="toc-number">7.4.</span> <span class="toc-text">接口命名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E5%91%BD%E5%90%8D"><span class="toc-number">7.5.</span> <span class="toc-text">变量命名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E9%87%8F%E5%91%BD%E5%90%8D"><span class="toc-number">7.6.</span> <span class="toc-text">常量命名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%85%E6%B3%A8%E9%87%8A"><span class="toc-number">7.7.</span> <span class="toc-text">包注释</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%EF%BC%88%E6%8E%A5%E5%8F%A3%EF%BC%89%E6%B3%A8%E9%87%8A"><span class="toc-number">7.8.</span> <span class="toc-text">结构（接口）注释</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0%EF%BC%88%E6%96%B9%E6%B3%95%EF%BC%89%E6%B3%A8%E9%87%8A"><span class="toc-number">7.9.</span> <span class="toc-text">函数（方法）注释</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E9%80%BB%E8%BE%91%E6%B3%A8%E9%87%8A"><span class="toc-number">7.10.</span> <span class="toc-text">代码逻辑注释</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E9%87%8A%E2%BB%9B%E6%A0%BC"><span class="toc-number">7.11.</span> <span class="toc-text">注释⻛格</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/facdeb4a/" title="知识库到 Hexo 自动发布详细设计">知识库到 Hexo 自动发布详细设计</a><time datetime="2026-10-15T13:44:00.000Z" title="发表于 2026-10-15 21:44:00">2026-10-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/b7725795/" title="AI大模型与智能测试融合-基础认知">AI大模型与智能测试融合-基础认知</a><time datetime="2026-09-01T12:00:00.000Z" title="发表于 2026-09-01 20:00:00">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/dbdf84ba/" title="4-题材炒作体系">4-题材炒作体系</a><time datetime="2026-08-30T07:04:00.000Z" title="发表于 2026-08-30 15:04:00">2026-08-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/cd47fe5d/" title="AI测试-33个需要重点关注的大语言模型评测指标（附学习建议）">AI测试-33个需要重点关注的大语言模型评测指标（附学习建议）</a><time datetime="2026-06-16T04:00:00.000Z" title="发表于 2026-06-16 12:00:00">2026-06-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/90238fde/" title="GameDevBench智能体评测">GameDevBench智能体评测</a><time datetime="2026-06-06T13:06:00.000Z" title="发表于 2026-06-06 21:06:00">2026-06-06</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>
