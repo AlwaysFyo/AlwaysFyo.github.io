@@ -1,0 +1,757 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>腾讯WorkBuddy实践-如何把Agent做成可用产品 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="腾讯 WorkBuddy 团队从产品视角拆解 Agent 的工程化落地实践">
+<meta property="og:type" content="article">
+<meta property="og:title" content="腾讯WorkBuddy实践-如何把Agent做成可用产品">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/9b294f2e/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="腾讯 WorkBuddy 团队从产品视角拆解 Agent 的工程化落地实践">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2026-09-01T12:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-18T15:48:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="人工智能">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "腾讯WorkBuddy实践-如何把Agent做成可用产品",
+  "url": "https://alwaysfyo.github.io/posts/9b294f2e/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2026-09-01T12:00:00.000Z",
+  "dateModified": "2026-10-18T15:48:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/9b294f2e/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '腾讯WorkBuddy实践-如何把Agent做成可用产品',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">109</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">56</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">腾讯WorkBuddy实践-如何把Agent做成可用产品</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">腾讯WorkBuddy实践-如何把Agent做成可用产品</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-09-01T12:00:00.000Z" title="发表于 2026-09-01 20:00:00">2026-09-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-18T15:48:00.000Z" title="更新于 2026-10-18 23:48:00">2026-10-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">14.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>45分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><blockquote>
+<p><strong>公众号</strong>: 腾讯技术工程<br><strong>发布时间</strong>: 2026-07-24 17:36:00<br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/kYJ2kHrQrolmY8nDfN_Q3Q">https://mp.weixin.qq.com/s/kYJ2kHrQrolmY8nDfN_Q3Q</a></p>
+</blockquote>
+<hr>
+<p>我们总以为，把 Agent 做好，关键在于换一个更强的模型，或者把提示词写得更长、更细。</p>
+<p>但真正进入一线场景后会发现，模型能力只是起点。Agent 能否稳定完成任务，还取决于它如何被引导，上下文如何被组织，工具和权限如何接入，结果如何被验证，以及 Harness 如何把一次次不确定的模型输出，转化为更稳定、可控的执行过程。</p>
+<p>这篇文章邀请 WorkBuddy 团队策略产品经理 Anne，从产品视角拆解 Agent 的运行机制。她负责 WorkBuddy 研发与办公场景 AI Agent 的上下文策略设计与落地，是腾讯内部「上下文工程」方向最贴近一线的实践者之一。文章不堆叠概念，而是沿着 “ 模型—上下文—Harness—Loop” 的链路，讲清楚 WorkBuddy 如何把 Agent 从模型能力推进到可用产品能力。</p>
+<p>从模型到 Harness：WorkBuddy 如何把 Agent 做成可用产品作者：Anne WorkBuddy 策略产品经理</p>
+<p>一个常见判断是 “ 模型够强，剩下交给提示词 “。但把 Agent 做成能在生产环境稳定完成任务的产品后，会发现模型只承担其中一部分：<strong>工具接入、上下文组织、权限边界、结果验证、反馈纠正和跨会话延续</strong>，都会直接影响产品是否可靠。</p>
+<p>这篇文章分成两部分。前半部分面向还没有 Agent 基础的同学，先讲清大语言模型（LLM）、工具调用（Function call）、 系统提示词（System Prompt）、模型上下文协议（MCP）、技能 （Skill）和 插件（Plugin） 这些基础概念，说明模型为什么需要产品侧提供工具、上下文和执行环境。</p>
+<p>后半部分回到 WorkBuddy 的产品实现，重点讨论 Context Engineering 和 Harness Engineering：WorkBuddy 如何选择和组织上下文，如何通过前馈、反馈、权限、验证、编排和可观测性，让 Agent 不只是能执行任务，而是能更稳定、更可控地完成任务。最后再简要讨论 Loop Engineering，说明这套机制如何进入长期任务循环。</p>
+<p>阅读时可以带两个视角：作为<strong>构建者</strong>，看这些工程如何提高 Agent 执行任务的可靠性；作为<strong>使用者</strong>，看如何更有效地使用 AI Agent 产品。</p>
+<h2 id="一、先把模型看成一个无状态的函数"><a href="#一、先把模型看成一个无状态的函数" class="headerlink" title="一、先把模型看成一个无状态的函数"></a>一、先把模型看成一个无状态的函数</h2><p>对产品侧而言，不需要展开 Transformer 的底层原理，只需要一个抽象：<strong>模型是一个根据输入产生后续文字的函数。</strong></p>
+<p>模型能力来自三个训练阶段：</p>
+<p><strong>1. 预训练（pre-training）</strong>：模型在海量文本上反复执行 “ 根据前文预测下一个 token”，习得语言、世界知识和部分推理能力。这一阶段的模型只能根据已有文本续写后续内容。</p>
+<p><strong>2. 后训练（post-training）</strong>：用问答、工具调用、安全边界等数据，把基座模型训练成能听指令的助手。这一阶段后，模型对 “ 中国的首都是哪里 “ 会回答 “ 北京 “。</p>
+<p><strong>3. 偏好优化与强化学习（Reinforcement-learning）</strong>：面对多个候选回答或操作路径时，用人类反馈和评分提高模型选中更有用、更正确选项的概率。对一个步骤组合很多的任务，训练时按结果质量、效率和规范给不同打分，反复之后模型收敛到更优的执行路径。</p>
+<p>经过这些训练阶段后，我们得到的是一个具备大量基础知识、能够理解并遵循人类指令的模型。从产品运行机制看，一次模型调用可以类比为一个函数：</p>
+<p>输出 &#x3D; 模型 (系统提示词 + 工具 + 会话历史 + 其他上下文 + 用户指令)</p>
+<p>图：模型调用抽象</p>
+<p>这个抽象包含两条约束，决定了上层所有工程的存在理由：</p>
+<p>**1. 模型是无状态的。**它不会自动保留上一次调用的内容。模型虽然无状态，但产品可以有状态。对话历史、Memory、数据库由产品在模型外部保存，需要时再放进本次输入。WorkBuddy 的对话连续性、记忆和工作进度，都由产品侧维护状态再注入实现，模型本身不承担存储。</p>
+<p>**2. 模型的知识截止到训练日期。**训练之后发生的事，模型默认不掌握。询问训练日期之后的实时信息时，模型无法回答，需要先用工具查询再放进上下文。</p>
+<p>也就是说，模型本身提供的是语言理解、推理和生成能力；但像 “ 当前世界杯赛况 “ 这类实时信息，或者读文件、查数据库这类外部动作，都不是模型自带的能力。产品需要在模型外接入工具和执行环境，让模型知道有哪些工具可用，并把执行结果回传给模型。</p>
+<p>这就引出了 Agent 的基础机制：工具调用。</p>
+<h2 id="二、用户能感知到的四个概念：工具调用-MCP-Skill-Plugin"><a href="#二、用户能感知到的四个概念：工具调用-MCP-Skill-Plugin" class="headerlink" title="二、用户能感知到的四个概念：工具调用 &#x2F; MCP &#x2F; Skill &#x2F; Plugin"></a>二、用户能感知到的四个概念：工具调用 &#x2F; MCP &#x2F; Skill &#x2F; Plugin</h2><h2 id="工具调用：模型怎么请求执行动作"><a href="#工具调用：模型怎么请求执行动作" class="headerlink" title="工具调用：模型怎么请求执行动作"></a>工具调用：模型怎么请求执行动作</h2><p>工具调用（也常叫 function call、Tool Call）是模型与外部系统之间的结构化协议：模型负责生成调用请求，Agent 负责执行。</p>
+<p>图：工具调用流程</p>
+<p>完整流程：</p>
+<blockquote>
+<ol>
+<li><p>产品把可用工具的名称、用途和参数 Schema 提供给模型；</p>
+</li>
+<li><p>模型根据用户目标，输出一个结构化的调用请求；</p>
+</li>
+<li><p>Agent 校验参数、检查权限，执行 API、脚本或本地函数；</p>
+</li>
+<li><p>Agent 把执行结果作为 tool result 放回上下文；</p>
+</li>
+<li><p>模型读取结果，决定直接回答还是继续调用其他工具。</p>
+</li>
+</ol>
+</blockquote>
+<p>一个示例工具定义如下，它作为上下文提供给模型：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;function&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;get_match_status&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;查询指定赛事在指定日期的实时或最终赛况。用户询问比分、开赛时间、进球者或赛果时使用。&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;parameters&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;object&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;properties&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;competition&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;赛事名称，例如世界杯或英超&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;team&quot;</span><span class="punctuation">:</span>        <span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;球队名称&quot;</span> <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;date&quot;</span><span class="punctuation">:</span>        <span class="punctuation">&#123;</span> <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;string&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;YYYY-MM-DD；未提供时由宿主按用户时区取当天&quot;</span> <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;required&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;competition&quot;</span><span class="punctuation">,</span> <span class="string">&quot;team&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;additionalProperties&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>下图展示了一次工具调用的完整执行过程：用户提出查询请求后，模型根据工具定义生成工具调用；Agent 收到请求后校验参数和权限，再去获取实时的数据；工具返回结果后，模型读取工具执行结果，并基于结果生成最终回答。</p>
+<p>图：工具执行过程示例</p>
+<p>这里有一个容易被忽略的要点：持有 API Key、发起请求、修改数据的是 Agent，不是模型。模型负责生成调用请求，Agent 负责执行外部操作。因此，权限、审批、参数校验和审计日志都必须由模型外部的工程机制执行。把这些校验放在 Agent 执行层，是高风险操作能被拦下的前提。</p>
+<h2 id="System-Prompt：给-Agent-一个稳定的工作角色"><a href="#System-Prompt：给-Agent-一个稳定的工作角色" class="headerlink" title="System Prompt：给 Agent 一个稳定的工作角色"></a>System Prompt：给 Agent 一个稳定的工作角色</h2><p>有了工具调用，Agent 具备执行能力，但还缺少稳定的工作角色。同一个模型既能写诗也能改代码、查数据；WorkBuddy 需要它在每次运行中都明确：自己是什么产品、能做什么、按什么原则工作、什么情况必须停下来询问用户。</p>
+<p>图：System Prompt 的作用</p>
+<p>System Prompt 定义当前产品和本次运行的高优先级工作契约，通常包含：</p>
+<p><strong>• 角色与目标</strong>：你是一个能读写文件、运行命令、操作浏览器的工作助手。</p>
+<p><strong>• 能力地图</strong>：哪些工具可用，何时查资料、读文件、验证结果。</p>
+<p><strong>• 工作原则</strong>：先理解目标再执行；长任务先拆分；修改后要测试；不确定时不猜。</p>
+<p><strong>• 安全与权限边界</strong>：删除、发送、支付、发布等高风险动作需要审批。</p>
+<p><strong>• 交互风格</strong>：使用用户选择的语言，进度更新简短，最终结论清晰。</p>
+<p><strong>• 当前环境</strong>：操作系统、Shell、时间、工作目录等运行时信息。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">你是 WorkBuddy。</span><br><span class="line">你可以使用文件、Shell、浏览器和已连接的业务工具完成任务。</span><br><span class="line">修改前先读取现状；修改后用可观察的方式验证。</span><br><span class="line">发送、发布、删除或其他不可轻易撤销的操作，执行前确认用户授权。</span><br></pre></td></tr></table></figure>
+
+<p>**System Prompt 只能引导，不能强制。**权限校验、Sandbox、Approval Gate、审计仍由模型外部的系统执行。这个区别在 Harness 章节会反复出现。System Prompt 也不该承载所有信息，WorkBuddy 采用的分层是：所有任务都适用的角色与安全要求放 System Prompt，项目规范放 Workspace 规则文件，某类任务的步骤放 Skill，当前请求和进度作为动态上下文按需加入。</p>
+<h2 id="模型上下文协议（MCP）：外部系统怎么标准化接入"><a href="#模型上下文协议（MCP）：外部系统怎么标准化接入" class="headerlink" title="模型上下文协议（MCP）：外部系统怎么标准化接入"></a>模型上下文协议（MCP）：外部系统怎么标准化接入</h2><p>到这里已经有了一个具备基础能力的 Agent，它能读写文件、运行脚本、执行命令等。但是用户在使用一个 Agent 产品的时候往往需要访问很多外部系统，例如读写 GitHub Issue&#x2F;PR、访问外部文档、知识库、网盘等等。如果每接入一个系统都单独适配它的认证、接口、参数和返回格式，Agent 产品会很快变成一堆专用集成，维护成本很高。</p>
+<p>MCP 试图解决的是外部能力接入的标准化问题。</p>
+<p>Anthropic 在 2024 年底发布了开放协议 <strong>Model Context Protocol（MCP）</strong>，用统一方式连接 AI 应用和外部数据源、工具。它为 AI 应用接入外部能力提供统一接口，Agent 不需要分别适配每个系统的调用方式。</p>
+<p>图：MCP 统一接入</p>
+<p>多数用户对 MCP 的直接感知是 “Agent 多了一批可调用的工具 “。但它的名字是 Model Context Protocol 而不是 Model Tools Protocol，因为它提供的内容不限于工具。MCP Server 向 Agent 提供三种原语，关键差异在于谁来驱动：</p>
+<p><strong>• Resources（资源）</strong>：有 URI 标识、可读取的只读内容（一个文件、一条数据库记录、一段实时数据）。它是应用 &#x2F; Agent 驱动的——由 Agent 或用户决定何时读取、注入，本职用法是把读出的内容直接拼进 messages，不经过 tool。</p>
+<p><strong>• Tools（工具）</strong>：模型能调用的动作 &#x2F; 函数。它是模型驱动的——模型在推理时自己决定是否调用。结果通常以 text 回流进上下文供模型继续推理，但也可以把 structuredContent 分流给 UI 而不进上下文。</p>
+<p><strong>• Prompts（提示模板）</strong>：Server 预先组织好、可复用的一组消息。它是用户驱动的——由用户主动点选（如斜杠命令）触发，模板内部还能引用 resource，把指令和文件内容打包带入。</p>
+<p>这三类原语说明，MCP 处理的不是单一的 “ 工具调用 “，而是 Agent 与外部系统之间的信息、动作和提示模板如何被组织和传递。进一步看，外部系统返回的内容也不一定都要进入模型上下文：有些内容适合给模型阅读，有些内容更适合直接展示给用户，或者让用户在界面上确认和操作。</p>
+<p>2026 年发布的官方扩展 MCP Apps 就是在这个方向上的延伸。它允许工具返回可直接渲染在对话中的交互式 UI，例如看板、图表、表单和确认界面。面向模型的摘要继续进入上下文，面向用户的界面数据直接交给 UI 渲染，不必全部塞进模型上下文。这样既保留了交互体验，也减少了上下文占用。</p>
+<p>运行结构上，MCP 有三个角色：承载 Agent 的产品（如 WorkBuddy）、负责建连和发请求的 MCP Client、对外暴露能力的 MCP Server。MCP 统一的是连接协议，Server 背后仍可以是 REST、数据库、SDK，Agent 不需要理解这些差异。</p>
+<p>图：MCP 运行结构</p>
+<p>关于 MCP Server，还有一个关键设计原则：**按用户意图组织工具，不照搬底层 API。**例如 “ 创建 Issue” 可能涉及创建、加描述、加 tag、加附件四个底层接口，但对 Agent 应该只暴露一个 create_issue 工具，把描述、tag、附件作为参数。Issue 相关操作也可以收进一个工具，用不同 action（create &#x2F; delete &#x2F; update &#x2F; close）区分。一个可用的工具至少要说明三件事：什么时候调用、参数怎么填、结果怎么继续处理。</p>
+<p>Karpathy 在《Software Is Changing (Again)》里指出，Agent 是一类新的数字信息消费者和操作者。过去是人通过 GUI、程序通过 API 使用软件，现在多了一类介于两者之间的使用者。因此做产品时除了 “ 人怎么点 “，还要考虑 “Agent 怎么理解、怎么操作、怎么验证 “。</p>
+<p>“Can we just build for agents?”（我们能只为 Agent 开发软件吗？）</p>
+<h2 id="Skill：一类任务该按什么流程做"><a href="#Skill：一类任务该按什么流程做" class="headerlink" title="Skill：一类任务该按什么流程做"></a>Skill：一类任务该按什么流程做</h2><p><strong>有了 MCP 和 Tool，Agent 已经能调用很多外部能力。但真实任务通常不是调用一次工具就结束。所以还需要 skill。</strong></p>
+<p>以在某个仓库提交 PR 为例，它不止调一次 API——还要读仓库规则、执行测试、生成变更说明、处理失败，最后才创建。Skill 把这些经过验证的工作方法保存下来，通常包含说明、步骤、脚本、命令和判断标准。模型处理匹配任务时先读 Skill，再按流程执行：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">适用场景：用户要求为当前仓库的代码变更创建 PR。</span><br><span class="line">流程：</span><br><span class="line"><span class="bullet">1.</span> 读取 AGENTS.md / WORKBUDDY.md 和仓库贡献规范。</span><br><span class="line"><span class="bullet">2.</span> 检查 git status，不覆盖用户的未提交修改。</span><br><span class="line"><span class="bullet">3.</span> 阅读 diff，识别变更范围与风险。</span><br><span class="line"><span class="bullet">4.</span> 运行与改动相关的格式化、类型检查和测试。</span><br><span class="line"><span class="bullet">5.</span> 仅在验证通过后生成标题和描述，如实列出未验证项。</span><br><span class="line"><span class="bullet">6.</span> 确认用户已授权发布，再 push 并创建 PR。</span><br><span class="line">完成标准：</span><br><span class="line"><span class="bullet">-</span> PR 只包含本任务的变更。</span><br><span class="line"><span class="bullet">-</span> 已记录所运行的测试与结果。</span><br><span class="line"><span class="bullet">-</span> 标题、正文、Issue 关联符合团队规范。</span><br></pre></td></tr></table></figure>
+
+<p><strong>Tool 负责 “ 一个动作 “，Skill 负责 “ 一类任务的做法 “。</strong></p>
+<p>图：Skill 的作用</p>
+<p>一句话区分：**MCP 解决 “ 外部系统怎么接入 “，Skill 解决 “ 这类任务应该怎么做 “。**两者可以组合——一个 “ 发周报 “Skill 可能同时调用腾讯文档 MCP、知识库 MCP 和本地脚本。Skill 里还要写清失败分支：测试失败如何判断、没有权限就停在草稿。</p>
+<h2 id="Plugin：一组能力怎么打包分发"><a href="#Plugin：一组能力怎么打包分发" class="headerlink" title="Plugin：一组能力怎么打包分发"></a>Plugin：一组能力怎么打包分发</h2><p>MCP 负责连接外部系统，Skill 负责保存任务流程。但真实场景里，一个完整能力往往不只包含单个工具或单个流程，而是一组连接、流程、规则、Hooks 和模板。</p>
+<p>Plugin 解决的是 “ 能力组合如何安装和分发 “ 的问题。它把多种相关能力组合成可安装、可分发的单位。</p>
+<p>图：Plugin 打包</p>
+<p>例如一个团队要接入内部研发流程，可能同时需要 MCP（连接代码仓库、Issue、流水线、文档）、Skills（提 PR、查构建、写变更说明）、Rules（代码 &#x2F; 分支 &#x2F; 安全规范）、Hooks（提交 &#x2F; 编辑 &#x2F; 执行命令前后检查）。Plugin 把这些组合起来，支持按团队、项目或个人作用域安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Plugin: team-dev-workflow</span><br><span class="line">├─ MCP：读写 Issue、MR、构建结果和内部文档</span><br><span class="line">├─ Skills：/issue-start、/create-pr、/debug-ci、/release</span><br><span class="line">├─ Rules：分支、Commit、安全、架构规范</span><br><span class="line">├─ Hooks：编辑后 lint，提交前测试，发布前审批</span><br><span class="line">└─ Assets / Templates：PR 模板、发布说明、架构图</span><br></pre></td></tr></table></figure>
+
+<p>注意：<strong>MCP 是跨产品协议，Plugin 是产品层的打包概念</strong>。不同 Agent 产品对 Plugin 的内容、安装方式和作用域可以有不同定义，所以它是通用产品概念，但不属于通用标准。</p>
+<p>四个概念的关系可以一表概括：</p>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>核心问题</th>
+<th>主要消费者</th>
+<th>典型内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>工具调用</td>
+<td>一个模型怎么请求执行动作？</td>
+<td>模型 + Agent</td>
+<td>名称、描述、Schema、调用结果</td>
+</tr>
+<tr>
+<td>MCP</td>
+<td>外部系统怎么标准化接入 Agent？</td>
+<td>Agent &#x2F; Server</td>
+<td>Tools、Resources、Prompts</td>
+</tr>
+<tr>
+<td>Skill</td>
+<td>一类任务应该按什么方法做？</td>
+<td>Agent</td>
+<td>流程、约束、脚本、验收标准</td>
+</tr>
+<tr>
+<td>Plugin</td>
+<td>怎么把一组能力安装和分发？</td>
+<td>用户 &#x2F; 团队 &#x2F; 产品</td>
+<td>MCP、Skills、Rules、模板</td>
+</tr>
+</tbody></table>
+<h2 id="Agent-外接能力怎么选形态"><a href="#Agent-外接能力怎么选形态" class="headerlink" title="Agent 外接能力怎么选形态"></a>Agent 外接能力怎么选形态</h2><p>前面讲的 Function Call、MCP、Skill 和 Plugin，解决的是不同层次的能力组织问题。Function Call 是模型请求动作的基础协议；MCP &#x2F; Connector 负责把外部系统标准化接入；Skill 沉淀一类任务的执行流程；Plugin 则把连接、流程、规则和模板组合成可安装的能力包。因此，设计一个外接能力时，不能只问 “ 能不能接进来 “，还要判断它更适合哪种产品形态。不同能力的边界、更新频率、权限风险、上下文成本和复用方式不同，适合的接入方式也不同。</p>
+<p>图：外接能力形态选择</p>
+<table>
+<thead>
+<tr>
+<th>需求</th>
+<th>优先形态</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>稳定的底层操作，如读文件、执行命令</td>
+<td>内置 Tool</td>
+<td>延迟低、权限和 UX 可深度集成</td>
+</tr>
+<tr>
+<td>腾讯文档、IMA、乐享、网盘等外部系统</td>
+<td>Skill &#x2F; MCP &#x2F; Plugin</td>
+<td>服务端集中维护，能力可标准化复用</td>
+</tr>
+<tr>
+<td>团队高频、稳定的工作流程</td>
+<td>Skill</td>
+<td>沉淀步骤、判断标准与失败处理</td>
+</tr>
+<tr>
+<td>需要同时装连接、流程、规则和 Hook</td>
+<td>Plugin</td>
+<td>作为组合与分发单位</td>
+</tr>
+</tbody></table>
+<p>没有一种形态对所有能力都最优。判断标准是：能力边界、更新频率、权限风险、上下文成本、执行延迟与跨产品复用价值。</p>
+<h2 id="三、全景视图：一次完整任务长什么样"><a href="#三、全景视图：一次完整任务长什么样" class="headerlink" title="三、全景视图：一次完整任务长什么样"></a>三、全景视图：一次完整任务长什么样</h2><p>把前面的概念串联起来。一次完整任务里，用户目标、系统指令、对话历史、当前环境和相关记忆一起进入模型；模型决定下一步，通过 Function Call 请求内置 Tools、MCP 或其他能力；Agent 执行、验权和审批，再把 Tool Result 返回给模型。</p>
+<p>以一个真实任务为例：用户要求 “ 调研 OpenAI、Anthropic、LangChain 在 Harness Engineering 上的实践，整理核心观点、解决的问题和对我们团队的借鉴，输出一份带引用的大纲 “。</p>
+<p>WorkBuddy 大致会进行以下步骤：</p>
+<blockquote>
+<p>→ 检查已有资料</p>
+<p>→ 读取 Memory 和 Skill</p>
+<p>→ 查询内部问题</p>
+<p>→ 分配 Sub-agent 并行调研</p>
+<p>→ 汇总观点和证据</p>
+<p>→ 补充缺口</p>
+<p>→ 生成大纲</p>
+</blockquote>
+<p>图：一次完整任务的信息流</p>
+<p>其中几个动作由 WorkBuddy 的产品机制支撑：</p>
+<p>第一，查看当前 Workspace。Agent 不会立即开始网页搜索，而是先检查当前工作区是否已有相关资料、草稿、PDF、网页书签或分享模板，也会读取当前 Workspace 的规则，确认文件保存位置、格式和命名方式。这可以避免重复调研，并让输出延续已有工作。</p>
+<p>第二，读取与任务相关的 Memory。Agent 会读取当前任务相关的记忆，例如用户偏好的表达方式、文章结构，以及是否需要区分构建者和使用者视角。Memory 不替代事实判断，但会影响内容组织和表达方式。</p>
+<p>第三，查找适用的 Skill 和规则。” 帮我调研 “ 不是简单问答，而是一类有流程和完成标准的任务。调研类 Skill 会要求 Agent 拆分调研对象、优先查找一手资料、记录来源，并区分原作者观点和自己的推论。</p>
+<p>第四，连接内部数据源。为了让结论能落回团队实际问题，Agent 会结合内部资料，例如产品架构文档、常见问题、已有规则和工具列表。</p>
+<p>第五，拆分调研任务并分配给 Sub-agent。OpenAI、Anthropic、LangChain 的资料可以分别交给不同 Sub-agent 处理。主 Agent 为每个 Sub-agent 提供统一输出格式，但只提供各自任务所需的上下文，减少信息干扰。</p>
+<p>第六，Sub-agent 阅读资料并返回结果。每个 Sub-agent 使用适合的工具获取信息，并返回结论、证据、来源和适用范围。例如 OpenAI 侧重代码质量约束，Anthropic 侧重长任务状态管理，LangChain 侧重运行环境和编排逻辑。</p>
+<p>第七，主 Agent 汇总并补齐缺口。主 Agent 合并材料、去重、识别冲突，并把零散实践放进统一框架中。</p>
+<p>第八，生成大纲并保存任务状态。Agent 按 Skill 和 Workspace 规则生成大纲草稿，保存到合适位置，并记录资料来源、未解决问题和下一步建议。</p>
+<p>这个案例展示的过程由多轮的 “ 工具调用 — 拿到工具结果 —- 决定下一步操作 “ 的循环，就是 ReAct 循环（reasoning - acting）：” 判断—行动—观察 “。</p>
+<p>整个过程中，每次观察到的结果都被放到了模型的上下文里，主上下文的长度逐渐增大。所以我们必须要进行上下文管理，也就是 context engineering。</p>
+<p>图：ReAct 多轮循环</p>
+<h2 id="四、Context-Engineering：模型这一刻该看到什么"><a href="#四、Context-Engineering：模型这一刻该看到什么" class="headerlink" title="四、Context Engineering：模型这一刻该看到什么"></a>四、Context Engineering：模型这一刻该看到什么</h2><p>我们可以把 Context Engineering 定义为：</p>
+<p>在一次模型决策前，设计哪些信息进入上下文、以什么形式进入、放在什么位置、何时更新或移出，以提高模型做出正确下一步决策的概率。</p>
+<p>图：Context Engineering 的五类动作</p>
+<p>它包含五类动作，注意每个动作的精确含义：</p>
+<p><strong>1. 写入（Write）</strong>：把目标、规则、环境和任务状态显式写进上下文，别让模型靠猜；</p>
+<p><strong>2. 选择（Select）</strong>：从已在手的候选信息里，只挑当前这一步需要的放进窗口（这是 filter）；</p>
+<p><strong>3. 检索（Retrieve）</strong>：当前不在手的信息，从历史会话、资料库、工具目录里按需捞进来（这是 pull）；</p>
+<p><strong>4. 压缩（Compress）</strong>：长内容外置到文件、只留结论与证据位置，同时清理窗口里过期或重复的内容；</p>
+<p><strong>5. 隔离（Isolate）</strong>：用独立会话或 Sub-agent 处理旁支任务，只把结果带回主线，避免污染主上下文。</p>
+<p>产品需要把相关环境信息组织成 context，例如：操作系统是 Windows &#x2F; Mac &#x2F; Linux、Shell 是 bash 还是 powershell、用户当前时间时区地理位置（模型不感知时间）、当前打开的文件、产品语言、当前仓库规则和未完成任务、已安装的 Skills 和已连接的 Connectors。WorkBuddy 在每次请求前组织这些信息，是 Agent 给出贴合当前环境结果的前提。</p>
+<p>一个常见误区是 “ 上下文窗口很大，全部放进去 “。无关信息既占成本，也降低模型对当前重点的判断准确度。<strong>Context Engineering 追求相关、准确、及时，不是单纯堆 token。</strong></p>
+<h2 id="Prompt-Cache：上下文管理的第一要义"><a href="#Prompt-Cache：上下文管理的第一要义" class="headerlink" title="Prompt Cache：上下文管理的第一要义"></a>Prompt Cache：上下文管理的第一要义</h2><p>图：Prompt Cache 前缀复用</p>
+<p>我们知道，多轮对话每次都带上之前的上下文，第二轮通常包含第一轮全部内容，再在末尾追加。每轮全量计算成本过高，每次重新计算显然不合理，所以模型厂商会缓存已计算过的前缀，只计算新增部分，这就是 Prompt Cache。</p>
+<p>它按前缀匹配，所以 WorkBuddy 在上下文组织上遵循几条规则：</p>
+<blockquote>
+<p>·System Prompt、基础工具定义、长期规则放前面，保持内容与顺序稳定；</p>
+<p>·对话历史采用追加方式保存，不修改已发送过的消息；</p>
+<p>·当前文件、任务进度、时间、工具结果、新加载的 Skill 等动态内容追加到后面；</p>
+<p>·工具和 Skill 按需加载，避免每轮重新生成并排列完整能力列表；</p>
+<p>·只在上下文过长需要压缩、或纠正错误信息时，才接受前缀变化和缓存重算。</p>
+</blockquote>
+<p>随着用户对积分（成本）越来越敏感，缓存命中率正在成为被普遍关注的工程指标。</p>
+<h2 id="渐进式加载：长结果和大工具集"><a href="#渐进式加载：长结果和大工具集" class="headerlink" title="渐进式加载：长结果和大工具集"></a>渐进式加载：长结果和大工具集</h2><p>图：渐进式加载</p>
+<p>我们在 function call 的章节有讲到，我们需要把工具定义放入上下文，模型才能调用工具。随着 Agent 能力越来越多，工具数量也不可避免的越来越多。因此，工具定义部分也需要做上下文管理：哪些工具默认暴露，哪些工具按需加载，工具结果过长时如何处理，都会影响 Agent 的执行效果。</p>
+<p>工具结果过长时，WorkBuddy 给每个 Tool Result 设截断策略，超出时分页、截断或写入文件。截断时明确告诉模型 “ 结果未完整 “，附上总量、截断位置和继续读取方法，否则模型会把前 100 条误当成全部。错误也不只返回 error 或一段堆栈，还要返回失败原因、可修正参数、是否可重试和建议下一步。</p>
+<p>工具定义过多时，每个 Tool Schema 都占上下文，工具越多、语义越重叠，模型选择越困难。WorkBuddy 采用分阶段的能力发现机制：先让模型看到工具名称和简要描述，再根据任务需要加载更具体的工具说明，同时也提供了工具检索能力。这样可以减少上下文占用，也降低工具过多带来的选择干扰。</p>
+<p>Skill 也用同样机制，先看名称和描述，确认适用后再读完整 SKILL.md，需要时再打开参考资料与脚本。</p>
+<p>高质量的 MCP 同样可以把要用的资源拉取到本地、提供 search 能力，减少上下文注入。</p>
+<p>几乎所有外接能力都可以按这个思路组织：默认只暴露名称和简介，真正进入某个任务时再加载完整内容。这样上下文里始终只保留当前需要的能力，而不是把所有能力一次性铺开。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">意图识别是这一思路的前置环节。用户的一句话背后可能对应问答、改代码、检索资料或调用外部系统等不同任务。系统先识别意图，再据此决定加载哪一类工具、Skill 和 MCP，让后续上下文只包含与当前任务相关的能力。意图识别负责“先选对方向”，渐进式加载负责“再按需展开”，两者共同控制上下文规模。</span><br></pre></td></tr></table></figure>
+
+<h2 id="五、Memory：让正确的过去在正确的时候重现"><a href="#五、Memory：让正确的过去在正确的时候重现" class="headerlink" title="五、Memory：让正确的过去在正确的时候重现"></a>五、Memory：让正确的过去在正确的时候重现</h2><p>记忆功能常被产品宣传为 “ 越用越懂你 “。更准确地说，它解决的是重复交代背景的问题：用户长期使用某个 AI 产品后，一些背景和历史不希望反复交代。模型本身没有长期记忆，产品要做的是从历史交互中提取少量可信信息，用于理解用户和延续任务。</p>
+<p>和记忆相关的内容有三类：<strong>聊天历史</strong>（事情发生过，但不一定该影响未来，可作为 RAG 检索源）、<strong>当前工作空间的工作记忆</strong>（项目进度）、<strong>长期记忆 Memory</strong>（在用户发当前任务之前，默认就能代入上下文、影响结果走向的内容）。关键在于：Memory 系统要做一次<strong>准入判断</strong>——哪些历史信息可以继续影响未来要做的任务。WorkBuddy 把这次准入判断作为记忆系统的核心环节，控制哪些信息有资格进入后续上下文。</p>
+<h2 id="WorkBuddy-长期-Memory-的五类记忆"><a href="#WorkBuddy-长期-Memory-的五类记忆" class="headerlink" title="WorkBuddy 长期 Memory 的五类记忆"></a>WorkBuddy 长期 Memory 的五类记忆</h2><p>这里有一个容易混淆的点：**记忆类型回答 “ 存什么 “，作用域回答 “ 在哪里生效 “，两者是正交的两个维度。**WorkBuddy 会把长期信息拆成几类：</p>
+<table>
+<thead>
+<tr>
+<th>信息类型</th>
+<th>存的是什么</th>
+<th>在系统中的作用</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>稳定事实</td>
+<td>去情境化的稳定事实、长期偏好、已确认的默认假设</td>
+<td>作为长期推理前提，减少重复获取用户基础信息</td>
+<td>用户所在城市、常用工作语言</td>
+</tr>
+<tr>
+<td>用户知识背景</td>
+<td>用户的专业背景、知识水平和熟悉领域</td>
+<td>调节解释深度和术语密度，不改变事实结论</td>
+<td>用户熟悉 Context Engineering</td>
+</tr>
+<tr>
+<td>行为信号</td>
+<td>从多次真实交互观察到的稳定使用模式</td>
+<td>作为交互策略的调节信号</td>
+<td>回答前先查看当前工作空间</td>
+</tr>
+<tr>
+<td>表达偏好</td>
+<td>用户对表达方式的稳定偏好</td>
+<td>控制 “ 怎么说 “，不影响 “ 事实是什么 “</td>
+<td>先给结论、减少空话</td>
+</tr>
+<tr>
+<td>会话延续信息</td>
+<td>当前会话中仍有价值的目标、决策、进度、未完成项</td>
+<td>帮助延续讨论和任务</td>
+<td>已完成什么、下一步做什么</td>
+</tr>
+</tbody></table>
+<p>五类记忆的影响范围不同：</p>
+<ul>
+<li>Semantic 可作为后续默认前提；</li>
+<li>Style 只影响表达，不改变事实结论；</li>
+<li>Behavior Signal 要比用户明确表达的偏好更谨慎。用户偶尔要求一次 “ 先看文件 “，不代表以后所有任务都必须这样，WorkBuddy 需要观察多次稳定行为，并允许用户查看和纠正。</li>
+</ul>
+<h2 id="为什么没有把-Procedural-Memory-放进长期记忆"><a href="#为什么没有把-Procedural-Memory-放进长期记忆" class="headerlink" title="为什么没有把 Procedural Memory 放进长期记忆"></a>为什么没有把 Procedural Memory 放进长期记忆</h2><p>图：陈述性记忆 vs 程序性记忆</p>
+<p>以上五类记忆都属于陈述性记忆（declarative memory），记录的是 “ 用户是谁、了解什么、发生过什么 “，也就是用户特征、知识背景和历史交互。它们提供的是推理前提，不直接规定 Agent 该怎么做事。WorkBuddy 没有把 Procedural Memory（程序性记忆）纳入长期记忆，是因为程序性记忆记录的是 “ 做事方法 “，这类内容一旦作为长期记忆注入，会直接影响 Agent 的推理路径和执行顺序。</p>
+<p>例如 “ 用户熟悉 Python” 是陈述性信息；” 遇到所有调试任务，都先重启服务再查日志 “ 是程序性策略。后者注入上下文后会带来几个问题：</p>
+<p><strong>• 局部经验被误升为通用策略</strong>：一次任务里有效的步骤，换个项目未必成立；</p>
+<p><strong>• 干扰模型推理</strong>：模型可能不再根据当前证据选路径，而是复用历史步骤，陷入局部最优；</p>
+<p><strong>• 隐性改写 Agent 行为</strong>：程序性内容实际上接近动态 System Prompt，却可能缺少版本、评测、审批和回滚；</p>
+<p><strong>• 降低泛化与可控性</strong>：如果 Agent 从每次任务自动学工作流，又没有稳定的奖励信号和 Eval，系统很难判断它是在改进还是在积累偏见。</p>
+<p>所以 WorkBuddy 的选择是：<strong>用户事实和历史状态放进 Memory，经过验证的工作方法保存为 Skill</strong>——Skill 可版本化、可评审、可测试、可回滚、按需加载。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">成功经验 / 稳定流程</span><br><span class="line">        │ 人工提炼、明确适用范围和完成标准</span><br><span class="line">        ▼</span><br><span class="line">Skill（步骤 + 约束 + 脚本 + 验证方法）</span><br><span class="line">        │ 版本化、可评审、可测试、可回滚、按需加载</span><br><span class="line">        ▼</span><br><span class="line">在匹配任务中指导 Agent 行动</span><br></pre></td></tr></table></figure>
+
+<h2 id="Memory-的作用域分层与注入时机"><a href="#Memory-的作用域分层与注入时机" class="headerlink" title="Memory 的作用域分层与注入时机"></a>Memory 的作用域分层与注入时机</h2><p>图：记忆作用域分层</p>
+<p>同一类记忆可以在不同范围内生效，作用范围越大、影响越高，写入和晋升的门槛也应越高：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>例子</th>
+<th>解决的问题</th>
+<th>典型失效方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>当前轮临时上下文</td>
+<td>刚选中的代码、本次上传的文件</td>
+<td>理解当前一步</td>
+<td>任务结束即失效</td>
+</tr>
+<tr>
+<td>会话 &#x2F; Thread 记忆</td>
+<td>做到哪一步、哪些工具已调用</td>
+<td>让多轮对话连续</td>
+<td>Thread 结束或任务完成后归档</td>
+</tr>
+<tr>
+<td>项目 &#x2F; Workspace 记忆</td>
+<td>架构约定、活跃计划、已有决策</td>
+<td>让 Agent 在某场景里接着做</td>
+<td>项目变更、决策被替换或切换</td>
+</tr>
+<tr>
+<td>用户级记忆</td>
+<td>长期表达偏好、职业背景</td>
+<td>减少反复自我介绍</td>
+<td>用户修改、撤销或随时间降权</td>
+</tr>
+<tr>
+<td>团队 &#x2F; 组织记忆</td>
+<td>团队流程、术语、组织边界</td>
+<td>促进多人与多 Agent 协作</td>
+<td>权限变更、制度更新</td>
+</tr>
+</tbody></table>
+<p>记忆的注入分阶段进行：冷启动时只注入少量高置信、高相关的人与项目摘要；请求理解时根据 query 激活候选 memory cards（仍保留来源和置信，不当成确定前提）；执行中需要证据时再回查原始会话或文件；任务收尾时从结果和用户纠正中提取候选记忆，做去重、冲突检查和作用域判定。</p>
+<p>一个成熟的 Memory 系统需要同时支持写入、来源查看、用户纠正、冲突替换、时间衰减、降权、删除、回滚和临时停用。WorkBuddy 的 Memory 设计目标是：</p>
+<p>让正确的过去，在正确的时候，以正确的作用域，正确的方式重新出现。</p>
+<h2 id="六、Harness-Engineering：引导、约束与整合"><a href="#六、Harness-Engineering：引导、约束与整合" class="headerlink" title="六、Harness Engineering：引导、约束与整合"></a>六、Harness Engineering：引导、约束与整合</h2><p>前面几节——上下文工程、MCP、Skills、记忆、压缩——都在解决一个问题：**Agent 是否获得了足够的信息。**这些机制只决定 Agent 知道得够不够。当 Agent 开始写文件、运行命令、操作外部系统时，会出现另一组问题：</p>
+<ul>
+<li>执行方向是否正确？偏离后能否纠正？（方向）</li>
+<li>哪些操作不允许执行？误删文件由谁拦截？（安全）</li>
+<li>这些能力如何组织成一个能稳定运行的系统？（编排）</li>
+</ul>
+<p>这些是 Harness Engineering 要解决的问题。Harness 可以按构建者和使用者分成两层：</p>
+<p>图：Harness 的两层同心圆</p>
+<p>三个同心圆：核心是模型，外一圈是 Agent 构建者的 harness（System Prompt、代码搜索工具、编排等），最外圈是 Agent 使用者的 harness（针对自己系统配置的前馈和反馈控制）。构建者通过产品机制控制模型行为，使用者通过产品提供的能力控制 Agent 和模型。</p>
+<h2 id="三类能力：驾驭、约束、整合"><a href="#三类能力：驾驭、约束、整合" class="headerlink" title="三类能力：驾驭、约束、整合"></a>三类能力：驾驭、约束、整合</h2><p>Harness 一词原指套在马身上的整套装备。从词源出发可以拆出三类能力，对应 Harness 要解决的三个方面：</p>
+<p>图：驾驭 &#x2F; 约束 &#x2F; 整合</p>
+<p>**1. 驾驭（Steer）。**控制执行方向、速度和停止时机。对应到 Agent：System Prompt &#x2F; 规则文件（WORKBUDDY.md、AGENTS.md）说明工作方式，Skills 规定某类任务的步骤，Task &#x2F; Todo 把大目标拆成清单，错误消息中的自我纠正提示在卡住时提供方向（而非只给错误码），针对不同模型的微调处理不同倾向。对应 OpenAI 的表述 “Humans steer. Agents execute.” 中的 steer。</p>
+<p>**2. 约束（Constrain）。**防止执行超出安全范围。对应到 Agent：权限边界（误删文件需要被拦截）、Sandbox（隔离环境，执行出错也不影响本机）、Approval Gate（危险操作需要人工确认）、Allowlist&#x2F; denylist（限定可操作的命令和路径），以及测试验证、rollback、audit log。</p>
+<p>**3. 整合（Integrate）。**把各项能力配齐并协同。对应到 Agent：执行能力（tools、MCP、browser、filesystem）、状态承载（memory、logs）、协作机制（subagents、hooks、connectors）、自动化（CI、定时任务）。整合的作用在于配齐和协同：谁先调用谁、谁触发谁、谁的输出回传给谁。</p>
+<p>这三类能力必须共同工作：只有引导没有约束，Agent 可能执行不该执行的动作；只有约束没有反馈，出错后无法修正；工具多但缺编排，长任务难以稳定完成。</p>
+<h2 id="业界三家的实践"><a href="#业界三家的实践" class="headerlink" title="业界三家的实践"></a>业界三家的实践</h2><h2 id="在讨论-WorkBuddy-的做法之前，先看三家有代表性的实践：OpenAI、Anthropic-和-LangChain"><a href="#在讨论-WorkBuddy-的做法之前，先看三家有代表性的实践：OpenAI、Anthropic-和-LangChain" class="headerlink" title="在讨论 WorkBuddy 的做法之前，先看三家有代表性的实践：OpenAI、Anthropic 和 LangChain"></a>在讨论 WorkBuddy 的做法之前，先看三家有代表性的实践：OpenAI、Anthropic 和 LangChain</h2><p>图：OpenAI 实践</p>
+<p><strong>OpenAI</strong>：一个 3 人小组用 Codex 从空仓库开始开发，全程不手写代码，5 个月产出约 100 万行代码、1500 个 PR，并投入内外部使用。配套环境包括：让 Codex 直接操作浏览器、读取 DOM &#x2F; 日志 &#x2F; 监控指标；用 linter 和结构测试自动检查架构分层、依赖方向、命名和文件大小；把 AGENTS.md 改成目录入口、把详细知识结构化放进 docs 供按需查询；后台运行周期性任务扫描代码漂移、自动创建重构 PR。</p>
+<p>这一案例说明在配套环境完整时，Agent 可以参与大规模代码生产。但其 Harness 主要集中在代码内部质量和可维护性上，没有说明功能和业务正确性如何维护。</p>
+<p><strong>Anthropic（第一篇：Effective harnesses for long-running agents）</strong>：处理长任务时发现两种典型失败：Agent 一次承担过多工作（中途耗尽上下文、给下一个 Agent 留下缺少说明的半成品），或看到部分成果就过早判定完成。解决方案用 “ 初始化 Agent + Coding Agent” 两个角色完成跨会话交接：一开始就把要做的事拆成 200+ 条具体行为描述的功能清单（JSON）、每条标 pass&#x2F;fail 并禁止删条目或降标准；一次只处理一项任务；统一的启动脚本 init.sh；除单测外用浏览器自动化做端到端验证；用进度文件 + Git 历史做交接、恢复和回滚。</p>
+<p>WorkBuddy 的 Agent 在这一点上做了类似设计：执行较大任务时，先把目标拆解成结构化任务清单，并在推进过程中持续更新状态。它同时处理 “ 一次承担过多 &#x2F; 过早判定完成 “ 和 “ 上下文遗忘 “ 两类问题——显式任务状态可以让 Agent 在长对话里恢复进度，也让用户更容易判断任务是否真的完成。</p>
+<p>图：跨会话任务交接</p>
+<p><strong>Anthropic（第二篇：Harness design for long-running application development）</strong>：在前一篇基础上发现两个更深的问题——接近上下文上限时模型会降低完成标准、自我评估不可靠（Agent 评价自己产出时倾向给正面结论，前端设计这类缺少确定性测试的任务尤其明显）。</p>
+<p>方案借鉴 GAN 的对抗评估思路，用 Claude Agent SDK 构建三个角色：Planner（把一句话需求展开成完整规格，定范围但不指定实现细节）、Generator（按 sprint 逐功能实现、用 git 版本控制、提交前先自检）、Evaluator（独立验收 Agent，用 Playwright 像真实用户一样操作运行中的应用，逐条核查、把 bug 定位到行号和原因后打回）。普通用户可以借鉴的点：分离执行和验收（验收角色可用不同模型，或在 WorkBuddy 里用 Teams 分工）、把标准写进规则文件、先确认需求再执行、随模型升级精简约束。</p>
+<p>图：Planner &#x2F; Generator &#x2F; Evaluator</p>
+<p><strong>LangChain</strong>：longchain 从框架构建者角度，把 Agent 中除模型之外的一切都纳入 Harness——系统提示词、Tools &#x2F; Skills &#x2F; MCP、文件系统、沙箱、浏览器、编排逻辑与 Hooks，这是一个更宽的定义：<strong>Agent &#x3D; Model + Harness</strong>。它的几个核心观点：Agent 要有持久状态、能跨会话工作；无法为每件事预先准备工具，所以要给 Agent 一台计算机（Bash + 代码执行）；要能安全可扩展地运行代码、能自我验证；用 Compaction、Tool Call Offloading、Skills 渐进式加载等机制应对 Context Rot；用 Ralph Loop（Hook 拦截提前结束信号，在新上下文里重新注入目标继续执行）。</p>
+<blockquote>
+<p>LangChain 还提出一个视角：模型和 Harness 在共同进化。实际评估的对象通常是 “ 模型 + Harness” 的组合——同一个模型换了工具名、Patch 格式、压缩策略或错误回传方式后，表现可能明显变化。因此比较或升级模型时，要把 Harness 一起纳入 Eval。</p>
+</blockquote>
+<h2 id="WorkBuddy-Agent-的五层-Harness（构建者视角）"><a href="#WorkBuddy-Agent-的五层-Harness（构建者视角）" class="headerlink" title="WorkBuddy Agent 的五层 Harness（构建者视角）"></a>WorkBuddy Agent 的五层 Harness（构建者视角）</h2><p>WorkBuddy 构建良好的 Harness 有两个目标：<strong>提高 Agent 首次执行的正确率，并提供反馈循环让系统能自动发现和纠正常见问题。</strong></p>
+<p>在 WorkBuddy 的设计里，Harness 是一个控制系统：Agent 行动前，系统通过**前馈（Feedforward）<strong>提供目标、规则、环境和可用能力；Agent 行动后，系统通过</strong>反馈传感器（Feedback sensors）**观察结果，并把错误和修正信息返回给 Agent。</p>
+<p>前馈提高第一次就做对的概率，反馈让 Agent 在问题进入人工审查前先自我纠正。只有前馈没有反馈，规则是否有效无法验证；只有反馈没有前馈，Agent 会反复犯同类错误，再依赖后置修正。</p>
+<p>这两类控制还可以按执行方式分成计算型和推断型。<strong>计算型</strong>控制由确定性程序执行，例如 LSP、类型检查、linter、单元测试、结构测试、依赖扫描、脚本和 codemod，优点是快、便宜、可重复，适合在 Agent 每次修改后反复运行。<strong>推断型</strong>控制依赖模型做语义判断，例如 Review Agent、架构审查 Agent、AI judge 和设计评估，优点是能覆盖 “ 是否过度设计 “” 是否误解需求 “” 是否符合团队约定 “ 这类难以写成规则的问题，缺点是更慢、更贵，也更不确定。</p>
+<p>WorkBuddy 的原则是：**能用计算型信号解决的问题，优先交给确定性程序；需要语义判断的问题，再交给审查 Agent。**反馈也要按时机分层：快速检查尽量左移到编辑后、提交前或 Agent 自我纠正循环中；更昂贵的架构审查、详细代码审查、端到端验证放到集成前后；持续漂移和运行时健康则交给周期性传感器，例如死代码扫描、覆盖率质量分析、依赖风险、延迟、错误率、可用性 SLO 和日志异常。这样 Harness 不只是一组规则，而是一套持续运行的控制系统。</p>
+<p>图：Harness 五层结构</p>
+<p><strong>五个层次：</strong></p>
+<p>**1. 运行环境层：Agent 在哪里执行。**文件系统、Shell &#x2F; Bash、Sandbox、Browser、MCP &#x2F; Connectors、权限边界 &#x2F; Approval Gate、Allowlist&#x2F; denylist。这一层用户通常感知不到，但缺少任何一项，上面几层都难以稳定运行。LangChain 指出，文件系统是 Agent 最基础的运行环境，它支撑了持久状态、跨会话工作和多 Agent 协作。</p>
+<p>图：引导层</p>
+<p>**2. 引导层（Feedforward）：Agent 开始前掌握什么。**在执行前提供必要信息和约束，提高首次正确率。包括：项目上下文（项目概况、目录层级、关键依赖——早期模型不会主动探索代码库，可能在根目录写错文件）、环境上下文（操作系统、Shell、时间、时区、地理位置、IDE 主题、产品语言、已装 Skills、已连 Connectors）、规则与风格（不同模型不同倾向）、工具使用规则（独立的搜索 &#x2F; 读取可并行、改文件前先读、路径不明先搜、长任务先拆 Todo）、Skills 和规则文件（把隐性知识保存成 Agent 能读到的内容）、上下文结构与 Prompt Cache（保持稳定前缀、追加动态内容、按需加载工具）。</p>
+<p>图：反馈层</p>
+<p>**3. 反馈层（Feedback）：Agent 执行后如何获知错误。**验证执行结果并把错误及修正信息返回给 Agent。工具结果包含可纠正信息（文件未找到提示搜索路径、编辑失败提示重新读取、权限不足提示请求确认、命令报错返回完整 stderr）——OpenAI 把 Agent 受阻视为 “ 环境中缺少工具、规则或文档 “ 的信号。编辑前的时间戳校验：Agent 改文件前比较 “ 上次读取时间 “ 和 “ 文件最后修改时间 “，若读取后被用户改过就拒绝写入、要求重读，避免覆盖最新修改。将外部验证信号返回 Agent：lint、类型检查、测试、构建等确定性信号成本低、可稳定重复；架构审查、代码审查和端到端验证这类推断型或高成本信号，则按风险放在更靠后的检查阶段。再加上 Audit log 让所有动作留痕、可追溯回放。</p>
+<p>**4. 编排层：多个能力如何组织。**按任务组织能力、按需暴露上下文、为不同角色分配职责：渐进式加载、意图识别和路由、多模型路由、Teams 多 Agent 协作、并行工具调用。</p>
+<p>**5. 迭代层：Harness 自身如何持续调整。**前面四层要随模型能力、用户场景和已发现的问题持续调整。WorkBuddy 一年内的几种迭代方式：</p>
+<p>·随模型能力提升精简上下文：新模型会主动用 Glob &#x2F; Grep 探索结构后，初始项目概况可以减少；</p>
+<p>·根据新问题增加约束：输出过长、格式不稳定时补充更明确的行为边界；</p>
+<p>·针对不同模型适配工具：根据实际表现调整工具组合；</p>
+<p>·根据重复出现的反馈增加机制：反复出现文件覆盖、能力选择困难时补充写入保护、能力发现机制。</p>
+<p>这类迭代需要证据支撑：一次失败可能是偶发，同类失败多次出现或风险很高时再调整 Harness。新增机制也要评估副作用：更严格的审批降低误操作风险，也增加打断；更多规则约束输出，也占用上下文。</p>
+<h2 id="WorkBuddy-团队作为使用者，如何建立-Harness"><a href="#WorkBuddy-团队作为使用者，如何建立-Harness" class="headerlink" title="WorkBuddy 团队作为使用者，如何建立 Harness"></a>WorkBuddy 团队作为使用者，如何建立 Harness</h2><p>借用 OpenAI Codex 实验总结的四类组件，可以把 WorkBuddy 团队的现有实践归入同一框架。</p>
+<p>图：使用者视角的四类组件</p>
+<p>**1. 上下文工程：让 Agent 获得当前任务所需的信息。**分层规则文件（根目录 AGENT.md&#x2F; WORKBUDDY.md 记录架构、依赖、安全和风格，子仓库用局部 WORKBUDDY.md 补充）、OpenSpec（较大变更先读写规范）、Skills（按任务加载）、Slash 命令（把高频流程组织为固定入口）。</p>
+<p>**2. 架构约束：把规则变成可执行检查。**团队可以把架构规则、代码规范和提交要求接入本地检查、Git Hooks、CI 门禁和审查 Agent。确定性问题优先交给程序检查，需要语义判断的问题再交给审查 Agent。</p>
+<p>**3. 反馈循环：把验证结果返回给 Agent。**Post-edit checkpoint（每次编辑后查行数、架构合规、注释完整性）、本地检查与 CI 结果、&#x2F;team:mr 工作流（构建验证 → 生成 changeset → 创建 MR → 关联 Issue）、Dogfood Skill、Agent Browser。这一点对应 OpenAI 的表述：</p>
+<p>“Agent 卡住时，我们把它当作信号——找出缺了什么（工具、护栏、文档），反哺回仓库——而且总是让 Codex 自己写这个修复。”</p>
+<p>**4. 熵管理（Garbage Collection）：持续处理规则、代码和运行状态的漂移。**现有检查主要防新增问题，对历史问题还要周期性扫描：WORKBUDDY.md&#x2F; OpenSpec 与代码是否一致、历史代码是否违反新规则、是否有重复实现 &#x2F; 失效文档 &#x2F; 过期依赖。还可以接入运行时健康传感器，例如延迟、错误率、可用性 SLO、日志异常。</p>
+<p>这四类组件形成一个持续过程：上下文工程提供规则和任务信息，架构约束阻止已知违规，反馈循环帮 Agent 修正本次执行，熵管理处理跨任务积累的漂移。</p>
+<h2 id="七、Loop-Engineering：任务如何跨时间继续"><a href="#七、Loop-Engineering：任务如何跨时间继续" class="headerlink" title="七、Loop Engineering：任务如何跨时间继续"></a>七、Loop Engineering：任务如何跨时间继续</h2><p>Loop Engineering 是近期出现的工程表达，目前还没有统一定义。前面几层关注 “ 一次任务怎么做好 “，Loop 关注 Agent 如何被触发、连续执行、验证结果、记录进度并再次运行——工程对象从单条 Prompt 扩展到可长期稳定运行的任务循环。</p>
+<p>在四层工程中，Loop Engineering 的位置如下：</p>
+<table>
+<thead>
+<tr>
+<th>层次</th>
+<th>核心问题</th>
+<th>简单例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Prompt Engineering</td>
+<td>本次请求应如何表达？</td>
+<td>写清目标、格式和约束</td>
+</tr>
+<tr>
+<td>Context Engineering</td>
+<td>这一次决策前，模型该看什么？</td>
+<td>加载相关文件、工具、历史和记忆</td>
+</tr>
+<tr>
+<td>Harness Engineering</td>
+<td>Agent 如何被引导、约束、观测、验证和纠正？</td>
+<td>规则、沙箱、审批、测试、日志、编排</td>
+</tr>
+<tr>
+<td>Loop Engineering</td>
+<td>任务如何被触发、流转、验收、继续与停止？</td>
+<td>定时任务、工作树、子 Agent、记忆、反馈闭环</td>
+</tr>
+</tbody></table>
+<p>Harness 定义 Agent 的环境、权限、反馈和纠正机制；Loop 定义任务的触发、流转、重试和停止条件。Loop 依赖 Harness 提供的约束和验证机制，Harness 中的能力则可以通过 Loop 持续运行。</p>
+<p>一个可用的 Loop 至少需要这些组件：触发器（Trigger &#x2F; Automation）、独立执行环境（Isolated Workspace &#x2F; Worktree）、Skills、Tools &#x2F; Connectors &#x2F; MCP、Sub-agents、Memory &#x2F; Durable Artifacts、Sensors &#x2F; Evals、Stop Conditions &#x2F; Budget。</p>
+<p>图：一个完整的 Loop</p>
+<p>值得强调的是 <strong>Goal ≠ Loop</strong>：如果产品提供 “ 设立长期目标 “ 的能力，它确实能为 Loop 提供持久目标和进度载体，但 Goal 只定义 “ 要去哪里 “ 和 “ 还剩什么 “，Loop 还需要触发器、执行环境、工具、验证信号和停止条件。一个只会保存目标的功能，是 Loop 的状态组件，不是完整循环。</p>
+<p>一个具体例子——每天检查依赖安全更新：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">每天 <span class="number">09</span>:<span class="number">00</span> 定时触发。</span><br><span class="line">创建独立 worktree 和任务记录。</span><br><span class="line">读取仓库规则与 dependency<span class="operator">-</span><span class="keyword">update</span> Skill。</span><br><span class="line">查询可用更新与已知漏洞。</span><br><span class="line">选择一个可独立验证的更新，修改 lockfile。</span><br><span class="line">运行安装、类型检查、单测、构建和漏洞扫描。</span><br><span class="line">如果失败，将错误反馈给 Agent，在限定轮数内修正；仍失败则停止并留下可诊断报告。</span><br><span class="line">如果通过，生成 PR 草稿和风险摘要，交由人审批发布。</span><br><span class="line">写入本轮结果、未解问题和下次运行需要的交接信息。</span><br></pre></td></tr></table></figure>
+
+<p>但 Loop 不会自动解决以下问题：它不会自动产生正确目标（目标错误时，循环只会更快地朝错误方向执行）；不会自动产生可信的验收标准（Generator 和 Evaluator 若共享同一个误解，仍可能出现 “ 错的实现 + 全部通过的测试 “）；不会承担责任（发布、用户数据、支付、风控必须有明确的人类责任人和审批边界）；也不会替代工程师形成判断。</p>
+<h2 id="八、还没解决的问题"><a href="#八、还没解决的问题" class="headerlink" title="八、还没解决的问题"></a>八、还没解决的问题</h2><p>前面讨论的 Context、Memory、Harness 和 Loop，都是为了让 Agent 更稳定地完成任务。但这套体系仍有明确的能力边界，以下几个问题目前还没有成熟解法。</p>
+<h2 id="功能和业务正确性的验证缺口"><a href="#功能和业务正确性的验证缺口" class="headerlink" title="功能和业务正确性的验证缺口"></a>功能和业务正确性的验证缺口</h2><p>图：业务正确性验证缺口</p>
+<p>目前的 Harness 文章主要讨论架构分层、命名、复杂度、技术债和自动重构，对功能和业务正确性的验证讨论较少。缺少可规模化的业务验证方法，主要有四个原因：</p>
+<p>**需求本身很难完整说明。**PRD 通常分别描述单项功能，不一定覆盖功能组合后的行为。例如一个会话同时支持 “ 归档 “ 和 “ 置顶 “，两个功能分别测试通过，组合后却出现新问题：已经置顶的会话能不能归档？如果 PRD 没有定义，Agent 可能自行决定，再把同一个理解同时写进实现和测试——工程检查全绿，但已加入一项未经确认的业务决策。</p>
+<p>**实现和测试可能共享同一个误解。**同一个 Agent 既写实现又写测试，对需求的理解偏差会同时进两边。测试全过，仍不能证明实现符合原始业务意图。</p>
+<p>**部分业务正确性缺少可计算的判定标准。**编译器能发现语法和类型问题，监控能度量性能和错误率，但业务意图通常需要业务人员确认。</p>
+<p>**业务错误的成本可能很高。**核心业务错误可能造成资金损失、合规问题和用户流失，对验证可信度的要求远高于普通代码质量问题。</p>
+<p>所以当业务正确性缺少可靠验证时，AI 的自治程度需要随风险提高而降低：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>AI 自治度上限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>一次性脚本、内部工具</td>
+<td>高</td>
+</tr>
+<tr>
+<td>公开 API、跨系统改动</td>
+<td>中</td>
+</tr>
+<tr>
+<td>核心业务逻辑（支付、风控、订单）</td>
+<td>低</td>
+</tr>
+</tbody></table>
+<p>判断一项工作是否适合交给 AI，可以先回答四个问题：有没有明确的完成标准？结果能不能用测试 &#x2F; 规则 &#x2F; 数据 &#x2F; 人工审查验证？失败是否容易发现、可回滚、代价可控？任务是否重复发生、值得为它建 Harness？这四个问题共同指向<strong>可验证性</strong>。</p>
+<h2 id="代码库的-Harnessability-决定建设难度"><a href="#代码库的-Harnessability-决定建设难度" class="headerlink" title="代码库的 Harnessability 决定建设难度"></a>代码库的 Harnessability 决定建设难度</h2><p>问题严重的老系统通常更难建 Harness，原因有四：</p>
+<p>**1. Harness 依赖清晰的系统结构。**明确边界、统一命名、稳定模块和有效测试，能让 Agent 更容易理解代码，老系统未必具备这些条件。</p>
+<p>**2. 大量历史违例会降低规则有效性。**老 monorepo 一次可能产生数千个违例，全量修复成本高，大量白名单又会形成新的维护成本。</p>
+<p>**3. 高复杂度会影响 Agent 的理解能力。**依赖关系复杂、隐式约定多时，Agent 更容易误判调用链、状态流转和副作用。</p>
+<p>**4. Harness 依赖可观测性和验证信号。**老系统如果缺少埋点、指标口径不一致、链路追踪不完整，Agent 就只能依赖代码检查和自我评估，反馈层会明显变弱。</p>
+<p>更可实现的做法：老系统先处理循环依赖和模块边界，同时补齐关键链路的测试、日志、指标和看板，再加 Harness；优先在一个结构清晰、修改频繁、价值高且可观测性较好的子模块验证方案再扩展；先约束新增和修改部分，再逐步处理存量。</p>
+<h2 id="案例有适用边界"><a href="#案例有适用边界" class="headerlink" title="案例有适用边界"></a>案例有适用边界</h2><p>目前主要案例来自模型厂商和框架团队。它们能证明 Harness 在特定环境的价值，但实验条件、可复现细节和业务验证方式并不完全公开。Harness 也需要和具体的代码库、技术栈、团队约定和可观测性水平一起设计，很难把某一套模板直接搬到所有系统。落到自己的代码库、模型和团队流程，仍要重新验证。</p>
+<h2 id="AI-可能推动技术方案标准化"><a href="#AI-可能推动技术方案标准化" class="headerlink" title="AI 可能推动技术方案标准化"></a>AI 可能推动技术方案标准化</h2><p>以后选技术栈时，团队除了考虑性能、效率和生态，还会考虑它是否便于 AI 理解、修改和验证。即使两个方案都满足业务需求，团队也可能优先选已配好 Harness、结构统一的那个，因为 Agent 在其中工作更稳定。</p>
+<p>有此可能就出现一种 “Harness 模板 “：围绕常见的服务拓扑，预先组合好结构约定、技术栈、指引和传感器。WorkBuddy 的 Service Template 已经在做类似的事。这不意味着所有项目都用同一种技术栈，更可能是团队减少缺乏维护的特殊方案，把投入集中到几套验证完整的标准方案上。</p>
+<h2 id="Harness-需要持续投入"><a href="#Harness-需要持续投入" class="headerlink" title="Harness 需要持续投入"></a>Harness 需要持续投入</h2><p>OpenAI 那个实验从空仓库到 100 万行代码用了 5 个月，文章里明确说：</p>
+<p>“this isn’t something you can jump into for quick results.” &#x2F; “Our most difficult challenges now center on designing environments, feedback loops, and control systems.”</p>
+<p>这和 Chad Fowler 的 “Relocating Rigor” 一致：工程严谨度从代码编写本身，部分转移到环境、反馈回路和控制系统的设计上。规则要更新、测试要补充、工具和 Skill 要适配新模型、历史代码要持续治理——Harness 是工程基础设施，不是一次性配置。</p>
+<h2 id="人仍然负责主线任务"><a href="#人仍然负责主线任务" class="headerlink" title="人仍然负责主线任务"></a>人仍然负责主线任务</h2><p>Harness 应优先覆盖重复、确定、可验证的工作；探索和业务判断的工作应由人主导。AI 可以提高执行效率，但团队仍需保持对代码、逻辑和架构的理解，并在系统出问题时能定位原因。借 Addy Osmani 的话：</p>
+<p>“The danger is stopping having an opinion when loops run autonomously.”</p>
+<p>同样的 Loop 可以加深对工作的理解，也可能让人逐渐不再关注过程。Harness 的效果仍然依赖人的目标设定、验收标准和最终判断。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><strong>1.模型</strong>是核心推理与生成引擎，但它不会自动保留状态、不会自动联网、不会自动执行外部动作，当前任务的材料须由产品注入。</p>
+<p>2.Function Call&#x2F;MCP&#x2F;Skill&#x2F;Plugin 构成能力层：让模型请求动作、接入外部系统、沉淀任务流程、打包分发能力。</p>
+<p>**3.**<strong>Context Engineering</strong>决定模型当前能看到什么；<strong>Memory</strong>决定哪些过去可以在未来重新出现。</p>
+<p>**4.**<strong>Harness Engineering</strong>把指引、能力、权限、反馈、验证与编排组成可信系统，通过前馈和反馈提高可靠性。</p>
+<p>**5.**<strong>Loop Engineering</strong>把这套系统放进时间维度，让任务能被反复触发、检验、交接和收敛。</p>
+<h3 id="两个核心结论"><a href="#两个核心结论" class="headerlink" title="两个核心结论"></a>两个核心结论</h3><p>模型决定能力上限；上下文和 Harness 决定这个上限能否稳定落地。</p>
+<p>人负责选择方向、定义标准并承担责任；Agent 负责执行、验证和加速迭代。</p>
+<p><strong>欢迎前往官网下载体验</strong></p>
+<p><strong>亲自感受更多惊喜功能🎉</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.workbuddy.cn/">www.workbuddy.cn</a></p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/b7725795/" title="AI大模型与智能测试融合-基础认知"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">AI大模型与智能测试融合-基础认知</div></div><div class="info-2"><div class="info-item-1">TesterHome 系列：AI 大模型与智能测试融合的基础认知</div></div></div></a><a class="pagination-related" href="/posts/16692626/" title="题材炒作体系"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">题材炒作体系</div></div><div class="info-2"><div class="info-item-1">题材炒作体系：认知底层、选股方向、周期框架、打法与风控工具</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/90238fde/" title="GameDevBench智能体评测"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-06</div><div class="info-item-2">GameDevBench智能体评测</div></div><div class="info-2"><div class="info-item-1">介绍 GameDevBench 基准如何揭示智能体游戏开发的隐藏短板</div></div></div></a><a class="pagination-related" href="/posts/b407a0da/" title="一篇讲透Agent自进化飞轮怎么搭：评测→记忆→落地→控制"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-30</div><div class="info-item-2">一篇讲透Agent自进化飞轮怎么搭：评测→记忆→落地→控制</div></div><div class="info-2"><div class="info-item-1">拆解 Agent 自进化飞轮的搭建：评测、记忆、落地与控制四环节</div></div></div></a><a class="pagination-related" href="/posts/4a8e6704/" title="AI 系列-2：揭秘 LLM 大语言模型"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">AI 系列-2：揭秘 LLM 大语言模型</div></div><div class="info-2"><div class="info-item-1">从 ChatGPT 火爆出圈讲起，揭秘 LLM 大语言模型的技术原理</div></div></div></a><a class="pagination-related" href="/posts/955c4d52/" title="AI 系列-4：计算机视觉-给机器装上眼睛"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">AI 系列-4：计算机视觉-给机器装上眼睛</div></div><div class="info-2"><div class="info-item-1">讲解计算机视觉如何让机器看懂世界，并列举刷脸进站等生活应用</div></div></div></a><a class="pagination-related" href="/posts/de697756/" title="ChatGPT 介绍及技术原理"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-10-06</div><div class="info-item-2">ChatGPT 介绍及技术原理</div></div><div class="info-2"><div class="info-item-1">介绍 ChatGPT 的前世今生、训练流程与技术原理。</div></div></div></a><a class="pagination-related" href="/posts/5a788235/" title="AI 系列-3：搜索-从迷宫求解看人工智能关键技术"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-06-30</div><div class="info-item-2">AI 系列-3：搜索-从迷宫求解看人工智能关键技术</div></div><div class="info-2"><div class="info-item-1">以迷宫求解为例，讲解搜索技术作为通用方法解决 AI 难题的原理</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">109</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">56</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%85%88%E6%8A%8A%E6%A8%A1%E5%9E%8B%E7%9C%8B%E6%88%90%E4%B8%80%E4%B8%AA%E6%97%A0%E7%8A%B6%E6%80%81%E7%9A%84%E5%87%BD%E6%95%B0"><span class="toc-number">1.</span> <span class="toc-text">一、先把模型看成一个无状态的函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%94%A8%E6%88%B7%E8%83%BD%E6%84%9F%E7%9F%A5%E5%88%B0%E7%9A%84%E5%9B%9B%E4%B8%AA%E6%A6%82%E5%BF%B5%EF%BC%9A%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8-MCP-Skill-Plugin"><span class="toc-number">2.</span> <span class="toc-text">二、用户能感知到的四个概念：工具调用 &#x2F; MCP &#x2F; Skill &#x2F; Plugin</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8%EF%BC%9A%E6%A8%A1%E5%9E%8B%E6%80%8E%E4%B9%88%E8%AF%B7%E6%B1%82%E6%89%A7%E8%A1%8C%E5%8A%A8%E4%BD%9C"><span class="toc-number">3.</span> <span class="toc-text">工具调用：模型怎么请求执行动作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#System-Prompt%EF%BC%9A%E7%BB%99-Agent-%E4%B8%80%E4%B8%AA%E7%A8%B3%E5%AE%9A%E7%9A%84%E5%B7%A5%E4%BD%9C%E8%A7%92%E8%89%B2"><span class="toc-number">4.</span> <span class="toc-text">System Prompt：给 Agent 一个稳定的工作角色</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E4%B8%8A%E4%B8%8B%E6%96%87%E5%8D%8F%E8%AE%AE%EF%BC%88MCP%EF%BC%89%EF%BC%9A%E5%A4%96%E9%83%A8%E7%B3%BB%E7%BB%9F%E6%80%8E%E4%B9%88%E6%A0%87%E5%87%86%E5%8C%96%E6%8E%A5%E5%85%A5"><span class="toc-number">5.</span> <span class="toc-text">模型上下文协议（MCP）：外部系统怎么标准化接入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Skill%EF%BC%9A%E4%B8%80%E7%B1%BB%E4%BB%BB%E5%8A%A1%E8%AF%A5%E6%8C%89%E4%BB%80%E4%B9%88%E6%B5%81%E7%A8%8B%E5%81%9A"><span class="toc-number">6.</span> <span class="toc-text">Skill：一类任务该按什么流程做</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Plugin%EF%BC%9A%E4%B8%80%E7%BB%84%E8%83%BD%E5%8A%9B%E6%80%8E%E4%B9%88%E6%89%93%E5%8C%85%E5%88%86%E5%8F%91"><span class="toc-number">7.</span> <span class="toc-text">Plugin：一组能力怎么打包分发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Agent-%E5%A4%96%E6%8E%A5%E8%83%BD%E5%8A%9B%E6%80%8E%E4%B9%88%E9%80%89%E5%BD%A2%E6%80%81"><span class="toc-number">8.</span> <span class="toc-text">Agent 外接能力怎么选形态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%85%A8%E6%99%AF%E8%A7%86%E5%9B%BE%EF%BC%9A%E4%B8%80%E6%AC%A1%E5%AE%8C%E6%95%B4%E4%BB%BB%E5%8A%A1%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B7"><span class="toc-number">9.</span> <span class="toc-text">三、全景视图：一次完整任务长什么样</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81Context-Engineering%EF%BC%9A%E6%A8%A1%E5%9E%8B%E8%BF%99%E4%B8%80%E5%88%BB%E8%AF%A5%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88"><span class="toc-number">10.</span> <span class="toc-text">四、Context Engineering：模型这一刻该看到什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Prompt-Cache%EF%BC%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%E7%9A%84%E7%AC%AC%E4%B8%80%E8%A6%81%E4%B9%89"><span class="toc-number">11.</span> <span class="toc-text">Prompt Cache：上下文管理的第一要义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%90%E8%BF%9B%E5%BC%8F%E5%8A%A0%E8%BD%BD%EF%BC%9A%E9%95%BF%E7%BB%93%E6%9E%9C%E5%92%8C%E5%A4%A7%E5%B7%A5%E5%85%B7%E9%9B%86"><span class="toc-number">12.</span> <span class="toc-text">渐进式加载：长结果和大工具集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81Memory%EF%BC%9A%E8%AE%A9%E6%AD%A3%E7%A1%AE%E7%9A%84%E8%BF%87%E5%8E%BB%E5%9C%A8%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%97%B6%E5%80%99%E9%87%8D%E7%8E%B0"><span class="toc-number">13.</span> <span class="toc-text">五、Memory：让正确的过去在正确的时候重现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WorkBuddy-%E9%95%BF%E6%9C%9F-Memory-%E7%9A%84%E4%BA%94%E7%B1%BB%E8%AE%B0%E5%BF%86"><span class="toc-number">14.</span> <span class="toc-text">WorkBuddy 长期 Memory 的五类记忆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%B2%A1%E6%9C%89%E6%8A%8A-Procedural-Memory-%E6%94%BE%E8%BF%9B%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86"><span class="toc-number">15.</span> <span class="toc-text">为什么没有把 Procedural Memory 放进长期记忆</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Memory-%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%88%86%E5%B1%82%E4%B8%8E%E6%B3%A8%E5%85%A5%E6%97%B6%E6%9C%BA"><span class="toc-number">16.</span> <span class="toc-text">Memory 的作用域分层与注入时机</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81Harness-Engineering%EF%BC%9A%E5%BC%95%E5%AF%BC%E3%80%81%E7%BA%A6%E6%9D%9F%E4%B8%8E%E6%95%B4%E5%90%88"><span class="toc-number">17.</span> <span class="toc-text">六、Harness Engineering：引导、约束与整合</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E7%B1%BB%E8%83%BD%E5%8A%9B%EF%BC%9A%E9%A9%BE%E9%A9%AD%E3%80%81%E7%BA%A6%E6%9D%9F%E3%80%81%E6%95%B4%E5%90%88"><span class="toc-number">18.</span> <span class="toc-text">三类能力：驾驭、约束、整合</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%9A%E7%95%8C%E4%B8%89%E5%AE%B6%E7%9A%84%E5%AE%9E%E8%B7%B5"><span class="toc-number">19.</span> <span class="toc-text">业界三家的实践</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8%E8%AE%A8%E8%AE%BA-WorkBuddy-%E7%9A%84%E5%81%9A%E6%B3%95%E4%B9%8B%E5%89%8D%EF%BC%8C%E5%85%88%E7%9C%8B%E4%B8%89%E5%AE%B6%E6%9C%89%E4%BB%A3%E8%A1%A8%E6%80%A7%E7%9A%84%E5%AE%9E%E8%B7%B5%EF%BC%9AOpenAI%E3%80%81Anthropic-%E5%92%8C-LangChain"><span class="toc-number">20.</span> <span class="toc-text">在讨论 WorkBuddy 的做法之前，先看三家有代表性的实践：OpenAI、Anthropic 和 LangChain</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WorkBuddy-Agent-%E7%9A%84%E4%BA%94%E5%B1%82-Harness%EF%BC%88%E6%9E%84%E5%BB%BA%E8%80%85%E8%A7%86%E8%A7%92%EF%BC%89"><span class="toc-number">21.</span> <span class="toc-text">WorkBuddy Agent 的五层 Harness（构建者视角）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WorkBuddy-%E5%9B%A2%E9%98%9F%E4%BD%9C%E4%B8%BA%E4%BD%BF%E7%94%A8%E8%80%85%EF%BC%8C%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B-Harness"><span class="toc-number">22.</span> <span class="toc-text">WorkBuddy 团队作为使用者，如何建立 Harness</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81Loop-Engineering%EF%BC%9A%E4%BB%BB%E5%8A%A1%E5%A6%82%E4%BD%95%E8%B7%A8%E6%97%B6%E9%97%B4%E7%BB%A7%E7%BB%AD"><span class="toc-number">23.</span> <span class="toc-text">七、Loop Engineering：任务如何跨时间继续</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E8%BF%98%E6%B2%A1%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">24.</span> <span class="toc-text">八、还没解决的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD%E5%92%8C%E4%B8%9A%E5%8A%A1%E6%AD%A3%E7%A1%AE%E6%80%A7%E7%9A%84%E9%AA%8C%E8%AF%81%E7%BC%BA%E5%8F%A3"><span class="toc-number">25.</span> <span class="toc-text">功能和业务正确性的验证缺口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%BA%93%E7%9A%84-Harnessability-%E5%86%B3%E5%AE%9A%E5%BB%BA%E8%AE%BE%E9%9A%BE%E5%BA%A6"><span class="toc-number">26.</span> <span class="toc-text">代码库的 Harnessability 决定建设难度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A1%88%E4%BE%8B%E6%9C%89%E9%80%82%E7%94%A8%E8%BE%B9%E7%95%8C"><span class="toc-number">27.</span> <span class="toc-text">案例有适用边界</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AI-%E5%8F%AF%E8%83%BD%E6%8E%A8%E5%8A%A8%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88%E6%A0%87%E5%87%86%E5%8C%96"><span class="toc-number">28.</span> <span class="toc-text">AI 可能推动技术方案标准化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Harness-%E9%9C%80%E8%A6%81%E6%8C%81%E7%BB%AD%E6%8A%95%E5%85%A5"><span class="toc-number">29.</span> <span class="toc-text">Harness 需要持续投入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%BA%E4%BB%8D%E7%84%B6%E8%B4%9F%E8%B4%A3%E4%B8%BB%E7%BA%BF%E4%BB%BB%E5%8A%A1"><span class="toc-number">30.</span> <span class="toc-text">人仍然负责主线任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">31.</span> <span class="toc-text">总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E4%B8%AA%E6%A0%B8%E5%BF%83%E7%BB%93%E8%AE%BA"><span class="toc-number">31.1.</span> <span class="toc-text">两个核心结论</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/facdeb4a/" title="知识库到 Hexo 自动发布详细设计">知识库到 Hexo 自动发布详细设计</a><time datetime="2026-10-15T13:44:00.000Z" title="发表于 2026-10-15 21:44:00">2026-10-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/9b294f2e/" title="腾讯WorkBuddy实践-如何把Agent做成可用产品">腾讯WorkBuddy实践-如何把Agent做成可用产品</a><time datetime="2026-09-01T12:00:00.000Z" title="发表于 2026-09-01 20:00:00">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/b7725795/" title="AI大模型与智能测试融合-基础认知">AI大模型与智能测试融合-基础认知</a><time datetime="2026-09-01T12:00:00.000Z" title="发表于 2026-09-01 20:00:00">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/406bb3d9/" title="中国的第三次红利是什么？">中国的第三次红利是什么？</a><time datetime="2026-09-01T12:00:00.000Z" title="发表于 2026-09-01 20:00:00">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/16692626/" title="题材炒作体系">题材炒作体系</a><time datetime="2026-08-30T07:04:00.000Z" title="发表于 2026-08-30 15:04:00">2026-08-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

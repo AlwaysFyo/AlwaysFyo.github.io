@@ -1,0 +1,483 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>提示词工程在智能测试中的实践-优化技巧 | 张小剩的博客</title><meta name="author" content="张小剩"><meta name="copyright" content="张小剩"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="提示词工程在智能测试中的优化技巧与案例复盘">
+<meta property="og:type" content="article">
+<meta property="og:title" content="提示词工程在智能测试中的实践-优化技巧">
+<meta property="og:url" content="https://alwaysfyo.github.io/posts/31ef949/">
+<meta property="og:site_name" content="张小剩的博客">
+<meta property="og:description" content="提示词工程在智能测试中的优化技巧与案例复盘">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg">
+<meta property="article:published_time" content="2026-06-06T13:06:00.000Z">
+<meta property="article:modified_time" content="2026-10-18T15:48:00.000Z">
+<meta property="article:author" content="张小剩">
+<meta property="article:tag" content="AI-测试">
+<meta property="article:tag" content="提示词工程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "提示词工程在智能测试中的实践-优化技巧",
+  "url": "https://alwaysfyo.github.io/posts/31ef949/",
+  "image": "https://alwaysfyo.github.io/assets/images/Avatar_20240410_247526.jpg",
+  "datePublished": "2026-06-06T13:06:00.000Z",
+  "dateModified": "2026-10-18T15:48:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "张小剩",
+      "url": "https://github.com/alwaysyo"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/assets/icon/favicon_2.ico"><link rel="canonical" href="https://alwaysfyo.github.io/posts/31ef949/"><link rel="preconnect"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="/pluginsSrc/@fortawesome/fontawesome-free/css/all.min.css?v=7.3.1"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!true && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/pluginsSrc/@egjs/infinitegrid/dist/infinitegrid.min.js?v=4.13.0',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: true,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '提示词工程在智能测试中的实践-优化技巧',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/glass/glass.css"><link rel="stylesheet" href="/glass/warm-tokens.css"><link rel="stylesheet" href="/glass/background.css"><link rel="stylesheet" href="/glass/polish.css"><link rel="stylesheet" href="/glass/loading.css"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="张小剩的博客" type="application/atom+xml">
+</head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (true) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">109</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">56</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">张小剩的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">提示词工程在智能测试中的实践-优化技巧</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">提示词工程在智能测试中的实践-优化技巧</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-06-06T13:06:00.000Z" title="发表于 2026-06-06 21:06:00">2026-06-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-18T15:48:00.000Z" title="更新于 2026-10-18 23:48:00">2026-10-18</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%BD%AF%E4%BB%B6%E6%B5%8B%E8%AF%95/">软件测试</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">5.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>15分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><blockquote>
+<p><strong>公众号</strong>: TesterHome 社区<br><strong>发布时间</strong>: 2026-06-01 12:00:00<br><strong>原文链接</strong>: <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/mF_9xxwMnc36yYVtl47BJA">https://mp.weixin.qq.com/s/mF_9xxwMnc36yYVtl47BJA</a></p>
+</blockquote>
+<hr>
+<h2 id="智能测试进阶｜提示词工程在智能测试中的实践：优化技巧与案例复盘"><a href="#智能测试进阶｜提示词工程在智能测试中的实践：优化技巧与案例复盘" class="headerlink" title="智能测试进阶｜提示词工程在智能测试中的实践：优化技巧与案例复盘"></a>智能测试进阶｜提示词工程在智能测试中的实践：优化技巧与案例复盘</h2><p>**整理编辑｜**TesterHome 社区</p>
+<p>前言</p>
+<p>2026 年，AI Agent、云原生重构软件研发全流程，软件测试行业迈入人机协同智能化新阶段。传统测试脚本失效率高、维护成本偏高，AI 智能测试已成为多行业核心质量保障方案，测试从业者亟需一套聚焦 AI 大模型、国产化工具、复杂场景等方向，兼具前沿性与实操性的系统化内容。</p>
+<p>此前，TesterHome 社区推出的 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzkxMDM1NDQ0OA==&action=getalbum&album_id=4331281400885510148&token=901610385&lang=zh_CN#wechat_redirect">《测试质量进阶》系列文章（点击查看）</a> 已完结，围绕测试底层逻辑、全流程管控等搭建了完整的基础进阶体系，助力从业者夯实核心能力，收获广泛认可。</p>
+<p>承接往期干货调性，TesterHome 社区继续推出《智能测试进阶篇》系列文章。本系列以 “ 技术进阶 + 场景落地 + 体系升级 “ 为核心，覆盖 AI 大模型融合、国产化工具、车载&#x2F;IoT 等复杂场景、效能优化与体系治理，以 “ 前沿性、实操性、深度性 “ 为导向，拆解实战案例、落地实操方案，助力测试人向高端智能测试工程师进阶。</p>
+<p>文章将持续更新，敬请关注！</p>
+<p>智能测试进阶篇 (4)AI 大模型与智能测试深度融合——提示词工程在智能测试中的实践：优化技巧与案例复盘</p>
+<p>引言</p>
+<p>在上一篇 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkxMDM1NDQ0OA==&mid=2247526311&idx=1&sn=f998b261ed2bec47c4fe65228bad09ed&scene=21#wechat_redirect">《提示词工程在智能测试中的实践：核心设计方法与通用模板》</a> 中，我们建立了测试场景提示词的基础设计规范与四大场景通用模板，解决了测试团队 “ 不会写提示词、没有统一模板 “ 的入门问题。</p>
+<p>但在企业规模化落地过程中，绝大多数团队会遇到第二个进阶瓶颈：套用通用模板后，大模型输出依然不稳定。具体表现为：时而覆盖全面、时而遗漏边缘场景；时而输出规范、时而冗余杂乱；简单场景可用、复杂业务场景严重跑偏；不同测试人员使用同款模板，输出质量参差不齐。</p>
+<p>根本原因不在于模板本身，而在于缺少精细化优化能力与迭代闭环机制。通用模板只能保证 “ 下限可用 “，想要让大模型输出高精准、高稳定、高适配的测试结果，必须依靠系统化的提示词优化技巧，结合业务场景持续迭代调优。</p>
+<p>本文承接上文，聚焦实操落地与效能升级，拆解智能测试专属的六大核心提示词优化技巧，每类技巧均搭配「优化前 - 优化后 - 效果对比」实战案例，同时复盘中小企业轻量化落地、中大型企业体系化落地两类真实企业案例，总结落地误区与最佳实践，帮助团队实现提示词从 “ 能用 “ 到 “ 好用、稳定、可量产 “ 的进阶升级。</p>
+<p>一、智能测试提示词常见落地痛点（优化前提）</p>
+<p>在正式讲解优化技巧前，先梳理企业落地中最典型的 5 类问题，所有优化动作均围绕解决这些痛点展开，精准对标测试业务场景：</p>
+<ol>
+<li>角色泛化，输出不专业：仅使用通用测试角色，大模型输出偏通用理论，不贴合车载、金融、IoT 等细分行业业务规则；</li>
+<li>指令模糊，范围失控：需求描述笼统，无明确边界，导致用例冗余、核心场景遗漏、故障分析浮于表面；</li>
+<li>无格式约束，二次改造成本高：输出结构混乱、字段缺失，无法直接对接 TestRail、Jira、自动化脚本等现有工具链路；</li>
+<li>缺少样本参照，标准不统一：复杂场景无参考示例，不同人员输出风格、覆盖范围、颗粒度完全不一致；</li>
+<li>一次性使用，无迭代闭环：输出出错仅人工修改结果，不反向优化提示词，导致同类问题反复出现，无法沉淀团队能力。</li>
+</ol>
+<p>下文六大优化技巧，将针对性解决以上全部痛点，形成标准化优化体系。</p>
+<p>二、智能测试提示词六大核心优化技巧（实操可复用）</p>
+<p>结合大模型底层推理逻辑与软件测试领域特性，提炼出适配测试场景的 6 大核心优化技巧，涵盖角色、指令、上下文、思维推理、样本示例、迭代闭环六大维度，所有技巧均配套真实测试场景对比案例，可直接套用落地。</p>
+<p>技巧一：角色精准收敛优化——杜绝泛化输出，贴合领域专业度</p>
+<p>优化原理</p>
+<p>大模型默认输出为通用通识内容，测试属于强领域、强规则、强行业壁垒的专业场景。仅填写 “ 测试工程师 “ 会导致输出通用性强、行业适配性弱。通过收敛角色维度、明确经验年限、锁定细分领域、限定工作职责，可强制大模型对齐测试专业视角，输出贴合业务规则的精准结果。</p>
+<p><strong>实操对比案例（金融支付接口测试）</strong></p>
+<p>❌ 优化前（泛化角色）</p>
+<p>作为测试工程师，生成用户提现接口测试用例。输出问题：未区分金融合规规则、未覆盖限额风控、未考虑资金流水校验，用例偏通用互联网接口，不符合金融测试规范。</p>
+<p>✅ 优化后（精准收敛角色）</p>
+<p>作为拥有 5 年金融支付接口测试经验的资深测试工程师，熟悉银行提现风控规则、资金流水校验逻辑、金融接口合规要求，专注于用户资金类接口测试，请生成用户提现接口测试用例。</p>
+<p>优化效果：自动覆盖单笔限额、单日限额、余额不足、风控拦截、流水不一致等金融专属场景，完全贴合行业合规与业务规则，用例专业度大幅提升。</p>
+<p>技巧二：指令精确分层优化——用 “ 外科式指令 “ 替代模糊描述</p>
+<p>优化原理</p>
+<p>大模型对模糊语义存在天然歧义，测试工作对精准度要求极高。通过任务分层、范围锁死、禁止项明确、量化指标约束，将模糊需求转化为可执行、可量化的精准指令，彻底解决 “ 场景遗漏、答非所问、范围跑偏 “ 问题。</p>
+<p><strong>实操对比案例（IoT 设备登录测试）</strong></p>
+<p>❌ 优化前（模糊指令）</p>
+<p>生成 IoT 设备登录功能的测试用例，覆盖异常场景。输出问题：异常场景杂乱，包含大量 IoT 无关场景，遗漏设备离线、密钥失效、多设备冲突等核心 IoT 专属异常。</p>
+<p>✅ 优化后（分层精准指令）请针对 IoT 智能设备云端登录功能生成测试用例，严格遵循以下要求：1. 仅覆盖：设备网络异常、设备密钥异常、云端权限异常、多设备并发登录 4 类 IoT 专属异常场景；2. 不生成普通账号密码错误、浏览器兼容等与 IoT 设备无关的 Web 场景；3. 每条用例必须标注设备状态、云端状态、预期设备反馈、云端日志表现。</p>
+<p>优化效果：用例 100% 贴合 IoT 场景，无无效冗余场景，异常覆盖精准，完全适配设备端 + 云端协同测试需求。</p>
+<p>技巧三：结构化输出约束优化——实现输出即落地、零二次改造</p>
+<p>优化原理</p>
+<p>未做格式约束的提示词，大模型会随机输出段落式、碎片化内容，测试人员需要大量时间整理表格、字段、报告结构。通过固定输出格式、强制字段完整性、统一排版规范，让输出结果直接适配企业测试工具与文档规范，实现 “ 即生成即用 “。</p>
+<p><strong>实操对比案例（车载故障根因分析）</strong></p>
+<p>❌ 优化前（无结构约束）</p>
+<p>分析车载座舱蓝牙连接失败的故障根因，给出解决建议。输出问题：大段文字堆砌，无分层结构，根因、现象、建议混杂，无法直接同步 Jira 归档。</p>
+<p>✅ 优化后（结构化强制约束）请严格按照以下固定结构输出分析结果，禁止增减字段、禁止打乱顺序：1. 故障现象（精简 20 字以内）；2. 影响范围（车型&#x2F;系统版本&#x2F;用户）；3. 核心根因（单点定位）；4. 日志依据；5. 临时修复方案；6. 彻底优化方案；7. 预防机制。</p>
+<p>优化效果：输出结构标准化、字段齐全、逻辑清晰，可直接复制同步缺陷管理平台，人工整理成本降低 90%。</p>
+<p>技巧四：思维链（CoT）推理优化——解决复杂场景推理遗漏</p>
+<p>优化原理</p>
+<p>大模型直接输出最终结果容易出现 “ 跳跃式推理 “，复杂业务、多链路、多依赖的测试场景极易遗漏边缘分支。思维链（CoT）优化，即强制大模型分步推理、先梳理逻辑再输出结果，模拟人工测试的思考过程，大幅提升复杂场景、边缘场景的覆盖率，降低幻觉概率。</p>
+<p><strong>实操对比案例（Serverless 函数调用测试）</strong></p>
+<p>❌ 优化前（直接输出结果）</p>
+<p>生成 Serverless 函数调用超时的测试场景与风险点。输出问题：仅覆盖网络超时，遗漏冷启动超时、资源配额耗尽、触发器异常、并发限流等 Serverless 专属复杂场景。</p>
+<p>✅ 优化后（增加思维链推理指令）请你先分步梳理 Serverless 函数调用的完整链路：触发器触发→资源分配→代码执行→结果返回→资源释放，再基于每一步的链路风险点，逐一推导异常测试场景，最后汇总输出完整测试用例，禁止直接罗列结果。</p>
+<p>优化效果：完整覆盖全链路异常场景，边缘场景覆盖率从 65% 提升至 96%，完美适配云原生复杂架构测试。</p>
+<p>技巧五：少样本示例（Few-Shot）优化——统一输出标准与颗粒度</p>
+<p>优化原理</p>
+<p>文字描述存在理解偏差，对于企业自定义规范、特殊场景、非标用例格式，单纯文字指令无法统一标准。通过输入 1-2 条企业标准样例，让大模型快速学习团队输出风格、颗粒度、字段规范、场景深度，彻底解决多人使用模板输出不一致的问题。</p>
+<p><strong>实操对比案例（车载 ADAS 预警测试用例）</strong></p>
+<p>❌ 优化前（无示例纯文字指令）</p>
+<p>生成 ADAS 前向碰撞预警功能测试用例，覆盖边界场景。输出问题：用例颗粒度粗糙，未适配车速、距离、光线、路况等车载多维变量，不符合 ADAS 测试标准。</p>
+<p>✅ 优化后（附带标准样例）请严格参照以下样例的格式、颗粒度、场景维度生成 ADAS 测试用例：【样例】用例名称：低速近距离前车预警校验；前置条件：车辆时速 20km&#x2F;h、白天晴朗路况、前车距离 5m；操作步骤：匀速向前行驶；预期结果：系统触发一级预警，仪表图标高亮 + 语音提示。请参照以上标准，生成不同车速、光线、距离、路况下的边界与异常用例。</p>
+<p>优化效果：所有用例维度统一、颗粒度一致、贴合车载 ADAS 行业测试标准，团队输出标准化率 100%。</p>
+<p>技巧六：反馈迭代闭环优化——构建持续调优机制</p>
+<p>优化原理</p>
+<p>通用模板无法适配所有业务迭代变化，提示词优化不是一次性工作。通过输出问题收集→精准反馈修正→提示词版本迭代→固化模板的闭环机制，持续修复模型短板，适配业务迭代，让提示词越用越精准、越用越贴合业务。</p>
+<p>**实操迭代案例（电商订单测试）**1. 初始问题：大模型生成订单用例，始终遗漏 “ 退款中订单不可重复支付 “ 的业务约束；</p>
+<ol start="2">
+<li>精准反馈：补充约束 “ 本平台订单存在 4 种状态：待支付、已支付、退款中、已关闭，其中退款中、已关闭订单禁止重复支付，请补充该场景用例，后续生成用例必须优先校验订单状态约束 “；</li>
+<li>迭代固化：将该约束写入通用电商订单提示词模板；</li>
+<li>迭代效果：后续所有订单类用例自动覆盖状态校验场景，同类问题彻底杜绝。</li>
+</ol>
+<p>三、企业落地案例复盘（不同规模真实场景）</p>
+<p>结合中小企业轻量化落地、中大型企业体系化落地两类典型场景，完整复盘提示词优化的落地流程、问题、优化动作与量化收益，为不同团队提供可直接照搬的落地方案。</p>
+<p>案例一：中小企业轻量化落地复盘（5 人测试团队·电商 Web 项目）</p>
+<ol>
+<li>落地背景</li>
+</ol>
+<p>团队规模小、无专职 AI 运维人员、迭代节奏快，前期直接套用通用提示词模板，存在两大问题：一是用例遗漏多、无效场景多，人工修改成本高；二是新人输出质量差，团队整体输出不统一，大模型赋能效果有限。</p>
+<ol start="2">
+<li>核心问题盘点</li>
+</ol>
+<ul>
+<li>角色泛化，输出通用化，不贴合电商订单、支付、购物车核心业务；</li>
+<li>无明确场景边界，冗余用例占比高达 30%；</li>
+<li>无标准化示例，新人与老人输出质量差距极大。</li>
+</ul>
+<ol start="3">
+<li>优化落地动作</li>
+</ol>
+<p>基于上面介绍过的六大优化技巧，做轻量化迭代，不增加复杂成本：</p>
+<p>技巧 1：固定电商专属测试角色，锁定电商业务场景；</p>
+<p>技巧 2：明确场景黑白名单，禁止输出非电商无关场景；</p>
+<p>技巧 5：沉淀 3 条电商标准用例样例，植入提示词；</p>
+<p>技巧 6：建立简易迭代表，记录每次输出遗漏场景，每周更新模板约束。</p>
+<ol start="4">
+<li>落地量化收益</li>
+</ol>
+<ul>
+<li>用例冗余率从 30% 降至 5% 以内；</li>
+<li>场景覆盖率从 72% 提升至 94%；</li>
+<li>单模块用例设计耗时缩短 75%；</li>
+<li>新人上手效率提升 60%，团队输出质量完全统一。</li>
+</ul>
+<ol start="5">
+<li>复盘总结（中小企业最佳实践）</li>
+</ol>
+<p>中小企业无需搭建复杂提示词管理平台，核心思路为轻量化优化、小步快跑、持续沉淀，优先做好角色收敛、指令精准、样例统一、简易迭代，即可实现极高的投入产出比。</p>
+<p>案例二：中大型企业体系化落地复盘（20 人测试团队·车载座舱项目）</p>
+<ol>
+<li>落地背景</li>
+</ol>
+<p>车载场景复杂、多车型、多系统、多交互逻辑，业务链路长、边缘场景多，团队前期使用通用模板，存在输出不稳定、复杂场景推理缺失、输出格式不兼容内部测试平台等问题，无法规模化落地。</p>
+<ol start="2">
+<li>核心问题盘点</li>
+</ol>
+<ul>
+<li>复杂多链路场景推理不完整，边缘场景频繁遗漏；</li>
+<li>输出格式不统一，无法对接内部车载测试管理平台；</li>
+<li>不同模块提示词标准不一，无统一迭代机制；</li>
+<li>故障根因分析维度缺失，无法适配车载日志、设备状态分析需求。</li>
+</ul>
+<ol start="3">
+<li>体系化优化落地动作</li>
+</ol>
+<p>全量落地六大优化技巧，搭建企业级提示词优化闭环：</p>
+<ul>
+<li>角色精准化：按座舱、ADAS、车联网细分专属专家角色；</li>
+<li>指令分层化：为车载多维度变量（车速、光线、车型、系统版本）设置专属约束；</li>
+<li>结构标准化：输出格式完全对齐内部测试平台字段规范；</li>
+<li>思维链推理：所有复杂场景强制链路分步推理；</li>
+<li>少样本固化：沉淀各模块官方标准样例库；</li>
+<li>闭环迭代：建立版本化提示词管理机制，按业务模块迭代更新。</li>
+</ul>
+<ol start="4">
+<li>落地量化收益</li>
+</ol>
+<ul>
+<li>复杂场景边缘覆盖率提升 32%；</li>
+<li>大模型输出准确率从 61.8% 提升至 89.4%；</li>
+<li>人工二次修改工作量减少 85%；</li>
+<li>故障根因定位平均耗时从 2 小时缩短至 25 分钟。</li>
+</ul>
+<ol start="5">
+<li>复盘总结（中大型企业最佳实践）</li>
+</ol>
+<p>中大型复杂场景必须标准化、体系化、版本化，仅靠单条提示词优化无法解决稳定性问题，必须通过思维链推理保障复杂场景完整性，通过样例统一标准，通过迭代闭环持续适配业务迭代，实现规模化智能测试落地。</p>
+<p>四、智能测试提示词优化通用避坑总结</p>
+<p>结合双案例复盘，提炼 6 条高频避坑要点，覆盖绝大多数团队落地误区：</p>
+<ol>
+<li>忌过度泛化：不要使用通用测试角色与模糊指令，领域越细分，输出越精准；</li>
+<li>忌无边界放开：必须明确 “ 要做什么、禁止做什么 “，避免大模型自由发挥生成无效内容；</li>
+<li>忌无结构输出：复杂报告、用例、分析结果必须强制结构化，降低人工改造成本；</li>
+<li>忌复杂场景跳过推理：多链路、多依赖场景必须开启思维链分步推理，杜绝结果跳跃；</li>
+<li>忌无样例纯文字约束：企业非标规范、特殊场景必须搭配样例，统一团队输出标准；</li>
+<li>忌一次性使用不迭代：业务持续迭代，提示词必须同步迭代，形成长期优化闭环。</li>
+</ol>
+<p>五、小结</p>
+<p>提示词工程的进阶核心，不在于编写华丽的指令，而在于标准化、精准化、闭环化的持续优化。六大优化技巧层层递进：从角色、指令的基础精准优化，到结构、样例的标准化统一，再到思维链推理、迭代闭环的进阶能力升级，完整覆盖从个人实操到企业体系化落地的全场景需求。</p>
+<p>如果说上一篇模板解决了 “ 从零能用 “ 的问题，本文的优化技巧与案例复盘，则彻底解决了 “ 能用不稳、能用不精、无法规模化 “ 的进阶痛点，帮助测试团队真正把大模型能力沉淀为可复用、可传承、可量产的团队测试资产。</p>
+<p>后续系列将进入大模型用例生成专项进阶，聚焦复杂业务逻辑与边缘场景的智能化生成与优化，持续落地智能测试从工具辅助到核心引擎的升级闭环。</p>
+<hr>
+<p>《智能测试进阶》系列文章（陆续更新中）</p>
+<h3 id="第一部分：AI-大模型与智能测试深度融合"><a href="#第一部分：AI-大模型与智能测试深度融合" class="headerlink" title="第一部分：AI 大模型与智能测试深度融合"></a>第一部分：AI 大模型与智能测试深度融合</h3><ol>
+<li><h2 id="AI大模型与智能测试深度融合：基础认知与核心应用场景"><a href="#AI大模型与智能测试深度融合：基础认知与核心应用场景" class="headerlink" title="AI大模型与智能测试深度融合：基础认知与核心应用场景"></a><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkxMDM1NDQ0OA==&mid=2247526128&idx=1&sn=4115869f418036ec3c5b6af47dafd2b6&scene=21#wechat_redirect">AI大模型与智能测试深度融合：基础认知与核心应用场景</a></h2></li>
+<li><h2 id="AI大模型与智能测试深度融合：评估体系、落地路径与陷阱规避"><a href="#AI大模型与智能测试深度融合：评估体系、落地路径与陷阱规避" class="headerlink" title="AI大模型与智能测试深度融合：评估体系、落地路径与陷阱规避"></a><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkxMDM1NDQ0OA==&mid=2247526143&idx=2&sn=6b5fc1f089e57fda59c6b2cf5d9ce247&scene=21#wechat_redirect">AI大模型与智能测试深度融合：评估体系、落地路径与陷阱规避</a></h2></li>
+<li><h2 id="提示词工程在智能测试中的实践：核心设计方法与通用模板"><a href="#提示词工程在智能测试中的实践：核心设计方法与通用模板" class="headerlink" title="提示词工程在智能测试中的实践：核心设计方法与通用模板"></a><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkxMDM1NDQ0OA==&mid=2247526311&idx=1&sn=f998b261ed2bec47c4fe65228bad09ed&scene=21#wechat_redirect">提示词工程在智能测试中的实践：核心设计方法与通用模板</a></h2></li>
+</ol>
+<hr>
+<p>MTSC2026 中国互联网测试开发大会将于 8 月 15 日在深圳举行</p>
+<p>最新议题看这里→</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkxMDM1NDQ0OA==&mid=2247526354&idx=1&sn=a6c1a04feb3858d0f2827c2425ecefc1&scene=21#wechat_redirect">这些议题进入评审环节，一起围观AI时代的行业关注热点！</a></p>
+<p><strong>大会火热报名中</strong></p>
+<p><strong>7 折票已于 5 月 30 日截止</strong></p>
+<p><strong>目前购票 8 折优惠</strong></p>
+<p><strong>时间越晚折扣越少噢~</strong></p>
+<p><strong>扫描下方二维码，即可参会</strong></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkxMDM1NDQ0OA==&mid=2247526384&idx=2&sn=04a5c73d084ce97db205b4008811e25b&scene=21#wechat_redirect">AI编码｜团队新基础设施？MCP协议在AI辅助编程中的质量保障作用</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkxMDM1NDQ0OA==&mid=2247526374&idx=1&sn=ce95cfa8f4ed7e40f1ded83a77353ceb&scene=21#wechat_redirect">AI测试｜如何构建一个工程师真正会听取意见的AI代码审查工具</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkxMDM1NDQ0OA==&mid=2247526340&idx=1&sn=9b402d56518112efdd8ce042b197116a&scene=21#wechat_redirect">AI时代下，软件测试岗位正在消失吗？——全球科技公司的QA转型、裁撤与重构</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkxMDM1NDQ0OA==&mid=2247526334&idx=1&sn=2b767556a20bca9989cbb184c4ce4f61&scene=21#wechat_redirect">大厂技术密集更新：OpenAI、Anthropic、微软等AI智能体与云原生工具重塑开发测试流程</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkxMDM1NDQ0OA==&mid=2247526340&idx=2&sn=a3674820e7ef928846781b96269cabbd&scene=21#wechat_redirect">规模化AI部署：工程团队面临的真实挑战</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkxMDM1NDQ0OA==&mid=2247526322&idx=1&sn=3a3150c355c82c396cbd6770c5d82134&scene=21#wechat_redirect">破解AI代码智能体测试幻觉：SpecBench基准与“奖励作弊”防控指南</a></p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AI-%E6%B5%8B%E8%AF%95/">AI-测试</a><a class="post-meta__tags" href="/tags/%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%B7%A5%E7%A8%8B/">提示词工程</a></div><div class="post-share"><div class="social-share" data-image="/assets/images/Avatar_20240410_247526.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="/pluginsSrc/butterfly-extsrc/sharejs/dist/css/share.min.css?v=1.1.6" media="print" onload="this.media='all'"><script src="/pluginsSrc/butterfly-extsrc/sharejs/dist/js/social-share.min.js?v=1.1.6" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/13db4480/" title="提示词工程在智能测试中的实践-设计方法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">提示词工程在智能测试中的实践-设计方法</div></div><div class="info-2"><div class="info-item-1">提示词工程在智能测试中的核心设计方法与通用模板</div></div></div></a><a class="pagination-related" href="/posts/3b893b73/" title="大模型测试用例生成与优化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">大模型测试用例生成与优化</div></div><div class="info-2"><div class="info-item-1">大模型驱动测试用例生成与优化的全流程实操指南</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/13db4480/" title="提示词工程在智能测试中的实践-设计方法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-06</div><div class="info-item-2">提示词工程在智能测试中的实践-设计方法</div></div><div class="info-2"><div class="info-item-1">提示词工程在智能测试中的核心设计方法与通用模板</div></div></div></a><a class="pagination-related" href="/posts/ff9da97d/" title="AI大模型与智能测试融合-评估体系"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-06</div><div class="info-item-2">AI大模型与智能测试融合-评估体系</div></div><div class="info-2"><div class="info-item-1">AI 智能测试的评估体系、落地路径与常见陷阱规避</div></div></div></a><a class="pagination-related" href="/posts/3b893b73/" title="大模型测试用例生成与优化"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-06</div><div class="info-item-2">大模型测试用例生成与优化</div></div><div class="info-2"><div class="info-item-1">大模型驱动测试用例生成与优化的全流程实操指南</div></div></div></a><a class="pagination-related" href="/posts/b7725795/" title="AI大模型与智能测试融合-基础认知"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-01</div><div class="info-item-2">AI大模型与智能测试融合-基础认知</div></div><div class="info-2"><div class="info-item-1">TesterHome 系列：AI 大模型与智能测试融合的基础认知</div></div></div></a><a class="pagination-related" href="/posts/5076271b/" title="AI测试-33个需要重点关注的大语言模型评测指标"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-06-16</div><div class="info-item-2">AI测试-33个需要重点关注的大语言模型评测指标</div></div><div class="info-2"><div class="info-item-1">汇总 33 项大语言模型评测指标，覆盖速度、效率与输出质量等维度</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/assets/images/Avatar_20240410_247526.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">张小剩</div><div class="author-info-description">折腾是一种乐趣，求知是一种追求！</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">109</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">56</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">9</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/alwaysfyo"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/alwaysfyo" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhangxy.live@outlook.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到张小剩的博客，这里记录折腾与求知的痕迹。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%99%BA%E8%83%BD%E6%B5%8B%E8%AF%95%E8%BF%9B%E9%98%B6%EF%BD%9C%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%B7%A5%E7%A8%8B%E5%9C%A8%E6%99%BA%E8%83%BD%E6%B5%8B%E8%AF%95%E4%B8%AD%E7%9A%84%E5%AE%9E%E8%B7%B5%EF%BC%9A%E4%BC%98%E5%8C%96%E6%8A%80%E5%B7%A7%E4%B8%8E%E6%A1%88%E4%BE%8B%E5%A4%8D%E7%9B%98"><span class="toc-number">1.</span> <span class="toc-text">智能测试进阶｜提示词工程在智能测试中的实践：优化技巧与案例复盘</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%9AAI-%E5%A4%A7%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%99%BA%E8%83%BD%E6%B5%8B%E8%AF%95%E6%B7%B1%E5%BA%A6%E8%9E%8D%E5%90%88"><span class="toc-number">1.1.</span> <span class="toc-text">第一部分：AI 大模型与智能测试深度融合</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AI%E5%A4%A7%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%99%BA%E8%83%BD%E6%B5%8B%E8%AF%95%E6%B7%B1%E5%BA%A6%E8%9E%8D%E5%90%88%EF%BC%9A%E5%9F%BA%E7%A1%80%E8%AE%A4%E7%9F%A5%E4%B8%8E%E6%A0%B8%E5%BF%83%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">2.</span> <span class="toc-text">AI大模型与智能测试深度融合：基础认知与核心应用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AI%E5%A4%A7%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%99%BA%E8%83%BD%E6%B5%8B%E8%AF%95%E6%B7%B1%E5%BA%A6%E8%9E%8D%E5%90%88%EF%BC%9A%E8%AF%84%E4%BC%B0%E4%BD%93%E7%B3%BB%E3%80%81%E8%90%BD%E5%9C%B0%E8%B7%AF%E5%BE%84%E4%B8%8E%E9%99%B7%E9%98%B1%E8%A7%84%E9%81%BF"><span class="toc-number">3.</span> <span class="toc-text">AI大模型与智能测试深度融合：评估体系、落地路径与陷阱规避</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%B7%A5%E7%A8%8B%E5%9C%A8%E6%99%BA%E8%83%BD%E6%B5%8B%E8%AF%95%E4%B8%AD%E7%9A%84%E5%AE%9E%E8%B7%B5%EF%BC%9A%E6%A0%B8%E5%BF%83%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%B3%95%E4%B8%8E%E9%80%9A%E7%94%A8%E6%A8%A1%E6%9D%BF"><span class="toc-number">4.</span> <span class="toc-text">提示词工程在智能测试中的实践：核心设计方法与通用模板</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/facdeb4a/" title="知识库到 Hexo 自动发布详细设计">知识库到 Hexo 自动发布详细设计</a><time datetime="2026-10-15T13:44:00.000Z" title="发表于 2026-10-15 21:44:00">2026-10-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/9b294f2e/" title="腾讯WorkBuddy实践-如何把Agent做成可用产品">腾讯WorkBuddy实践-如何把Agent做成可用产品</a><time datetime="2026-09-01T12:00:00.000Z" title="发表于 2026-09-01 20:00:00">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/b7725795/" title="AI大模型与智能测试融合-基础认知">AI大模型与智能测试融合-基础认知</a><time datetime="2026-09-01T12:00:00.000Z" title="发表于 2026-09-01 20:00:00">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/406bb3d9/" title="中国的第三次红利是什么？">中国的第三次红利是什么？</a><time datetime="2026-09-01T12:00:00.000Z" title="发表于 2026-09-01 20:00:00">2026-09-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/16692626/" title="题材炒作体系">题材炒作体系</a><time datetime="2026-08-30T07:04:00.000Z" title="发表于 2026-08-30 15:04:00">2026-08-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="/pluginsSrc/vanilla-lazyload/dist/lazyload.iife.min.js?v=19.1.3"></script><div class="js-pjax"></div><script src="/glass/glass.js"></script><script src="/glass/mobile-fix.js"></script><script src="/pluginsSrc/pjax/pjax.min.js?v=0.2.8" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+  const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+  window.pjax = new Pjax({
+    elements: 'a:not([target="_blank"]):not([data-fancybox])',
+    selectors: pjaxSelectors,
+    cacheBust: false,
+    analytics: false,
+    scrollRestoration: false
+  })
+
+  const triggerPjaxFn = (val) => {
+    if (!val) return
+    Object.values(val).forEach(fn => {
+      try {
+        fn()
+      } catch (err) {
+        console.debug('Pjax callback failed:', err)
+      }
+    })
+  }
+
+  document.addEventListener('pjax:send', () => {
+    // removeEventListener
+    btf.removeGlobalFnEvent('pjaxSendOnce')
+    btf.removeGlobalFnEvent('themeChange')
+
+    // reset readmode
+    const $bodyClassList = document.body.classList
+    if ($bodyClassList.contains('read-mode')) $bodyClassList.remove('read-mode')
+
+    triggerPjaxFn(window.globalFn.pjaxSend)
+  })
+
+  document.addEventListener('pjax:complete', () => {
+    btf.removeGlobalFnEvent('pjaxCompleteOnce')
+    document.querySelectorAll('script[data-pjax]').forEach(item => {
+      if (!item.parentNode) return
+      const newScript = document.createElement('script')
+      const content = item.text || item.textContent || ''
+      Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+      newScript.appendChild(document.createTextNode(content))
+      item.parentNode.replaceChild(newScript, item)
+    })
+
+    triggerPjaxFn(window.globalFn.pjaxComplete)
+  })
+
+  document.addEventListener('pjax:error', e => {
+    const responseURL = e.request && e.request.responseURL
+    if (e.request && e.request.status === 404) {
+      false
+        ? pjax.loadUrl('/404')
+        : responseURL && (window.location.href = responseURL)
+    } else if (responseURL) {
+      window.location.href = responseURL
+    }
+  })
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

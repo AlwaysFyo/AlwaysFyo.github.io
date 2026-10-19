@@ -132,6 +132,16 @@ footer#footer,
     align-items: stretch;
   }
 
+  /* 加固：align-items 复位不依赖 .glass 类。
+     glass.js 是运行时给卡片加 .glass 的（且会跳过已有的），若脚本被拦截、
+     pjax 首屏未跑到、或将来改 SURFACES 表，这张卡的类名可能缺失 ——
+     那时 .recent-post-item.glass 整块都不生效，主题的 align-items: center
+     就会把纵向卡片的信息区水平居中。所以把这条对齐复位提到不带类名的层级，
+     作为兜底；下面 .glass 块里的同值声明与之等价，二者共存不冲突。 */
+  #recent-posts .recent-post-item {
+    align-items: stretch !important;
+  }
+
   #recent-posts .recent-post-item.glass {
     display: flex !important;
     flex-direction: column !important;
@@ -140,6 +150,17 @@ footer#footer,
     margin: 0 !important;
     padding: 12px !important;
     overflow: hidden;
+
+    /* 根因修复：主题在 index_layout 1/2/3 的「横向卡片」下给 .recent-post-item
+       设了 align-items: center（homepage.styl 里 flex-direction: row 的那一组）。
+       我们把卡片改成纵向 flex 后没复位它 —— 列方向下 align-items 管的是水平方向，
+       子项就被水平居中，于是「按内容收缩」的 .recent-post-info 左右各留一段空隙，
+       看起来就是文章内容左边距变大，且每张卡宽度都不一样。
+       这里复位成 stretch：交叉轴尺寸为 auto 时铺满，与主题给信息区的
+       width: 58% / .no-cover width: 100% 的预期效果一致。
+       对有封面的卡片无副作用：.post_cover 已是 width:100% + aspect-ratio + flex:none，
+       交叉轴/主轴尺寸都是显式的，stretch 不介入。 */
+    align-items: stretch !important;
   }
 
   /* 有封面时：封面置顶，3:2 比例铺满卡宽 */
