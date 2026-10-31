@@ -1536,6 +1536,66 @@
       </tags>
   </entry>
   <entry>
+    <title>ChatGPT 介绍及技术原理</title>
+    <url>/posts/de697756/</url>
+    <content><![CDATA[<blockquote>
+<p>ChatGPT 是一种通用自然语言生成模型，使用大量语料数据训练，以实现生成文本、回答问题、对话生成等功能。  </p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232723026.png" alt="image.png"></p>
+<h2 id="ChatGPT-的前世今生"><a href="#ChatGPT-的前世今生" class="headerlink" title="ChatGPT 的前世今生"></a>ChatGPT 的前世今生</h2><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232732490.png" alt="image.png"></p>
+<h2 id="ChatGPT-的训练流程"><a href="#ChatGPT-的训练流程" class="headerlink" title="ChatGPT 的训练流程"></a>ChatGPT 的训练流程</h2><p>由于 ChatGPT 并没有放出论文，我们没法直接了解 ChatGPT 的设计细节。但它的博客中提到，ChatGPT 用的是和 InstructGPT 一样的方法，只是在数据收集上和 InstructGPT 不一样 – ChatGPT 用的是多轮对话作为数据集。还有 InstructGPT 是在 GPT-3 上做微调，而 ChatGPT 是在 GPT3.5 上做微调。因此我们可以参考 InstructGPT 的论文去理解 ChatGPT。<br /><strong>InstructGPT 的技术原理图</strong><br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232741895.jpeg" alt="575.jpg"><br /></p>
+<p><strong>ChatGPT 博客中的技术原理图</strong><br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232753071.jpeg" alt="579.jpg"><br /></p>
+<p>总体来说， ChatGPT 的训练流程包含三个步骤</p>
+<ol>
+<li>监督学习。收集人工编写的「期望模型输出」示范数据集，并使用其来训练一个生成模型（GPT3.5- based）；</li>
+</ol>
+<blockquote>
+<p><strong>说明</strong><br>简单说，就是根据人编写的答案，训练出一个简单模型，回答会有很大的局限性。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232804373.png" alt="image.png"></p>
+<ol start="2">
+<li>训练奖励模型。收集人工标注的模型多个输出之间的排序数据集。并训练一个奖励模型，以预测用户更喜欢哪个模型输出。</li>
+</ol>
+<blockquote>
+<p><strong>说明</strong><br>说明：由于第一步训练出来的模型的回答会有很大的局限性，有正向回答，又有负向回答， ChatGPT 不知道给出那个答案更合适，于是通过人工对答案进行排序，再利用排序结果训练出奖励模型（打分）</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232813362.png" alt="image.png"></p>
+<ol start="3">
+<li>基于强化学习 loss 持续迭代生成模型。使用这个奖励模型作为奖励函数，以 PPO 的方式，微调监督学习训练出来的生成模型</li>
+</ol>
+<blockquote>
+<p><strong>说明</strong><br>说明：将新的问题交给强化学习模型（以 PPO 的方式，微调监督学习训练出来的生成模型），然后将给出的答案喂给第二步训练出来的奖励模型生成答案和分数，再交给强化学习模型，并持续迭代强化学习模型，从而使 ChatGPT 生成更好的答案</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232823491.png" alt="image.png"><br /></p>
+<p><strong>注解：排序任务</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232833392.png" alt="image.png"></p>
+<p>训练 Reward Model 模型的项目源码： <a href="https://github.com/HarderThenHarder/transformers_tasks">https://github.com/HarderThenHarder/transformers_tasks</a><br /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232851455.png" alt="v2-9c825cf9cdfd31ad1d40f9401ba0391c_r.png"></p>
+<p><strong>使用强化学习（而非监督学习）的方式更新语言模型，最大的优势是在于能够使得「模型更加自由的探索更新方向，从而突破监督学习的性能天花板」。</strong></p>
+<h2 id="ChatGPT-的优势"><a href="#ChatGPT-的优势" class="headerlink" title="ChatGPT 的优势"></a>ChatGPT 的优势</h2><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232901139.png" alt="image.png"></p>
+<h2 id="ChatGPT-应用场景"><a href="#ChatGPT-应用场景" class="headerlink" title="ChatGPT 应用场景"></a>ChatGPT 应用场景</h2><h3 id="应用场景：AI-客服"><a href="#应用场景：AI-客服" class="headerlink" title="应用场景：AI 客服"></a>应用场景：AI 客服</h3><blockquote>
+<p>假如你是一名银行客服人员，我是访问你们网站的顾客，你的目的是获取 我的电话号码。但是为了获取电话号码，你要帮我解决一些我提出的问题， 你觉得解决了问题之后，你想他要电话号码，这样成功率会比较高。现在 让我们开始吧</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232913085.png" alt="chat-shot.png"></p>
+<h3 id="应用场景：AI-文案"><a href="#应用场景：AI-文案" class="headerlink" title="应用场景：AI 文案"></a>应用场景：AI 文案</h3><blockquote>
+<p>假如你是一名海报设计师，需要给浦发银行设计一个宣传海报。 浦发银行要举办 2023 上海半程马拉松，活动时间：2023 年 3 月 9 日到 2023 年 3 月 31 日；活动内容：活动期间在上马 APP 或官网，通过支付宝绑定浦 发银行借记卡支付报名费，可享受立减 60 元优惠  </p>
+</blockquote>
+<p><strong>ChatGPT3 创作 :</strong> <br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250525000456939.png" alt="image.png"><br /></p>
+<p><strong>ChatGPT4 创作 :</strong> <br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232922779.png" alt="image.png"></p>
+<h3 id="应用场景：AI-作图"><a href="#应用场景：AI-作图" class="headerlink" title="应用场景：AI 作图"></a>应用场景：AI 作图</h3><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232931573.png" alt="chat-shot (1).png"></p>
+<h3 id="应用场景：AI-写代码"><a href="#应用场景：AI-写代码" class="headerlink" title="应用场景：AI 写代码"></a>应用场景：AI 写代码</h3><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232941284.png" alt="chat-shot (2).png"></p>
+]]></content>
+      <categories>
+        <category>人工智能</category>
+      </categories>
+      <tags>
+        <tag>AI</tag>
+        <tag>人工智能</tag>
+        <tag>AIGC系列</tag>
+        <tag>ChatGPT</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ChatGPT 指令大全</title>
     <url>/posts/9b21ba2c/</url>
     <content><![CDATA[<h2 id="写报告"><a href="#写报告" class="headerlink" title="写报告"></a><font style="color:rgb(0, 0, 0);">写报告</font></h2><h3 id="选定切入角度"><a href="#选定切入角度" class="headerlink" title="选定切入角度"></a>选定切入角度</h3><p>产生 <strong>数字</strong> 个具有说服力和描述性的文章主题想法，主题为 “<strong>某个主题</strong>“</p>
@@ -1854,66 +1914,6 @@
 <p>:::</p>
 <p><font style="color:rgba(0, 0, 0, 0.9);"></font></p>
 <p><font style="color:rgba(0, 0, 0, 0.9);"></font></p>
-]]></content>
-      <categories>
-        <category>人工智能</category>
-      </categories>
-      <tags>
-        <tag>AI</tag>
-        <tag>人工智能</tag>
-        <tag>AIGC系列</tag>
-        <tag>ChatGPT</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ChatGPT 介绍及技术原理</title>
-    <url>/posts/de697756/</url>
-    <content><![CDATA[<blockquote>
-<p>ChatGPT 是一种通用自然语言生成模型，使用大量语料数据训练，以实现生成文本、回答问题、对话生成等功能。  </p>
-</blockquote>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232723026.png" alt="image.png"></p>
-<h2 id="ChatGPT-的前世今生"><a href="#ChatGPT-的前世今生" class="headerlink" title="ChatGPT 的前世今生"></a>ChatGPT 的前世今生</h2><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232732490.png" alt="image.png"></p>
-<h2 id="ChatGPT-的训练流程"><a href="#ChatGPT-的训练流程" class="headerlink" title="ChatGPT 的训练流程"></a>ChatGPT 的训练流程</h2><p>由于 ChatGPT 并没有放出论文，我们没法直接了解 ChatGPT 的设计细节。但它的博客中提到，ChatGPT 用的是和 InstructGPT 一样的方法，只是在数据收集上和 InstructGPT 不一样 – ChatGPT 用的是多轮对话作为数据集。还有 InstructGPT 是在 GPT-3 上做微调，而 ChatGPT 是在 GPT3.5 上做微调。因此我们可以参考 InstructGPT 的论文去理解 ChatGPT。<br /><strong>InstructGPT 的技术原理图</strong><br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232741895.jpeg" alt="575.jpg"><br /></p>
-<p><strong>ChatGPT 博客中的技术原理图</strong><br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232753071.jpeg" alt="579.jpg"><br /></p>
-<p>总体来说， ChatGPT 的训练流程包含三个步骤</p>
-<ol>
-<li>监督学习。收集人工编写的「期望模型输出」示范数据集，并使用其来训练一个生成模型（GPT3.5- based）；</li>
-</ol>
-<blockquote>
-<p><strong>说明</strong><br>简单说，就是根据人编写的答案，训练出一个简单模型，回答会有很大的局限性。</p>
-</blockquote>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232804373.png" alt="image.png"></p>
-<ol start="2">
-<li>训练奖励模型。收集人工标注的模型多个输出之间的排序数据集。并训练一个奖励模型，以预测用户更喜欢哪个模型输出。</li>
-</ol>
-<blockquote>
-<p><strong>说明</strong><br>说明：由于第一步训练出来的模型的回答会有很大的局限性，有正向回答，又有负向回答， ChatGPT 不知道给出那个答案更合适，于是通过人工对答案进行排序，再利用排序结果训练出奖励模型（打分）</p>
-</blockquote>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232813362.png" alt="image.png"></p>
-<ol start="3">
-<li>基于强化学习 loss 持续迭代生成模型。使用这个奖励模型作为奖励函数，以 PPO 的方式，微调监督学习训练出来的生成模型</li>
-</ol>
-<blockquote>
-<p><strong>说明</strong><br>说明：将新的问题交给强化学习模型（以 PPO 的方式，微调监督学习训练出来的生成模型），然后将给出的答案喂给第二步训练出来的奖励模型生成答案和分数，再交给强化学习模型，并持续迭代强化学习模型，从而使 ChatGPT 生成更好的答案</p>
-</blockquote>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232823491.png" alt="image.png"><br /></p>
-<p><strong>注解：排序任务</strong></p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232833392.png" alt="image.png"></p>
-<p>训练 Reward Model 模型的项目源码： <a href="https://github.com/HarderThenHarder/transformers_tasks">https://github.com/HarderThenHarder/transformers_tasks</a><br /></p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232851455.png" alt="v2-9c825cf9cdfd31ad1d40f9401ba0391c_r.png"></p>
-<p><strong>使用强化学习（而非监督学习）的方式更新语言模型，最大的优势是在于能够使得「模型更加自由的探索更新方向，从而突破监督学习的性能天花板」。</strong></p>
-<h2 id="ChatGPT-的优势"><a href="#ChatGPT-的优势" class="headerlink" title="ChatGPT 的优势"></a>ChatGPT 的优势</h2><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232901139.png" alt="image.png"></p>
-<h2 id="ChatGPT-应用场景"><a href="#ChatGPT-应用场景" class="headerlink" title="ChatGPT 应用场景"></a>ChatGPT 应用场景</h2><h3 id="应用场景：AI-客服"><a href="#应用场景：AI-客服" class="headerlink" title="应用场景：AI 客服"></a>应用场景：AI 客服</h3><blockquote>
-<p>假如你是一名银行客服人员，我是访问你们网站的顾客，你的目的是获取 我的电话号码。但是为了获取电话号码，你要帮我解决一些我提出的问题， 你觉得解决了问题之后，你想他要电话号码，这样成功率会比较高。现在 让我们开始吧</p>
-</blockquote>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232913085.png" alt="chat-shot.png"></p>
-<h3 id="应用场景：AI-文案"><a href="#应用场景：AI-文案" class="headerlink" title="应用场景：AI 文案"></a>应用场景：AI 文案</h3><blockquote>
-<p>假如你是一名海报设计师，需要给浦发银行设计一个宣传海报。 浦发银行要举办 2023 上海半程马拉松，活动时间：2023 年 3 月 9 日到 2023 年 3 月 31 日；活动内容：活动期间在上马 APP 或官网，通过支付宝绑定浦 发银行借记卡支付报名费，可享受立减 60 元优惠  </p>
-</blockquote>
-<p><strong>ChatGPT3 创作 :</strong> <br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250525000456939.png" alt="image.png"><br /></p>
-<p><strong>ChatGPT4 创作 :</strong> <br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232922779.png" alt="image.png"></p>
-<h3 id="应用场景：AI-作图"><a href="#应用场景：AI-作图" class="headerlink" title="应用场景：AI 作图"></a>应用场景：AI 作图</h3><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232931573.png" alt="chat-shot (1).png"></p>
-<h3 id="应用场景：AI-写代码"><a href="#应用场景：AI-写代码" class="headerlink" title="应用场景：AI 写代码"></a>应用场景：AI 写代码</h3><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232941284.png" alt="chat-shot (2).png"></p>
 ]]></content>
       <categories>
         <category>人工智能</category>
@@ -5910,6 +5910,32 @@
       </tags>
   </entry>
   <entry>
+    <title>Git 日志</title>
+    <url>/posts/f31aa9d5/</url>
+    <content><![CDATA[<h2 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h2><h3 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">log</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="简化版日志"><a href="#简化版日志" class="headerlink" title="简化版日志"></a>简化版日志</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">log</span> --pretty=oneline</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看前-N-条"><a href="#查看前-N-条" class="headerlink" title="查看前 N 条"></a>查看前 N 条</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">log</span> -n</span><br></pre></td></tr></table></figure>
+
+<h3 id="变更日志"><a href="#变更日志" class="headerlink" title="变更日志"></a>变更日志</h3><p><code>-n</code> 同上,不加则显示全部</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">log</span> --<span class="built_in">stat</span> -n</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看提交修改"><a href="#查看提交修改" class="headerlink" title="查看提交修改"></a>查看提交修改</h3><p>查看某次 commit 做了哪些修改</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git show &lt;commit-hash-id&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="退出-Log-状态"><a href="#退出-Log-状态" class="headerlink" title="退出 Log 状态"></a>退出 Log 状态</h3><p>有时候日志过长，可以按下英文 q 退出状态</p>
+<h3 id="查看-HEAD-指向历史和说明"><a href="#查看-HEAD-指向历史和说明" class="headerlink" title="查看 HEAD 指向历史和说明"></a>查看 HEAD 指向历史和说明</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git reflog</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>开发工具</category>
+      </categories>
+      <tags>
+        <tag>工具相关</tag>
+        <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git 标签</title>
     <url>/posts/d3e29627/</url>
     <content><![CDATA[<h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><p>tag 就是一个让人容易记住的有意义的名字，它跟某个 commit 绑在一起。</p>
@@ -5931,32 +5957,6 @@
 <h3 id="删除一个本地标签"><a href="#删除一个本地标签" class="headerlink" title="删除一个本地标签"></a>删除一个本地标签</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git tag -d &lt;tagname&gt;</span><br></pre></td></tr></table></figure>
 
 <h3 id="删除一个远程标签"><a href="#删除一个远程标签" class="headerlink" title="删除一个远程标签"></a>删除一个远程标签</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push origin :refs/tags/&lt;tagname&gt;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>开发工具</category>
-      </categories>
-      <tags>
-        <tag>工具相关</tag>
-        <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git 日志</title>
-    <url>/posts/f31aa9d5/</url>
-    <content><![CDATA[<h2 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h2><h3 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">log</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="简化版日志"><a href="#简化版日志" class="headerlink" title="简化版日志"></a>简化版日志</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">log</span> --pretty=oneline</span><br></pre></td></tr></table></figure>
-
-<h3 id="查看前-N-条"><a href="#查看前-N-条" class="headerlink" title="查看前 N 条"></a>查看前 N 条</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">log</span> -n</span><br></pre></td></tr></table></figure>
-
-<h3 id="变更日志"><a href="#变更日志" class="headerlink" title="变更日志"></a>变更日志</h3><p><code>-n</code> 同上,不加则显示全部</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">log</span> --<span class="built_in">stat</span> -n</span><br></pre></td></tr></table></figure>
-
-<h3 id="查看提交修改"><a href="#查看提交修改" class="headerlink" title="查看提交修改"></a>查看提交修改</h3><p>查看某次 commit 做了哪些修改</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git show &lt;commit-hash-id&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="退出-Log-状态"><a href="#退出-Log-状态" class="headerlink" title="退出 Log 状态"></a>退出 Log 状态</h3><p>有时候日志过长，可以按下英文 q 退出状态</p>
-<h3 id="查看-HEAD-指向历史和说明"><a href="#查看-HEAD-指向历史和说明" class="headerlink" title="查看 HEAD 指向历史和说明"></a>查看 HEAD 指向历史和说明</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git reflog</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>开发工具</category>
