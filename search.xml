@@ -1536,66 +1536,6 @@
       </tags>
   </entry>
   <entry>
-    <title>ChatGPT 介绍及技术原理</title>
-    <url>/posts/de697756/</url>
-    <content><![CDATA[<blockquote>
-<p>ChatGPT 是一种通用自然语言生成模型，使用大量语料数据训练，以实现生成文本、回答问题、对话生成等功能。  </p>
-</blockquote>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232723026.png" alt="image.png"></p>
-<h2 id="ChatGPT-的前世今生"><a href="#ChatGPT-的前世今生" class="headerlink" title="ChatGPT 的前世今生"></a>ChatGPT 的前世今生</h2><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232732490.png" alt="image.png"></p>
-<h2 id="ChatGPT-的训练流程"><a href="#ChatGPT-的训练流程" class="headerlink" title="ChatGPT 的训练流程"></a>ChatGPT 的训练流程</h2><p>由于 ChatGPT 并没有放出论文，我们没法直接了解 ChatGPT 的设计细节。但它的博客中提到，ChatGPT 用的是和 InstructGPT 一样的方法，只是在数据收集上和 InstructGPT 不一样 – ChatGPT 用的是多轮对话作为数据集。还有 InstructGPT 是在 GPT-3 上做微调，而 ChatGPT 是在 GPT3.5 上做微调。因此我们可以参考 InstructGPT 的论文去理解 ChatGPT。<br /><strong>InstructGPT 的技术原理图</strong><br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232741895.jpeg" alt="575.jpg"><br /></p>
-<p><strong>ChatGPT 博客中的技术原理图</strong><br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232753071.jpeg" alt="579.jpg"><br /></p>
-<p>总体来说， ChatGPT 的训练流程包含三个步骤</p>
-<ol>
-<li>监督学习。收集人工编写的「期望模型输出」示范数据集，并使用其来训练一个生成模型（GPT3.5- based）；</li>
-</ol>
-<blockquote>
-<p><strong>说明</strong><br>简单说，就是根据人编写的答案，训练出一个简单模型，回答会有很大的局限性。</p>
-</blockquote>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232804373.png" alt="image.png"></p>
-<ol start="2">
-<li>训练奖励模型。收集人工标注的模型多个输出之间的排序数据集。并训练一个奖励模型，以预测用户更喜欢哪个模型输出。</li>
-</ol>
-<blockquote>
-<p><strong>说明</strong><br>说明：由于第一步训练出来的模型的回答会有很大的局限性，有正向回答，又有负向回答， ChatGPT 不知道给出那个答案更合适，于是通过人工对答案进行排序，再利用排序结果训练出奖励模型（打分）</p>
-</blockquote>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232813362.png" alt="image.png"></p>
-<ol start="3">
-<li>基于强化学习 loss 持续迭代生成模型。使用这个奖励模型作为奖励函数，以 PPO 的方式，微调监督学习训练出来的生成模型</li>
-</ol>
-<blockquote>
-<p><strong>说明</strong><br>说明：将新的问题交给强化学习模型（以 PPO 的方式，微调监督学习训练出来的生成模型），然后将给出的答案喂给第二步训练出来的奖励模型生成答案和分数，再交给强化学习模型，并持续迭代强化学习模型，从而使 ChatGPT 生成更好的答案</p>
-</blockquote>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232823491.png" alt="image.png"><br /></p>
-<p><strong>注解：排序任务</strong></p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232833392.png" alt="image.png"></p>
-<p>训练 Reward Model 模型的项目源码： <a href="https://github.com/HarderThenHarder/transformers_tasks">https://github.com/HarderThenHarder/transformers_tasks</a><br /></p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232851455.png" alt="v2-9c825cf9cdfd31ad1d40f9401ba0391c_r.png"></p>
-<p><strong>使用强化学习（而非监督学习）的方式更新语言模型，最大的优势是在于能够使得「模型更加自由的探索更新方向，从而突破监督学习的性能天花板」。</strong></p>
-<h2 id="ChatGPT-的优势"><a href="#ChatGPT-的优势" class="headerlink" title="ChatGPT 的优势"></a>ChatGPT 的优势</h2><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232901139.png" alt="image.png"></p>
-<h2 id="ChatGPT-应用场景"><a href="#ChatGPT-应用场景" class="headerlink" title="ChatGPT 应用场景"></a>ChatGPT 应用场景</h2><h3 id="应用场景：AI-客服"><a href="#应用场景：AI-客服" class="headerlink" title="应用场景：AI 客服"></a>应用场景：AI 客服</h3><blockquote>
-<p>假如你是一名银行客服人员，我是访问你们网站的顾客，你的目的是获取 我的电话号码。但是为了获取电话号码，你要帮我解决一些我提出的问题， 你觉得解决了问题之后，你想他要电话号码，这样成功率会比较高。现在 让我们开始吧</p>
-</blockquote>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232913085.png" alt="chat-shot.png"></p>
-<h3 id="应用场景：AI-文案"><a href="#应用场景：AI-文案" class="headerlink" title="应用场景：AI 文案"></a>应用场景：AI 文案</h3><blockquote>
-<p>假如你是一名海报设计师，需要给浦发银行设计一个宣传海报。 浦发银行要举办 2023 上海半程马拉松，活动时间：2023 年 3 月 9 日到 2023 年 3 月 31 日；活动内容：活动期间在上马 APP 或官网，通过支付宝绑定浦 发银行借记卡支付报名费，可享受立减 60 元优惠  </p>
-</blockquote>
-<p><strong>ChatGPT3 创作 :</strong> <br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250525000456939.png" alt="image.png"><br /></p>
-<p><strong>ChatGPT4 创作 :</strong> <br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232922779.png" alt="image.png"></p>
-<h3 id="应用场景：AI-作图"><a href="#应用场景：AI-作图" class="headerlink" title="应用场景：AI 作图"></a>应用场景：AI 作图</h3><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232931573.png" alt="chat-shot (1).png"></p>
-<h3 id="应用场景：AI-写代码"><a href="#应用场景：AI-写代码" class="headerlink" title="应用场景：AI 写代码"></a>应用场景：AI 写代码</h3><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232941284.png" alt="chat-shot (2).png"></p>
-]]></content>
-      <categories>
-        <category>人工智能</category>
-      </categories>
-      <tags>
-        <tag>AI</tag>
-        <tag>人工智能</tag>
-        <tag>AIGC系列</tag>
-        <tag>ChatGPT</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>ChatGPT 指令大全</title>
     <url>/posts/9b21ba2c/</url>
     <content><![CDATA[<h2 id="写报告"><a href="#写报告" class="headerlink" title="写报告"></a><font style="color:rgb(0, 0, 0);">写报告</font></h2><h3 id="选定切入角度"><a href="#选定切入角度" class="headerlink" title="选定切入角度"></a>选定切入角度</h3><p>产生 <strong>数字</strong> 个具有说服力和描述性的文章主题想法，主题为 “<strong>某个主题</strong>“</p>
@@ -1914,6 +1854,66 @@
 <p>:::</p>
 <p><font style="color:rgba(0, 0, 0, 0.9);"></font></p>
 <p><font style="color:rgba(0, 0, 0, 0.9);"></font></p>
+]]></content>
+      <categories>
+        <category>人工智能</category>
+      </categories>
+      <tags>
+        <tag>AI</tag>
+        <tag>人工智能</tag>
+        <tag>AIGC系列</tag>
+        <tag>ChatGPT</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ChatGPT 介绍及技术原理</title>
+    <url>/posts/de697756/</url>
+    <content><![CDATA[<blockquote>
+<p>ChatGPT 是一种通用自然语言生成模型，使用大量语料数据训练，以实现生成文本、回答问题、对话生成等功能。  </p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232723026.png" alt="image.png"></p>
+<h2 id="ChatGPT-的前世今生"><a href="#ChatGPT-的前世今生" class="headerlink" title="ChatGPT 的前世今生"></a>ChatGPT 的前世今生</h2><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232732490.png" alt="image.png"></p>
+<h2 id="ChatGPT-的训练流程"><a href="#ChatGPT-的训练流程" class="headerlink" title="ChatGPT 的训练流程"></a>ChatGPT 的训练流程</h2><p>由于 ChatGPT 并没有放出论文，我们没法直接了解 ChatGPT 的设计细节。但它的博客中提到，ChatGPT 用的是和 InstructGPT 一样的方法，只是在数据收集上和 InstructGPT 不一样 – ChatGPT 用的是多轮对话作为数据集。还有 InstructGPT 是在 GPT-3 上做微调，而 ChatGPT 是在 GPT3.5 上做微调。因此我们可以参考 InstructGPT 的论文去理解 ChatGPT。<br /><strong>InstructGPT 的技术原理图</strong><br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232741895.jpeg" alt="575.jpg"><br /></p>
+<p><strong>ChatGPT 博客中的技术原理图</strong><br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232753071.jpeg" alt="579.jpg"><br /></p>
+<p>总体来说， ChatGPT 的训练流程包含三个步骤</p>
+<ol>
+<li>监督学习。收集人工编写的「期望模型输出」示范数据集，并使用其来训练一个生成模型（GPT3.5- based）；</li>
+</ol>
+<blockquote>
+<p><strong>说明</strong><br>简单说，就是根据人编写的答案，训练出一个简单模型，回答会有很大的局限性。</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232804373.png" alt="image.png"></p>
+<ol start="2">
+<li>训练奖励模型。收集人工标注的模型多个输出之间的排序数据集。并训练一个奖励模型，以预测用户更喜欢哪个模型输出。</li>
+</ol>
+<blockquote>
+<p><strong>说明</strong><br>说明：由于第一步训练出来的模型的回答会有很大的局限性，有正向回答，又有负向回答， ChatGPT 不知道给出那个答案更合适，于是通过人工对答案进行排序，再利用排序结果训练出奖励模型（打分）</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232813362.png" alt="image.png"></p>
+<ol start="3">
+<li>基于强化学习 loss 持续迭代生成模型。使用这个奖励模型作为奖励函数，以 PPO 的方式，微调监督学习训练出来的生成模型</li>
+</ol>
+<blockquote>
+<p><strong>说明</strong><br>说明：将新的问题交给强化学习模型（以 PPO 的方式，微调监督学习训练出来的生成模型），然后将给出的答案喂给第二步训练出来的奖励模型生成答案和分数，再交给强化学习模型，并持续迭代强化学习模型，从而使 ChatGPT 生成更好的答案</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232823491.png" alt="image.png"><br /></p>
+<p><strong>注解：排序任务</strong></p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232833392.png" alt="image.png"></p>
+<p>训练 Reward Model 模型的项目源码： <a href="https://github.com/HarderThenHarder/transformers_tasks">https://github.com/HarderThenHarder/transformers_tasks</a><br /></p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232851455.png" alt="v2-9c825cf9cdfd31ad1d40f9401ba0391c_r.png"></p>
+<p><strong>使用强化学习（而非监督学习）的方式更新语言模型，最大的优势是在于能够使得「模型更加自由的探索更新方向，从而突破监督学习的性能天花板」。</strong></p>
+<h2 id="ChatGPT-的优势"><a href="#ChatGPT-的优势" class="headerlink" title="ChatGPT 的优势"></a>ChatGPT 的优势</h2><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232901139.png" alt="image.png"></p>
+<h2 id="ChatGPT-应用场景"><a href="#ChatGPT-应用场景" class="headerlink" title="ChatGPT 应用场景"></a>ChatGPT 应用场景</h2><h3 id="应用场景：AI-客服"><a href="#应用场景：AI-客服" class="headerlink" title="应用场景：AI 客服"></a>应用场景：AI 客服</h3><blockquote>
+<p>假如你是一名银行客服人员，我是访问你们网站的顾客，你的目的是获取 我的电话号码。但是为了获取电话号码，你要帮我解决一些我提出的问题， 你觉得解决了问题之后，你想他要电话号码，这样成功率会比较高。现在 让我们开始吧</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232913085.png" alt="chat-shot.png"></p>
+<h3 id="应用场景：AI-文案"><a href="#应用场景：AI-文案" class="headerlink" title="应用场景：AI 文案"></a>应用场景：AI 文案</h3><blockquote>
+<p>假如你是一名海报设计师，需要给浦发银行设计一个宣传海报。 浦发银行要举办 2023 上海半程马拉松，活动时间：2023 年 3 月 9 日到 2023 年 3 月 31 日；活动内容：活动期间在上马 APP 或官网，通过支付宝绑定浦 发银行借记卡支付报名费，可享受立减 60 元优惠  </p>
+</blockquote>
+<p><strong>ChatGPT3 创作 :</strong> <br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250525000456939.png" alt="image.png"><br /></p>
+<p><strong>ChatGPT4 创作 :</strong> <br /><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232922779.png" alt="image.png"></p>
+<h3 id="应用场景：AI-作图"><a href="#应用场景：AI-作图" class="headerlink" title="应用场景：AI 作图"></a>应用场景：AI 作图</h3><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232931573.png" alt="chat-shot (1).png"></p>
+<h3 id="应用场景：AI-写代码"><a href="#应用场景：AI-写代码" class="headerlink" title="应用场景：AI 写代码"></a>应用场景：AI 写代码</h3><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Typora/20250524232941284.png" alt="chat-shot (2).png"></p>
 ]]></content>
       <categories>
         <category>人工智能</category>
@@ -6336,35 +6336,6 @@
       </tags>
   </entry>
   <entry>
-    <title>SublimeText配置</title>
-    <url>/posts/7d9a4a56/</url>
-    <content><![CDATA[<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><h3 id="1-安装-Package-Control-组件"><a href="#1-安装-Package-Control-组件" class="headerlink" title="1. 安装 Package Control 组件"></a>1. 安装 Package Control 组件</h3><ol>
-<li>打开 sublime 界面，按<strong>Ctrl+shift+P</strong> 组合键</li>
-<li>搜索 Install Package ，然后直接点击</li>
-</ol>
-<h3 id="2-BracketHighlighter-插件"><a href="#2-BracketHighlighter-插件" class="headerlink" title="2. BracketHighlighter 插件"></a>2. BracketHighlighter 插件</h3><p>​	功能说明：高亮显示匹配的括号、引号和标签。</p>
-<h3 id="3-ConvertToUTF8-插件"><a href="#3-ConvertToUTF8-插件" class="headerlink" title="3. ConvertToUTF8 插件"></a>3. ConvertToUTF8 插件</h3><p>功能说明：ConvertToUTF8 能将除 UTF8 编码之外的其他编码文件在 Sublime Text 中转换成 UTF8 编码，在打开文件的时候一开始会显示乱码，然后一刹那就自动显示出正常的字体，当然，在保存文件之后原文件的编码格式不会改变。</p>
-<h3 id="4-SublimeTmpl-插件"><a href="#4-SublimeTmpl-插件" class="headerlink" title="4. SublimeTmpl 插件"></a>4. SublimeTmpl 插件</h3><p>功能说明：快速生成文件模板。</p>
-<p>使用方法：SublimeTmpl 默认的快捷键如下，如果快捷键设置冲突可能无效。</p>
-<p>Ctrl+Alt+h 新建 html 文件</p>
-<p>Ctrl+Alt+j 新建 javascript 文件</p>
-<p>Ctrl+Alt+c 新建 css 文件</p>
-<p>Ctrl+Alt+p 新建 php 文件</p>
-<p>Ctrl+Alt+r 新建 ruby 文件</p>
-<p>Ctrl+Alt+Shift+p 新建 python 文件</p>
-<p>相应的模板为 tmpl 格式的文件，保存在 Packages 目录中 SublimeTmpl\templates</p>
-<h3 id="5-Diffy-按-Ctrl-K-Ctrl-D-即可快速比较第一视窗与第二视窗打开的文件的不同，比较方式为逐行比较"><a href="#5-Diffy-按-Ctrl-K-Ctrl-D-即可快速比较第一视窗与第二视窗打开的文件的不同，比较方式为逐行比较" class="headerlink" title="5. Diffy 按 Ctrl+K&amp;Ctrl+D 即可快速比较第一视窗与第二视窗打开的文件的不同，比较方式为逐行比较"></a>5. Diffy 按 Ctrl+K&amp;Ctrl+D 即可快速比较第一视窗与第二视窗打开的文件的不同，比较方式为逐行比较</h3><h3 id="6-SideBarEnhancements-侧边栏增强，较为推荐"><a href="#6-SideBarEnhancements-侧边栏增强，较为推荐" class="headerlink" title="6. SideBarEnhancements : 侧边栏增强，较为推荐"></a>6. SideBarEnhancements : 侧边栏增强，较为推荐</h3><h3 id="7-ChineseLocalizations-中文"><a href="#7-ChineseLocalizations-中文" class="headerlink" title="7. ChineseLocalizations 中文"></a>7. ChineseLocalizations 中文</h3><h3 id="8-MarkDown-Editing"><a href="#8-MarkDown-Editing" class="headerlink" title="8. MarkDown Editing"></a>8. <strong><a href="https://link.juejin.cn/?target=https://github.com/SublimeText-Markdown/MarkdownEditing">MarkDown Editing</a></strong></h3><p>主题配置： <a href="https://curder.github.io/blog/tools/sublime/sublime-text-3-theme-and-editor-configuration.html">https://curder.github.io/blog/tools/sublime/sublime-text-3-theme-and-editor-configuration.html</a></p>
-<figure class="highlight toml"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  // 需要安装Material/Materialize主题</span><br><span class="line">  &quot;color_scheme&quot;: &quot;Packages/Materialize/schemes/Material Dracula.tmTheme&quot;,</span><br><span class="line">  &quot;theme&quot;: &quot;Material Dracula.sublime-theme&quot;,</span><br><span class="line">  &quot;ignored_packages&quot;: <span class="section">[&quot;Vintage&quot;,</span></span><br><span class="line"><span class="section">  ]</span>,</span><br><span class="line">  &quot;material_theme_tree_headings&quot;: true,</span><br><span class="line">  &quot;font_face&quot;: &quot;Fira Code&quot;,</span><br><span class="line">  &quot;line_padding_bottom&quot;: 2,</span><br><span class="line">  &quot;line_padding_top&quot;: 2,</span><br><span class="line">  &quot;font_size&quot;: 12,</span><br><span class="line">  &quot;highlight_line&quot;: true,</span><br><span class="line">  &quot;highlight_modified_tabs&quot;: true,</span><br><span class="line">  &quot;scroll_past_end&quot;: true,</span><br><span class="line">  &quot;translate_tabs_to_spaces&quot;: true,</span><br><span class="line">  &quot;trim_trailing_white_space_on_save&quot;: true,</span><br><span class="line">  &quot;ensure_newline_at_eof_on_save&quot;: true,</span><br><span class="line">  &quot;save_on_focus_lost&quot;: true,</span><br><span class="line">  &quot;close_windows_when_empty&quot;: true,</span><br><span class="line">  &quot;caret_style&quot;: &quot;phase&quot;,</span><br><span class="line">  &quot;remember_full_screen&quot;: true,</span><br><span class="line">  &quot;index_files&quot;: true,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>开发工具</category>
-      </categories>
-      <tags>
-        <tag>工具相关</tag>
-        <tag>SublimeText</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>MySQL 经典题目</title>
     <url>/posts/46990f10/</url>
     <content><![CDATA[<h2 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h2><p>表 1: Person</p>
@@ -6441,6 +6412,35 @@
       <tags>
         <tag>MySQL</tag>
         <tag>数据库</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SublimeText配置</title>
+    <url>/posts/7d9a4a56/</url>
+    <content><![CDATA[<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><h3 id="1-安装-Package-Control-组件"><a href="#1-安装-Package-Control-组件" class="headerlink" title="1. 安装 Package Control 组件"></a>1. 安装 Package Control 组件</h3><ol>
+<li>打开 sublime 界面，按<strong>Ctrl+shift+P</strong> 组合键</li>
+<li>搜索 Install Package ，然后直接点击</li>
+</ol>
+<h3 id="2-BracketHighlighter-插件"><a href="#2-BracketHighlighter-插件" class="headerlink" title="2. BracketHighlighter 插件"></a>2. BracketHighlighter 插件</h3><p>​	功能说明：高亮显示匹配的括号、引号和标签。</p>
+<h3 id="3-ConvertToUTF8-插件"><a href="#3-ConvertToUTF8-插件" class="headerlink" title="3. ConvertToUTF8 插件"></a>3. ConvertToUTF8 插件</h3><p>功能说明：ConvertToUTF8 能将除 UTF8 编码之外的其他编码文件在 Sublime Text 中转换成 UTF8 编码，在打开文件的时候一开始会显示乱码，然后一刹那就自动显示出正常的字体，当然，在保存文件之后原文件的编码格式不会改变。</p>
+<h3 id="4-SublimeTmpl-插件"><a href="#4-SublimeTmpl-插件" class="headerlink" title="4. SublimeTmpl 插件"></a>4. SublimeTmpl 插件</h3><p>功能说明：快速生成文件模板。</p>
+<p>使用方法：SublimeTmpl 默认的快捷键如下，如果快捷键设置冲突可能无效。</p>
+<p>Ctrl+Alt+h 新建 html 文件</p>
+<p>Ctrl+Alt+j 新建 javascript 文件</p>
+<p>Ctrl+Alt+c 新建 css 文件</p>
+<p>Ctrl+Alt+p 新建 php 文件</p>
+<p>Ctrl+Alt+r 新建 ruby 文件</p>
+<p>Ctrl+Alt+Shift+p 新建 python 文件</p>
+<p>相应的模板为 tmpl 格式的文件，保存在 Packages 目录中 SublimeTmpl\templates</p>
+<h3 id="5-Diffy-按-Ctrl-K-Ctrl-D-即可快速比较第一视窗与第二视窗打开的文件的不同，比较方式为逐行比较"><a href="#5-Diffy-按-Ctrl-K-Ctrl-D-即可快速比较第一视窗与第二视窗打开的文件的不同，比较方式为逐行比较" class="headerlink" title="5. Diffy 按 Ctrl+K&amp;Ctrl+D 即可快速比较第一视窗与第二视窗打开的文件的不同，比较方式为逐行比较"></a>5. Diffy 按 Ctrl+K&amp;Ctrl+D 即可快速比较第一视窗与第二视窗打开的文件的不同，比较方式为逐行比较</h3><h3 id="6-SideBarEnhancements-侧边栏增强，较为推荐"><a href="#6-SideBarEnhancements-侧边栏增强，较为推荐" class="headerlink" title="6. SideBarEnhancements : 侧边栏增强，较为推荐"></a>6. SideBarEnhancements : 侧边栏增强，较为推荐</h3><h3 id="7-ChineseLocalizations-中文"><a href="#7-ChineseLocalizations-中文" class="headerlink" title="7. ChineseLocalizations 中文"></a>7. ChineseLocalizations 中文</h3><h3 id="8-MarkDown-Editing"><a href="#8-MarkDown-Editing" class="headerlink" title="8. MarkDown Editing"></a>8. <strong><a href="https://link.juejin.cn/?target=https://github.com/SublimeText-Markdown/MarkdownEditing">MarkDown Editing</a></strong></h3><p>主题配置： <a href="https://curder.github.io/blog/tools/sublime/sublime-text-3-theme-and-editor-configuration.html">https://curder.github.io/blog/tools/sublime/sublime-text-3-theme-and-editor-configuration.html</a></p>
+<figure class="highlight toml"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  // 需要安装Material/Materialize主题</span><br><span class="line">  &quot;color_scheme&quot;: &quot;Packages/Materialize/schemes/Material Dracula.tmTheme&quot;,</span><br><span class="line">  &quot;theme&quot;: &quot;Material Dracula.sublime-theme&quot;,</span><br><span class="line">  &quot;ignored_packages&quot;: <span class="section">[&quot;Vintage&quot;,</span></span><br><span class="line"><span class="section">  ]</span>,</span><br><span class="line">  &quot;material_theme_tree_headings&quot;: true,</span><br><span class="line">  &quot;font_face&quot;: &quot;Fira Code&quot;,</span><br><span class="line">  &quot;line_padding_bottom&quot;: 2,</span><br><span class="line">  &quot;line_padding_top&quot;: 2,</span><br><span class="line">  &quot;font_size&quot;: 12,</span><br><span class="line">  &quot;highlight_line&quot;: true,</span><br><span class="line">  &quot;highlight_modified_tabs&quot;: true,</span><br><span class="line">  &quot;scroll_past_end&quot;: true,</span><br><span class="line">  &quot;translate_tabs_to_spaces&quot;: true,</span><br><span class="line">  &quot;trim_trailing_white_space_on_save&quot;: true,</span><br><span class="line">  &quot;ensure_newline_at_eof_on_save&quot;: true,</span><br><span class="line">  &quot;save_on_focus_lost&quot;: true,</span><br><span class="line">  &quot;close_windows_when_empty&quot;: true,</span><br><span class="line">  &quot;caret_style&quot;: &quot;phase&quot;,</span><br><span class="line">  &quot;remember_full_screen&quot;: true,</span><br><span class="line">  &quot;index_files&quot;: true,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>开发工具</category>
+      </categories>
+      <tags>
+        <tag>工具相关</tag>
+        <tag>SublimeText</tag>
       </tags>
   </entry>
   <entry>
@@ -6537,123 +6537,6 @@
       <tags>
         <tag>Windows</tag>
         <tag>Dos</tag>
-        <tag>操作系统</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Windows 常见问题</title>
-    <url>/posts/e3ba8429/</url>
-    <content><![CDATA[<h2 id="重装系统后，风扇转速不正常"><a href="#重装系统后，风扇转速不正常" class="headerlink" title="重装系统后，风扇转速不正常"></a>重装系统后，风扇转速不正常</h2><blockquote>
-<p>异常状态：开机、打开应用、打开网页，风扇狂转</p>
-</blockquote>
-<p>解决： BIOS t 调整风扇转速（PWM 模式）</p>
-<p>风冷 &amp; CPU &amp; 机箱：</p>
-<ul>
-<li>[ 60 度, 40% ]</li>
-<li>[ 70 度, 60% ]</li>
-<li>[ 75 度, 80% ]</li>
-<li>[ 80 度, 100% ]<br>水冷：</li>
-<li>[ 60 度, 70% ]</li>
-<li>[ 80 度, 100% ]</li>
-</ul>
-<h2 id="Windows-清理"><a href="#Windows-清理" class="headerlink" title="Windows 清理"></a>Windows 清理</h2><h3 id="清理-WinSxS-文件夹"><a href="#清理-WinSxS-文件夹" class="headerlink" title="清理 WinSxS 文件夹"></a>清理 WinSxS 文件夹</h3><p>在 powershell 窗口中输入命令：</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">dism.exe /online /Cleanup<span class="literal">-Image</span> /StartComponentCleanup</span><br></pre></td></tr></table></figure>
-
-<h2 id="让英文文件夹显示的是中文名称"><a href="#让英文文件夹显示的是中文名称" class="headerlink" title="让英文文件夹显示的是中文名称"></a>让英文文件夹显示的是中文名称</h2><p>desktop.ini 文件配置：</p>
-<p><code>[.ShellClassInfo]</code></p>
-<p>LocalizedResourceName&#x3D;公共</p>
-<p>在上层文件夹中用 cmd 执行 “attrib +s 文件夹名称 “</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line"><span class="built_in">attrib</span> +s 文件夹名称</span><br></pre></td></tr></table></figure>
-
-<h2 id="删除启动项"><a href="#删除启动项" class="headerlink" title="删除启动项"></a>删除启动项</h2><figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line"># 命令 BCDEDIT</span><br><span class="line">Windows 启动管理器</span><br><span class="line">--------------------</span><br><span class="line">标识符                  &#123;bootmgr&#125;</span><br><span class="line">device                  partition=\Device\HarddiskVolume9</span><br><span class="line"><span class="built_in">path</span>                    \EFI\Microsoft\Boot\bootmgfw.efi</span><br><span class="line">description             Windows Boot Manager</span><br><span class="line">locale                  zh-CN</span><br><span class="line">inherit                 &#123;globalsettings&#125;</span><br><span class="line">default                 &#123;current&#125;</span><br><span class="line">resumeobject            &#123;<span class="number">907</span>d43ff-<span class="number">8158</span>-<span class="number">11</span>ef-<span class="number">88</span>fc-bf160908ff95&#125;</span><br><span class="line">displayorder            &#123;current&#125;</span><br><span class="line">                        &#123;<span class="number">88888866</span>-<span class="number">7880</span>-<span class="number">46</span>de-<span class="number">8439</span>-<span class="number">4</span>fc3d0fb4ce6&#125;</span><br><span class="line">toolsdisplayorder       &#123;memdiag&#125;</span><br><span class="line">timeout                 <span class="number">30</span></span><br><span class="line"></span><br><span class="line">Windows 启动加载器</span><br><span class="line">-------------------</span><br><span class="line">标识符                  &#123;current&#125;</span><br><span class="line">device                  partition=C:</span><br><span class="line"><span class="built_in">path</span>                    \Windows\system32\winload.efi</span><br><span class="line">description             Windows <span class="number">10</span></span><br><span class="line">locale                  zh-CN</span><br><span class="line">inherit                 &#123;bootloadersettings&#125;</span><br><span class="line">recoverysequence        &#123;<span class="number">5</span>b7a3d51-<span class="number">03</span>d5-<span class="number">11</span>ef-<span class="number">95</span>bc-d36910f8673c&#125;</span><br><span class="line">displaymessageoverride  Recovery</span><br><span class="line">recoveryenabled         Yes</span><br><span class="line">isolatedcontext         Yes</span><br><span class="line">allowedinmemorysettings <span class="number">0</span>x15000075</span><br><span class="line">osdevice                partition=C:</span><br><span class="line">systemroot              \Windows</span><br><span class="line">resumeobject            &#123;<span class="number">5</span>b7a3d4f-<span class="number">03</span>d5-<span class="number">11</span>ef-<span class="number">95</span>bc-d36910f8673c&#125;</span><br><span class="line">nx                      OptIn</span><br><span class="line">bootmenupolicy          Standard</span><br><span class="line"></span><br><span class="line">Windows 启动加载器</span><br><span class="line">-------------------</span><br><span class="line">标识符                  &#123;<span class="number">88888866</span>-<span class="number">7880</span>-<span class="number">46</span>de-<span class="number">8439</span>-<span class="number">4</span>fc3d0fb4ce6&#125;</span><br><span class="line">device                  ramdisk=[C:]\WEPE\WEPE64.WIM,&#123;<span class="number">888885</span>bd-e62a-<span class="number">4</span>d9f-b133-f2551f11e866&#125;</span><br><span class="line"><span class="built_in">path</span>                    \windows\system32\boot\winload.efi</span><br><span class="line">description             微 PE 工具箱</span><br><span class="line">osdevice                ramdisk=[C:]\WEPE\WEPE64.WIM,&#123;<span class="number">888885</span>bd-e62a-<span class="number">4</span>d9f-b133-f2551f11e866&#125;</span><br><span class="line">systemroot              \windows</span><br><span class="line">nx                      OptIn</span><br><span class="line">pae                     ForceEnable</span><br><span class="line">detecthal               Yes</span><br><span class="line">winpe                   Yes</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>删除启动项</p>
-<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">bcdedit /delete &#123;<span class="number">907</span>d4400-<span class="number">8158</span>-<span class="number">11</span>ef-<span class="number">88</span>fc-bf160908ff95&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="Windows-定时任务（怎么开机就执行-Bat-文件）"><a href="#Windows-定时任务（怎么开机就执行-Bat-文件）" class="headerlink" title="Windows 定时任务（怎么开机就执行 Bat 文件）"></a>Windows 定时任务（怎么开机就执行 Bat 文件）</h2><h3 id="方法一：将脚本放入「启动」文件夹"><a href="#方法一：将脚本放入「启动」文件夹" class="headerlink" title="方法一：将脚本放入「启动」文件夹"></a><strong>方法一：将脚本放入「启动」文件夹</strong></h3><p><strong>特点</strong>：简单快捷，但需用户登录后执行。</p>
-<p>​<strong>​步骤​</strong>​：</p>
-<ol>
-<li><strong>打开启动文件夹</strong>：<ul>
-<li>按 <code>Win + R</code>，输入 <code>shell:startup</code> 回车</li>
-</ul>
-</li>
-<li><strong>创建脚本快捷方式</strong>：<ul>
-<li>将你的 <code>.bat</code> 文件<strong>复制</strong>到该文件夹，或右键选择「新建快捷方式」。</li>
-<li>若需管理员权限，右键快捷方式 → <strong>属性</strong> → <strong>高级</strong> → 勾选 <strong>用管理员身份运行</strong>。</li>
-</ul>
-</li>
-</ol>
-<hr>
-<h3 id="方法二：通过任务计划程序（目前使用）"><a href="#方法二：通过任务计划程序（目前使用）" class="headerlink" title="方法二：通过任务计划程序（目前使用）"></a><strong>方法二：通过任务计划程序</strong>（目前使用）</h3><p><strong>特点</strong>：可设置开机自动执行（无需登录）、管理员权限、后台静默运行。</p>
-<p>​<strong>​步骤​</strong>​：</p>
-<ol>
-<li><strong>打开任务计划程序</strong>：<ul>
-<li>按 <code>Win + R</code>，输入 <code>taskschd.msc</code> 回车。</li>
-</ul>
-</li>
-<li><strong>创建新任务</strong>：<ul>
-<li>右侧点击 <strong>创建任务</strong> → 输入名称（如 <code>AutoRun BAT</code>）。</li>
-</ul>
-</li>
-<li><strong>设置触发器</strong>：<ul>
-<li><strong>新建</strong> → 选择 <strong>登录时</strong> 或 <strong>启动时</strong>（启动时需管理员权限）。</li>
-</ul>
-</li>
-<li><strong>设置操作</strong>：<ul>
-<li><strong>新建</strong> → 操作选择 <strong>启动程序</strong> → 浏览选择你的 <code>.bat</code> 文件。</li>
-<li>若需隐藏窗口：添加参数 <code>cmd /c &quot;你的脚本.bat&quot;</code>，并在 <strong>起始于</strong> 填写脚本所在目录。</li>
-</ul>
-</li>
-<li><strong>配置权限</strong>：<ul>
-<li><strong>常规</strong> → 勾选 <strong>不管用户是否登录都要运行</strong> 和 <strong>使用最高权限</strong>。</li>
-</ul>
-</li>
-<li><strong>保存任务</strong> → 重启测试。</li>
-</ol>
-<hr>
-<h3 id="方法三：修改注册表"><a href="#方法三：修改注册表" class="headerlink" title="方法三：修改注册表"></a><strong>方法三：修改注册表</strong></h3><p><strong>特点</strong>：直接写入系统启动项，但需谨慎操作。</p>
-<p>​<strong>​步骤​</strong>​：</p>
-<ol>
-<li><p>按 <code>Win + R</code>，输入 <code>regedit</code> 回车。</p>
-</li>
-<li><p>导航到注册表路径：HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run</p>
-</li>
-<li><p><strong>新建字符串值</strong>：</p>
-<ul>
-<li>右键空白处 → <strong>新建</strong> → <strong>字符串值</strong> → 名称自定义（如 <code>AutoRunBAT</code>）。</li>
-<li>双击该值，在 <strong>数值数据</strong> 中填写脚本绝对路径（如 <code>&quot;C:\Scripts\your_script.bat&quot;</code>）。</li>
-</ul>
-</li>
-<li><p>重启生效。</p>
-</li>
-</ol>
-<hr>
-<h3 id="方法四：组策略编辑器（专业版-企业版）"><a href="#方法四：组策略编辑器（专业版-企业版）" class="headerlink" title="方法四：组策略编辑器（专业版&#x2F;企业版）"></a><strong>方法四：组策略编辑器（专业版&#x2F;企业版）</strong></h3><p><strong>特点</strong>：适合企业环境集中管理。</p>
-<p>​<strong>​步骤​</strong>​：</p>
-<ol>
-<li>按 <code>Win + R</code>，输入 <code>gpedit.msc</code> 回车。</li>
-<li>导航到路径：计算机配置 → Windows 设置 → 脚本（启动&#x2F;关机）</li>
-<li><strong>双击「启动」</strong> → <strong>添加</strong> → 浏览选择你的 <code>.bat</code> 文件。</li>
-<li>重启生效。</li>
-</ol>
-<h2 id="Microsoft-Visual-C-Redistributable"><a href="#Microsoft-Visual-C-Redistributable" class="headerlink" title="Microsoft Visual C++ Redistributable"></a>Microsoft Visual C++ Redistributable</h2><p>Microsoft Visual C++ 2008 Redistributable:</p>
-<p><a href="https://www.microsoft.com/zh-cn/download/details.aspx?id=26368">https://www.microsoft.com/zh-cn/download/details.aspx?id=26368</a></p>
-<p>Microsoft Visual C++ 2010 Redistributable:</p>
-<p><a href="https://www.microsoft.com/zh-cn/download/details.aspx?id=26999">https://www.microsoft.com/zh-cn/download/details.aspx?id=26999</a></p>
-<p>Microsoft Visual C++ 2012 Redistributable:</p>
-<p><a href="https://www.microsoft.com/zh-cn/download/details.aspx?id=30679">https://www.microsoft.com/zh-cn/download/details.aspx?id=30679</a></p>
-<p>Microsoft Visual C++ 2013 Redistributable:</p>
-<p><a href="https://www.microsoft.com/zh-cn/download/details.aspx?id=40784">https://www.microsoft.com/zh-cn/download/details.aspx?id=40784</a></p>
-<p>Microsoft Visual C++ 2015&#x2F;2017&#x2F;2019 Redistributable:</p>
-<p><a href="https://support.microsoft.com/zh-cn/help/2977003/the-latest-supported-visual-c-downloads">https://support.microsoft.com/zh-cn/help/2977003/the-latest-supported-visual-c-downloads</a></p>
-<p>在 64 位平台上，请下载并安装 vcredist_x64.exe。</p>
-<p>在 32 位平台上，请下载并安装 vcredist_x86.exe。</p>
-]]></content>
-      <categories>
-        <category>操作系统</category>
-      </categories>
-      <tags>
-        <tag>Windows</tag>
         <tag>操作系统</tag>
       </tags>
   </entry>
@@ -7017,6 +6900,123 @@
       <tags>
         <tag>操作系统</tag>
         <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Windows 常见问题</title>
+    <url>/posts/e3ba8429/</url>
+    <content><![CDATA[<h2 id="重装系统后，风扇转速不正常"><a href="#重装系统后，风扇转速不正常" class="headerlink" title="重装系统后，风扇转速不正常"></a>重装系统后，风扇转速不正常</h2><blockquote>
+<p>异常状态：开机、打开应用、打开网页，风扇狂转</p>
+</blockquote>
+<p>解决： BIOS t 调整风扇转速（PWM 模式）</p>
+<p>风冷 &amp; CPU &amp; 机箱：</p>
+<ul>
+<li>[ 60 度, 40% ]</li>
+<li>[ 70 度, 60% ]</li>
+<li>[ 75 度, 80% ]</li>
+<li>[ 80 度, 100% ]<br>水冷：</li>
+<li>[ 60 度, 70% ]</li>
+<li>[ 80 度, 100% ]</li>
+</ul>
+<h2 id="Windows-清理"><a href="#Windows-清理" class="headerlink" title="Windows 清理"></a>Windows 清理</h2><h3 id="清理-WinSxS-文件夹"><a href="#清理-WinSxS-文件夹" class="headerlink" title="清理 WinSxS 文件夹"></a>清理 WinSxS 文件夹</h3><p>在 powershell 窗口中输入命令：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">dism.exe /online /Cleanup<span class="literal">-Image</span> /StartComponentCleanup</span><br></pre></td></tr></table></figure>
+
+<h2 id="让英文文件夹显示的是中文名称"><a href="#让英文文件夹显示的是中文名称" class="headerlink" title="让英文文件夹显示的是中文名称"></a>让英文文件夹显示的是中文名称</h2><p>desktop.ini 文件配置：</p>
+<p><code>[.ShellClassInfo]</code></p>
+<p>LocalizedResourceName&#x3D;公共</p>
+<p>在上层文件夹中用 cmd 执行 “attrib +s 文件夹名称 “</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line"><span class="built_in">attrib</span> +s 文件夹名称</span><br></pre></td></tr></table></figure>
+
+<h2 id="删除启动项"><a href="#删除启动项" class="headerlink" title="删除启动项"></a>删除启动项</h2><figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line"># 命令 BCDEDIT</span><br><span class="line">Windows 启动管理器</span><br><span class="line">--------------------</span><br><span class="line">标识符                  &#123;bootmgr&#125;</span><br><span class="line">device                  partition=\Device\HarddiskVolume9</span><br><span class="line"><span class="built_in">path</span>                    \EFI\Microsoft\Boot\bootmgfw.efi</span><br><span class="line">description             Windows Boot Manager</span><br><span class="line">locale                  zh-CN</span><br><span class="line">inherit                 &#123;globalsettings&#125;</span><br><span class="line">default                 &#123;current&#125;</span><br><span class="line">resumeobject            &#123;<span class="number">907</span>d43ff-<span class="number">8158</span>-<span class="number">11</span>ef-<span class="number">88</span>fc-bf160908ff95&#125;</span><br><span class="line">displayorder            &#123;current&#125;</span><br><span class="line">                        &#123;<span class="number">88888866</span>-<span class="number">7880</span>-<span class="number">46</span>de-<span class="number">8439</span>-<span class="number">4</span>fc3d0fb4ce6&#125;</span><br><span class="line">toolsdisplayorder       &#123;memdiag&#125;</span><br><span class="line">timeout                 <span class="number">30</span></span><br><span class="line"></span><br><span class="line">Windows 启动加载器</span><br><span class="line">-------------------</span><br><span class="line">标识符                  &#123;current&#125;</span><br><span class="line">device                  partition=C:</span><br><span class="line"><span class="built_in">path</span>                    \Windows\system32\winload.efi</span><br><span class="line">description             Windows <span class="number">10</span></span><br><span class="line">locale                  zh-CN</span><br><span class="line">inherit                 &#123;bootloadersettings&#125;</span><br><span class="line">recoverysequence        &#123;<span class="number">5</span>b7a3d51-<span class="number">03</span>d5-<span class="number">11</span>ef-<span class="number">95</span>bc-d36910f8673c&#125;</span><br><span class="line">displaymessageoverride  Recovery</span><br><span class="line">recoveryenabled         Yes</span><br><span class="line">isolatedcontext         Yes</span><br><span class="line">allowedinmemorysettings <span class="number">0</span>x15000075</span><br><span class="line">osdevice                partition=C:</span><br><span class="line">systemroot              \Windows</span><br><span class="line">resumeobject            &#123;<span class="number">5</span>b7a3d4f-<span class="number">03</span>d5-<span class="number">11</span>ef-<span class="number">95</span>bc-d36910f8673c&#125;</span><br><span class="line">nx                      OptIn</span><br><span class="line">bootmenupolicy          Standard</span><br><span class="line"></span><br><span class="line">Windows 启动加载器</span><br><span class="line">-------------------</span><br><span class="line">标识符                  &#123;<span class="number">88888866</span>-<span class="number">7880</span>-<span class="number">46</span>de-<span class="number">8439</span>-<span class="number">4</span>fc3d0fb4ce6&#125;</span><br><span class="line">device                  ramdisk=[C:]\WEPE\WEPE64.WIM,&#123;<span class="number">888885</span>bd-e62a-<span class="number">4</span>d9f-b133-f2551f11e866&#125;</span><br><span class="line"><span class="built_in">path</span>                    \windows\system32\boot\winload.efi</span><br><span class="line">description             微 PE 工具箱</span><br><span class="line">osdevice                ramdisk=[C:]\WEPE\WEPE64.WIM,&#123;<span class="number">888885</span>bd-e62a-<span class="number">4</span>d9f-b133-f2551f11e866&#125;</span><br><span class="line">systemroot              \windows</span><br><span class="line">nx                      OptIn</span><br><span class="line">pae                     ForceEnable</span><br><span class="line">detecthal               Yes</span><br><span class="line">winpe                   Yes</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>删除启动项</p>
+<figure class="highlight cmd"><table><tr><td class="code"><pre><span class="line">bcdedit /delete &#123;<span class="number">907</span>d4400-<span class="number">8158</span>-<span class="number">11</span>ef-<span class="number">88</span>fc-bf160908ff95&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Windows-定时任务（怎么开机就执行-Bat-文件）"><a href="#Windows-定时任务（怎么开机就执行-Bat-文件）" class="headerlink" title="Windows 定时任务（怎么开机就执行 Bat 文件）"></a>Windows 定时任务（怎么开机就执行 Bat 文件）</h2><h3 id="方法一：将脚本放入「启动」文件夹"><a href="#方法一：将脚本放入「启动」文件夹" class="headerlink" title="方法一：将脚本放入「启动」文件夹"></a><strong>方法一：将脚本放入「启动」文件夹</strong></h3><p><strong>特点</strong>：简单快捷，但需用户登录后执行。</p>
+<p>​<strong>​步骤​</strong>​：</p>
+<ol>
+<li><strong>打开启动文件夹</strong>：<ul>
+<li>按 <code>Win + R</code>，输入 <code>shell:startup</code> 回车</li>
+</ul>
+</li>
+<li><strong>创建脚本快捷方式</strong>：<ul>
+<li>将你的 <code>.bat</code> 文件<strong>复制</strong>到该文件夹，或右键选择「新建快捷方式」。</li>
+<li>若需管理员权限，右键快捷方式 → <strong>属性</strong> → <strong>高级</strong> → 勾选 <strong>用管理员身份运行</strong>。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="方法二：通过任务计划程序（目前使用）"><a href="#方法二：通过任务计划程序（目前使用）" class="headerlink" title="方法二：通过任务计划程序（目前使用）"></a><strong>方法二：通过任务计划程序</strong>（目前使用）</h3><p><strong>特点</strong>：可设置开机自动执行（无需登录）、管理员权限、后台静默运行。</p>
+<p>​<strong>​步骤​</strong>​：</p>
+<ol>
+<li><strong>打开任务计划程序</strong>：<ul>
+<li>按 <code>Win + R</code>，输入 <code>taskschd.msc</code> 回车。</li>
+</ul>
+</li>
+<li><strong>创建新任务</strong>：<ul>
+<li>右侧点击 <strong>创建任务</strong> → 输入名称（如 <code>AutoRun BAT</code>）。</li>
+</ul>
+</li>
+<li><strong>设置触发器</strong>：<ul>
+<li><strong>新建</strong> → 选择 <strong>登录时</strong> 或 <strong>启动时</strong>（启动时需管理员权限）。</li>
+</ul>
+</li>
+<li><strong>设置操作</strong>：<ul>
+<li><strong>新建</strong> → 操作选择 <strong>启动程序</strong> → 浏览选择你的 <code>.bat</code> 文件。</li>
+<li>若需隐藏窗口：添加参数 <code>cmd /c &quot;你的脚本.bat&quot;</code>，并在 <strong>起始于</strong> 填写脚本所在目录。</li>
+</ul>
+</li>
+<li><strong>配置权限</strong>：<ul>
+<li><strong>常规</strong> → 勾选 <strong>不管用户是否登录都要运行</strong> 和 <strong>使用最高权限</strong>。</li>
+</ul>
+</li>
+<li><strong>保存任务</strong> → 重启测试。</li>
+</ol>
+<hr>
+<h3 id="方法三：修改注册表"><a href="#方法三：修改注册表" class="headerlink" title="方法三：修改注册表"></a><strong>方法三：修改注册表</strong></h3><p><strong>特点</strong>：直接写入系统启动项，但需谨慎操作。</p>
+<p>​<strong>​步骤​</strong>​：</p>
+<ol>
+<li><p>按 <code>Win + R</code>，输入 <code>regedit</code> 回车。</p>
+</li>
+<li><p>导航到注册表路径：HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run</p>
+</li>
+<li><p><strong>新建字符串值</strong>：</p>
+<ul>
+<li>右键空白处 → <strong>新建</strong> → <strong>字符串值</strong> → 名称自定义（如 <code>AutoRunBAT</code>）。</li>
+<li>双击该值，在 <strong>数值数据</strong> 中填写脚本绝对路径（如 <code>&quot;C:\Scripts\your_script.bat&quot;</code>）。</li>
+</ul>
+</li>
+<li><p>重启生效。</p>
+</li>
+</ol>
+<hr>
+<h3 id="方法四：组策略编辑器（专业版-企业版）"><a href="#方法四：组策略编辑器（专业版-企业版）" class="headerlink" title="方法四：组策略编辑器（专业版&#x2F;企业版）"></a><strong>方法四：组策略编辑器（专业版&#x2F;企业版）</strong></h3><p><strong>特点</strong>：适合企业环境集中管理。</p>
+<p>​<strong>​步骤​</strong>​：</p>
+<ol>
+<li>按 <code>Win + R</code>，输入 <code>gpedit.msc</code> 回车。</li>
+<li>导航到路径：计算机配置 → Windows 设置 → 脚本（启动&#x2F;关机）</li>
+<li><strong>双击「启动」</strong> → <strong>添加</strong> → 浏览选择你的 <code>.bat</code> 文件。</li>
+<li>重启生效。</li>
+</ol>
+<h2 id="Microsoft-Visual-C-Redistributable"><a href="#Microsoft-Visual-C-Redistributable" class="headerlink" title="Microsoft Visual C++ Redistributable"></a>Microsoft Visual C++ Redistributable</h2><p>Microsoft Visual C++ 2008 Redistributable:</p>
+<p><a href="https://www.microsoft.com/zh-cn/download/details.aspx?id=26368">https://www.microsoft.com/zh-cn/download/details.aspx?id=26368</a></p>
+<p>Microsoft Visual C++ 2010 Redistributable:</p>
+<p><a href="https://www.microsoft.com/zh-cn/download/details.aspx?id=26999">https://www.microsoft.com/zh-cn/download/details.aspx?id=26999</a></p>
+<p>Microsoft Visual C++ 2012 Redistributable:</p>
+<p><a href="https://www.microsoft.com/zh-cn/download/details.aspx?id=30679">https://www.microsoft.com/zh-cn/download/details.aspx?id=30679</a></p>
+<p>Microsoft Visual C++ 2013 Redistributable:</p>
+<p><a href="https://www.microsoft.com/zh-cn/download/details.aspx?id=40784">https://www.microsoft.com/zh-cn/download/details.aspx?id=40784</a></p>
+<p>Microsoft Visual C++ 2015&#x2F;2017&#x2F;2019 Redistributable:</p>
+<p><a href="https://support.microsoft.com/zh-cn/help/2977003/the-latest-supported-visual-c-downloads">https://support.microsoft.com/zh-cn/help/2977003/the-latest-supported-visual-c-downloads</a></p>
+<p>在 64 位平台上，请下载并安装 vcredist_x64.exe。</p>
+<p>在 32 位平台上，请下载并安装 vcredist_x86.exe。</p>
+]]></content>
+      <categories>
+        <category>操作系统</category>
+      </categories>
+      <tags>
+        <tag>Windows</tag>
+        <tag>操作系统</tag>
       </tags>
   </entry>
   <entry>
@@ -9269,6 +9269,142 @@
       </tags>
   </entry>
   <entry>
+    <title>Golang-11：内存回收 GC 详解</title>
+    <url>/posts/9b7aa41e/</url>
+    <content><![CDATA[<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357105.webp"></p>
+<h2 id="1-快速了解"><a href="#1-快速了解" class="headerlink" title="1. 快速了解"></a>1. 快速了解</h2><p>在 Go 语言中，GC 即垃圾回收（Garbage Collection），是一种自动内存管理机制。它就像是一个 “ 内存清理工 “，专门负责回收程序中不再使用的内存空间，让这些空间可以被重新利用，以确保程序能够高效、稳定地运行。</p>
+<h2 id="2-内存回收的由来"><a href="#2-内存回收的由来" class="headerlink" title="2. 内存回收的由来"></a>2. 内存回收的由来</h2><p>从进程虚拟地址空间来看，程序要执行的指令在代码段，全局变量、静态数据等都会分配在数据段。而函数的局部变量、参数和返回值都可以在函数栈帧中找到，但是由于函数调用栈会在函数返回后销毁，如果不能在编译阶段确定数据对象的大小，或者对象生命周期会超出当前所在函数，那就不适合分配在栈上，而应该分配在堆上。</p>
+<p>随着程序的运行，有些数据便不会再用到了，直接分配在栈上的数据会随着函数调用栈的销毁，释放自身占用的内存。而这些在堆上分配的数据就不一样了，它们占用的内存需要程序 <strong>「主动释放」</strong> 才可以重新使用，否则就会成为垃圾，而越积越多的垃圾会不断地消耗系统内存。</p>
+<p>有些编程语言需要程序员在编写程序时，手动释放那些不再需要的分配在堆上的数据，这被称为 <strong>「手动垃圾回收」</strong> 。但是一旦释放得早了，后续对该数据的访问就会出错，因为被释放的内存可能已经被清空或重新分配，甚至已经还给操作系统，这就是所谓的 <strong>「悬挂指针问题」</strong>。而如果忘了释放，它又会一直占用内存，出现 <strong>「内存泄漏」</strong>。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357106.webp"></p>
+<p>所以越来越多的编程语言支持 <strong>「自动垃圾回收」</strong>，由运行时识别不再有用的数据，并释放它们占用的内存。内存何时被释放的内存、被释放的内存如何处理等这些问题都不用我们操心，的确很方便。那么自动垃圾回收要怎么区分哪些数据对象是垃圾呢？</p>
+<h2 id="3-内存回收算法"><a href="#3-内存回收算法" class="headerlink" title="3. 内存回收算法"></a>3. 内存回收算法</h2><p>还得从虚拟地址空间来看，可以确定的是程序中用得到的数据一定是从栈、数据段这些根节点追踪得到的数据。虽然能够追踪得到，不代表后续一定会用到，但是从这些根节点追踪不到的数据就一定不会被用到，也就一定是垃圾。</p>
+<h3 id="3-1-标记清扫法"><a href="#3-1-标记清扫法" class="headerlink" title="3.1 标记清扫法"></a>3.1 标记清扫法</h3><p>所以目前主流的垃圾回收算法都是使用 <strong>「可达性」</strong> 近似等价于 <strong>「存活性」</strong>，要识别存活对象，可以把栈、数据段上的数据对象作为 root，基于它们进一步追踪，把能追踪到的数据都进行标记，剩下的追踪不到的就是垃圾了，这就是「标记清扫算法」的核心思想</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357107.webp"></p>
+<p>三色抽象就可以清晰地展现追踪式垃圾回收过程中对象状态的变化过程，垃圾回收开始时所有数据都为白色，然后把直接追踪到的 root 节点都标记为灰色，代表基于当前节点展开的追踪还未完成。当基于某个节点的追踪任务完成后，便会把该节点标记为黑色，表示它是存活数据，而且无需基于它再次进行追踪了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357108.webp"></p>
+<p>基于黑色节点找到的所有节点都被标记为灰色，表示还要基于它们进一步展开追踪。当没有灰色节点时，就意味着标记工作可以结束了。此时有用数据都为黑色，垃圾都为白色，接下来回收这些白色对象的内存即可。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357109.webp"></p>
+<p>标记清扫算法实现起来相对简单，但是比较容易造成内存碎片化。而面对大量不连续的小分块内存，要找到合适的内存分块的代价更高，也会造成很多小块内存无法使用的情况。</p>
+<p>这一问题可以基于 BiBOP（Big Bag Of Pages）的思想，把内存块划分为多种大小规格，对相同规格的内存块进行统一管理，这样可以更快地匹配到大小合适的空闲内存，规格类型划分的合理也有助于提高内存使用率。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357110.webp"></p>
+<h3 id="3-2-标记整理法"><a href="#3-2-标记整理法" class="headerlink" title="3.2 标记整理法"></a>3.2 标记整理法</h3><p>除此之外，还有人提出通过移动数据来减少碎片化的方法，例如在标记整理算法中，标记阶段与标记清扫算法相同，但是会在完成标记工作后移动非垃圾数据，使它们尽可能紧凑地放在内存中。虽然标记整理算法有效解决了内存碎片化的问题，但是带来的多次扫描与移动开销也不容小觑。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357111.webp"></p>
+<h3 id="3-3-复制式回收法"><a href="#3-3-复制式回收法" class="headerlink" title="3.3 复制式回收法"></a>3.3 复制式回收法</h3><p>还有一种复制式回收算法也会移动数据，它会把堆内存划分成两个相等的空间：From 和 To，程序执行时使用 From。From 空间垃圾回收执行时会扫描 From 空间，把能追踪到的数据复制到 To 空间。当所有有用的数据都复制到 To 空间后，把 From 和 To 空间的角色交换一下，原来的 To 空间用作 From，原来的 From 空间则可以全部回收作为新的 To 空间。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357112.webp"></p>
+<p>这种复制式回收也不会带来碎片化问题，但是只有一半的堆内存可以被使用。为了提高对内存的使用率，通常会和其他垃圾回收算法搭配使用，只在一部分堆内存中使用复制式回收，例如在分代回收中就经常搭配使用复制式回收。</p>
+<h3 id="3-4-分代回收法"><a href="#3-4-分代回收法" class="headerlink" title="3.4 分代回收法"></a>3.4 分代回收法</h3><p>分代回收的提出主要是基于弱分代假说，大部分对象都会在年轻时死亡。如果我们把新创建的对象称为 <strong>「新生代对象」</strong>，把经受住特定次数的 GC 而依然存活的对象称为 <strong>「老年代对象」</strong>。基于弱分代假说，大部分对象会在最初经历的垃圾回收中死亡。</p>
+<p>也就是说，新生代对象成为垃圾的概率高于老年代对象，所以可以把数据划分为新生代和老年代，降低老年代执行垃圾回收的频率，不用每次都处理所有数据，将明显提升垃圾回收执行的效率。而且新生代和老年代还可以分别采用不同的回收策略，进一步提升回收效益并减少开销。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357113.webp"></p>
+<h3 id="3-5-引用计数法"><a href="#3-5-引用计数法" class="headerlink" title="3.5 引用计数法"></a>3.5 引用计数法</h3><p>到目前为止，我们介绍的多为追踪式回收，需要扫描堆内存来识别垃圾对象，而引用计数式垃圾回收则有所不同。引用计数指的是一个数据对象被引用的次数，程序执行过程中会更新对象的引用计数，当引用计数更新为 0 时，就表示这个对象不再有用，可以回收它占用的内存了。所以在引用计数法中，垃圾识别的任务已经分摊到每一次对数据对象的操作中了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357114.webp"></p>
+<p>虽然引用计数法可以及时回收无用内存，但是高频率的更新引用技术也会造成不小的开销。而且若是 a 引用了 b，b 也引用了 a，形成循环引用。当 a 和 b 的引用计数更新到只剩彼此的相互引用时，引用计数便无法更新到 0，也就不能回收对应的内存了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357115.webp"></p>
+<h2 id="4-增量式垃圾回收"><a href="#4-增量式垃圾回收" class="headerlink" title="4. 增量式垃圾回收"></a>4. 增量式垃圾回收</h2><p>到目前为止，我们的介绍还都是在暂停用户程序，只专注于进行垃圾回收的前提下展开的，也就是所谓的 STW（stop the world）。这首当其冲的问题就是，用户程序可以接受长时间的暂停吗？</p>
+<p>实际上我们总是希望能够尽量缩短暂停的时间，可以将垃圾回收工作分多次完成，也就是用户程序与垃圾回收交替执行。这被称为 <strong>「增量式垃圾回收」</strong>，可以缩短每次暂停的时间，但是这也带来了额外的问题，交替执行的过程中保不齐垃圾回收程序前脚刚标记了一个黑色对象，用户程序后脚又修改了它，要是放任不管，垃圾回收程序就会把存活数据误判为垃圾。</p>
+<p>这里我们要再次用到三色抽象了，因为它不仅可以简洁地展示追踪式垃圾回收的推进过程，还可以帮助推演回收期的正确性。在三色抽象中，黑色对象已经处理完毕，不会被再次扫描，而灰色对象还会被回收器继续处理。所以若出现黑色对象到白色对象的引用，同时没有任何灰色对象可以抵达这个白色对象，它就会被判定为垃圾，但实际上它应该是存活数据。</p>
+<p>三色抽象清晰地描述了垃圾回收中把存活对象误判为垃圾的情况。</p>
+<ul>
+<li>如果能够做到不出现黑色对象到白色对象的引用，就必然不会出现这样的错误了，这被称为 <strong>「强三色不变式」</strong>。</li>
+<li>若把条件放宽一点，允许出现黑色对象到白色对象的引用，但是可以保证通过灰色对象可以抵达该白色对象，就也可以避免错误的回收，这被称为 <strong>「弱三色不变式」</strong>。</li>
+</ul>
+<p>实现强弱三色不变式的通常做法是建立读写屏障，写屏障会在写操作中插入指令，目的是把数据对象的修改通知到垃圾回收器，所以写屏障通常都要有一个记录集。而记录集是采用顺序存储还是使用哈希表，记录精确到被修改的对象还是只记录其所在的页等问题，就是写屏障的具体实现要考虑的了。</p>
+<ul>
+<li><strong>「强三色不变式」</strong> 提醒我们关注白色指针，向黑色对象的写入操作，无论如何不允许出现黑色对象到白色对象的引用。因此可以把白色指针置为灰色，也可以把写入的黑色对象退回到灰色，这些都属于 <strong>「插入写屏障」</strong>。</li>
+<li><strong>「弱三色不变式」</strong> 则提醒我们关注对那些到白色对象路径的破坏行为，例如要删除灰色对象到白色对象的引用时，可以把白色对象着为灰色，这种写屏障属于 <strong>「删除写屏障」</strong>。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357116.webp"></p>
+<p>再来看看读屏障，非移动式垃圾回收器中天然的不需要读屏障，但如果像复制式回收器这样会移动数据来避免碎片化，那么 GC 和用户程序交替执行时，读数据便也不那么安全了。</p>
+<p>例如回收器已经把 a 复制到 To 空间去了，之后交替执行的用户程序却读取了 From 空间中的陈旧对象，而回收器后续复制 b 到 To 空间时， b 的新副本持有的便是 a 的陈旧对象指针。当 From 空间整体被回收，对原 From 空间中 a 的访问便会出错。这种情况下就要建立读屏障，确保用户程序不会访问到已经存在新副本的陈旧对象。例如在检测到引用对象已经存在新副本时，转而读取 To 空间的新副本。</p>
+<h2 id="5-并行-并发垃圾回收"><a href="#5-并行-并发垃圾回收" class="headerlink" title="5. 并行&#x2F;并发垃圾回收"></a>5. 并行&#x2F;并发垃圾回收</h2><p>至此，我们的讨论都还没有超出单核的范畴，而实际应用中不得不考虑多核的场景，暂停用户程序的前提下，多线程并行执行垃圾回收程序，这被称为 <strong>「并行垃圾回收」</strong> 。原本由一个线程全权负责的任务，现在需要分几份交给多个线程，那么分工不均就会导致有的线程忙死，有的线程闲死，而实现较好的负载均衡却会增加线程间的同步开销。</p>
+<p>并行场景下，同步似乎是不可回避的问题，否则就连一轮垃圾回收何时结束也很难愉快地决定。有些垃圾回收器在并行场景下还得规避重复处理数据的问题。例如复制式回收期在并行场景下，必须要避免数据对象被不同线程重复复制，否则可能造成数据不一致。</p>
+<p>并发垃圾回收指的是用户程序与垃圾回收程序并发执行，在多核场景下就会存在用户程序和垃圾回收程序并行执行的情况。这和并行垃圾回收中只考虑垃圾回收程序的并行执行是不同的。就拿写屏障来说，多核并发场景下，用户程序和回收器可能会同时使用写屏障记录器，所以并发写屏障的设计还要考虑到用户程序之间以及与垃圾回收程序之间的竞争问题。</p>
+<p>如果没有任何 STW 的事件，那么垃圾回收开始的消息便很难准确、及时地通知到所有线程，可能导致某些线程开启写屏障的动作有所延迟而发生错误。所以实际应用中在某些阶段采取 STW 的方式，在其他阶段支持并发的 <strong>「主体并发式垃圾回收」</strong> 更容易实现。若在此基础上再支持增量式回收，那便属于 <strong>「主体并发增量式回收」</strong>。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357117.webp"></p>
+<h2 id="6-问题解决"><a href="#6-问题解决" class="headerlink" title="6. 问题解决"></a>6. 问题解决</h2><p>go 语言的 GC 在准备阶段会为每个 P 创建一个 mark worker 协程，把对应的 g 指针存储到 P 中。这些后台 mark worker 创建后很快陷入休眠，等待到标记阶段得到调度执行。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357118.webp"></p>
+<p>接下来第一次 STW，GC 进入 _GCMark 阶段：</p>
+<ul>
+<li>全局变量 gcphase 记录 GC 阶段标识</li>
+<li>全局变量 writeBarrier 记录是否开启写屏障</li>
+<li>全局变量 gcBlackenEnabled 用于标识是否允许进行 GC 标记工作，将它置为 1 表示允许</li>
+</ul>
+<p>在 STW 的情况下开启写屏障，等所有准备工作做好以后，start the world 所有 P 都会知道写屏障已经开启，然后这些后台 mark worker 可以得到调度执行，展开标记工作。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357119.webp"></p>
+<p>当没有标记任务时，第二次 STW，GC 进入 _GCMarkTermination 阶段，确认标记工作确实已经完成，然后停止标记工作，将 gcBlackenEnabled 置为 0。</p>
+<p>接下来进入 _GCOff 阶段，关闭写屏障， start the world 进入清扫阶段。进入 _GCOff 阶段之前，新分配的对象会直接标记为黑色。进入 _GCOff 阶段之后，再新分配的对象就是白色的了。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357120.webp"></p>
+<p>执行清扫工作的协程由 runtime.main 在 gcenable 中创建，对应 g 指针存储在全局变量 sweep 中。到清扫阶段，这个后台的 sweeper 会被加入到 runq 中，它得到调度执行时会执行清扫任务。因为清扫工作也是增量进行的，所以每一轮 GC 开始之前，还要先确保完成上一轮 GC 未完成的清扫工作。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357121.webp"></p>
+<p>这样大致看下来，似乎只是有两次必要的 STW 标记与清扫工作并发增量执行的 GC 而已，下面我们重点关注几个问题。</p>
+<h3 id="6-1-Mark"><a href="#6-1-Mark" class="headerlink" title="6.1 Mark"></a>6.1 Mark</h3><blockquote>
+<p>在 GC 标记工作中，如何确定 BSS 段、数据段以及协程栈上的 root 节点数据对象是否是 GC 感兴趣的指针，以及这些指针是否指向堆内存？</p>
+</blockquote>
+<p>第一个问题关乎 GC 标记工作，依照标记清扫算法，标记工作要从扫描 BSS 段、数据段以及协程栈上的这些 root 节点开始，追踪到堆上的节点。那怎么确定这些数据对象是否是 GC 感兴趣的指针呢？</p>
+<p>go 语言在编译阶段会生成 BSS 段、数据段等对应的元数据，存储在可执行文件中。通过各模块对应的 modeldata 可以获得 gcdatamask、gcbssmask 等信息，它们会被用于判断特定 root 结点是否为指针。</p>
+<p>协程栈也有对应的元数据存储在 stackmap 中，扫描协程栈时，通过对应元数据可以知道栈上的局部变量、参数、返回值等对象中哪些是存活的指针。</p>
+<p>确定了 root 节点是否为指针，还要再进一步判断这些指针是否指向堆内存。如果指向堆内存，就得把它们加入到 GC 工作队列中进行进一步的扫描。堆上这些数据对象自然也有对应的元数据，但我们首先要了解下堆内存大致是什么结构。</p>
+<p>mheap 管理着虚拟地址空间中一大段连续的内存，通常所谓的从堆内存分配就是指从这里分配，这段内存以 8K 为一页，多个页组成一个 span，多个 span 组成一个 arena。span 对应的数据结构是 mspan，每个 span 都只存储一种大小的元素。</p>
+<ul>
+<li>span 存储元素的大小规格覆盖了小于等于 32K 的 66 种大小，对应编号 1 ~ 66，记录在 mspan.spanclass 中。</li>
+<li>大于 32K 的大对象直接在 mheap 中分配，对应 spanclass 记录的编号为 0，这样一共有 67 种。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357122.webp"></p>
+<p>除了会按存储元素大小对 span 进行分类以外，还会同时按照存储元素是否含有指针来分类。这一分类信息也存储在 spanclass 中，所以元素大小类型相同的 span 还会分为两种，含有指针的属于 scan 类型，不含指针的属于 no-scan 类型，最终 span 分类一共有 67 乘以 2 &#x3D; 134 种。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357123.webp"></p>
+<p>分配内存时怎么确定是否含有指针呢？每种类型元数据都有一个 ptrdata 字段，根据它可以决定数据对象应该分配到哪种 span 中。</p>
+<ul>
+<li>例如一个 uintptr 类型的对象 a，对应类型元数据中 ptrdata 等于 0，所以会被分配到 noscan 类型的 span 中，nonscan 类型的 span 不会被 GC 扫描。即使 a 存储的是堆上某个对象的地址，这个对象也不会被垃圾回收追踪到。</li>
+<li>而指针类型对应的元数据中，ptrdata 不等于 0，会被分配到 scan 类型的 span 中，这类 span 会被 GC 扫描。</li>
+</ul>
+<p>如果协程都直接向 mheap 申请内存，那么同步开销就太大了，所以 go 语言实现了全局与本地 span 缓存， mheap.central 提供全局 span 缓存，按照 spanclass 类型区分，共 134 个 mcentral，每个 mcentral 管理一种类型的 mspan，并且会将有空闲空间和没有空闲空间的 mspan 分别管理，每个 P 都有一个 mcache 用作本地 span 缓存。同样按照 spanclass 类型区分共 134 个 mspan 链表。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357124.webp"></p>
+<p>堆内存管理结构大致如此，接下来就看看有哪些 GC 标记用得到的元数据信息。</p>
+<p>mheap 中每个 hrena 对应一个 HeapArena 记录 arena 的元数据信息，其中有一个 bitmap，bitmap 中一个字节可以标记 arena 中连续四个指针大小的内存。每个 word 对应的两个比特中：</p>
+<ul>
+<li>低位比特用于标记是否为指针，0 为非指针，1 为指针。</li>
+<li>高位比特用于标记是否需要继续扫描，高位比特为 1 就代表扫描完当前 word，并不能完成当前数据对象的扫描。</li>
+</ul>
+<p>bitmap 的信息在分配内存时设置，会用到对应类型元数据中的 gcdata 信息。 HeapArena 中还有一个 span 字段，它是一个新的 mspan 类型的数组，用于记录当前 arena 中每一页对应到哪一个 span。基于 HeapArena 记录的元数据信息，我们只要知道一个对象的地址，就可以根据 bitmap 信息扫描它内部是否含有指针。</p>
+<p>也可以根据对象地址计算出它在哪一页，然后通过 span 信息查到该对象存在哪一个 span 中，而每个 span 都对应两个位图标记记录在 mspan 中。</p>
+<p>allocBits 中每一位用于标记一个对象存储单元是否已分配，gcmarkBits 中每一位用于标记一个对象是否存活。有了这些元数据和位图标记，我们就能知道哪些数据对象应该被标记为灰色，也就是把其对应的 gcmarkBits 标记为 1，并把它加入到工作队列中。</p>
+<h3 id="6-2-Gcw-wbBuf"><a href="#6-2-Gcw-wbBuf" class="headerlink" title="6.2 Gcw &amp; wbBuf"></a>6.2 Gcw &amp; wbBuf</h3><blockquote>
+<p>分配内存时怎样确定数据对象是否含有指针，以及如何避免协程直接向 mheap 申请内存带来的同步开销过大问题？</p>
+</blockquote>
+<p>依据每种类型元数据中的 ptrdata 字段确定：</p>
+<ul>
+<li>predata 等于 0（如 uintptr 类型对象）对应的数据对象会被分配到 no scan 类型的 span 中，该类型 span 不会被 GC 扫描；</li>
+<li>ptrdata 不等于 0 的指针类型对应的数据对象会被分配到 scan 类型的 span 中，会被 GC 扫描。</li>
+</ul>
+<p>go 语言实现了全局与本地 span 缓存，mheap 的 central 提供全局 span 缓存（按 spanclass 类型区分共 134 个 mcentral，分别管理一种类型的 m pan，并区分有空闲空间和无空闲空间的 mspan），每个 p 都有一个 mcache 用作本地 span 缓存（同样按 spanclass 类型区分共 134 个 mspan 链表堆）。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357125.webp"></p>
+<h3 id="6-3-CPU-Utilization"><a href="#6-3-CPU-Utilization" class="headerlink" title="6.3 CPU Utilization"></a>6.3 CPU Utilization</h3><blockquote>
+<p>GC 初始化创建的 Mworker 在调度时启动数量如何确定，怎样控制 GC 对 CPU 的使用率，以及解决计算启动数量时产生的误差问题？</p>
+</blockquote>
+<p>GC 在初始化阶段根据当前 gcmaxprocs 数值乘以 CPU 目标使用率（默认 25%）计算需要启动的 mockworker 数量，对计算结果进行加 0.5 的 rounding 处理。引入不同工作模式，dedicated 模式的 worker 执行标记任务直到被抢占，fractional 模式的 worker 除被抢占外，还能在达到 fractional 部分目标时主动让出。</p>
+<p>全局变量 gcController 记录可启动的 dedicated 模式 worker 数量和 fractional utilization goal，调度器根据 dedicated 模式 worker 数量是否达到上限，决定设置为 dedicated 模式或在需要时设置为 fractional 模式。</p>
+<p>P 记录累计执行 fractional worker 的时间与当前 worker 开始工作的时间，gcController 记录本轮 GC 标记工作开始的时间，通过检查当前批累计在 fractional 模式下的工作时间与本轮 GC 标记工作已执行时间的比率是否达到 fractional utilization goal，控制 worker 是否让出，从而控制 CPU 使用率。</p>
+<h3 id="6-4-Memory-Alloc"><a href="#6-4-Memory-Alloc" class="headerlink" title="6.4 Memory Alloc"></a>6.4 Memory Alloc</h3><blockquote>
+<p>如何避免 GC 执行过程中内存分配压力过大，以及协程和后台 Markworker 在内存分配时与 GC 相关的工作和债务如何处理？</p>
+</blockquote>
+<p>实现 GC assist 机制，协程分配内存且 GC 标记工作未完成时，按申请内存大小负担相应标记工作（借贷偿还机制）。当前 g 中 GC assist bytes 小于 0 时负债，大于 0 时有结余，负债的 g 申请内存前需辅助 GC 完成标记工作偿还债务。</p>
+<p>后台 mark worker 每完成一定量标记任务在全局 gcController 存信用，有债务的 g 可从 gcController steal 信用抵消债务，结余可用于下次内存分配。GC 标记阶段检查是否需辅助标记，清扫阶段如直接从 mmap 分配大对象或从本地缓存分配 span 时遇到未清扫情况，可能触发辅助清扫，避免内存分配压力过大导致 GC 来不及回收。</p>
+<h3 id="6-5-Hybrid-Barrier"><a href="#6-5-Hybrid-Barrier" class="headerlink" title="6.5 Hybrid Barrier"></a>6.5 Hybrid Barrier</h3><blockquote>
+<p>在 go 语言中，引入混合写屏障前存在写屏障代价大以及第二次 STW 时重新扫描协程栈时间长的问题，如何解决？</p>
+</blockquote>
+<p>整合插入与删除写屏障为混合写屏障，忽略协程栈上的协程屏障，只在标记结束阶段重新扫描被激活的栈帧。</p>
+<p>利用删除写屏障保障写入栈上的数据对象不会被 hiding（在删除可达路径时标记对象为灰色），利用插入写屏障避免将白色对象写入堆上的黑色对象（写入时标记新指针）。</p>
+<p>判断当前栈是否为灰色，若为已完成扫描的黑色栈则无需插入写屏障再标记，通过这种方式既可以忽略当前栈帧的写屏障，也不用在第二次 STW 时重新扫描所有活跃 g 的栈帧。</p>
+]]></content>
+      <categories>
+        <category>编程语言</category>
+      </categories>
+      <tags>
+        <tag>Golang</tag>
+        <tag>Golang系列</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Golang-10：协程的执行过程</title>
     <url>/posts/ea89e33/</url>
     <content><![CDATA[<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250715201121350.webp"></p>
@@ -9478,142 +9614,6 @@
 </ul>
 <p>execute 函数，这里会建立当前 M 和这个 G 的关联关系，并把 G 的状态从 _Grunnable 修改为 _Grunning。如果不继承上一个执行中协程的时间片，就把 P 这里的调度计数加一。最后会调用 gogo 函数，从 g.sched 这里恢复协程栈指针、指令指针等继续执行。</p>
 <p>之前介绍过，协程创建时会伪造一个执行现场存到 g.sched 中，所以即使这个 G 初次执行，也是有一个完美的执行现场的。</p>
-]]></content>
-      <categories>
-        <category>编程语言</category>
-      </categories>
-      <tags>
-        <tag>Golang</tag>
-        <tag>Golang系列</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Golang-11：内存回收 GC 详解</title>
-    <url>/posts/9b7aa41e/</url>
-    <content><![CDATA[<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357105.webp"></p>
-<h2 id="1-快速了解"><a href="#1-快速了解" class="headerlink" title="1. 快速了解"></a>1. 快速了解</h2><p>在 Go 语言中，GC 即垃圾回收（Garbage Collection），是一种自动内存管理机制。它就像是一个 “ 内存清理工 “，专门负责回收程序中不再使用的内存空间，让这些空间可以被重新利用，以确保程序能够高效、稳定地运行。</p>
-<h2 id="2-内存回收的由来"><a href="#2-内存回收的由来" class="headerlink" title="2. 内存回收的由来"></a>2. 内存回收的由来</h2><p>从进程虚拟地址空间来看，程序要执行的指令在代码段，全局变量、静态数据等都会分配在数据段。而函数的局部变量、参数和返回值都可以在函数栈帧中找到，但是由于函数调用栈会在函数返回后销毁，如果不能在编译阶段确定数据对象的大小，或者对象生命周期会超出当前所在函数，那就不适合分配在栈上，而应该分配在堆上。</p>
-<p>随着程序的运行，有些数据便不会再用到了，直接分配在栈上的数据会随着函数调用栈的销毁，释放自身占用的内存。而这些在堆上分配的数据就不一样了，它们占用的内存需要程序 <strong>「主动释放」</strong> 才可以重新使用，否则就会成为垃圾，而越积越多的垃圾会不断地消耗系统内存。</p>
-<p>有些编程语言需要程序员在编写程序时，手动释放那些不再需要的分配在堆上的数据，这被称为 <strong>「手动垃圾回收」</strong> 。但是一旦释放得早了，后续对该数据的访问就会出错，因为被释放的内存可能已经被清空或重新分配，甚至已经还给操作系统，这就是所谓的 <strong>「悬挂指针问题」</strong>。而如果忘了释放，它又会一直占用内存，出现 <strong>「内存泄漏」</strong>。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357106.webp"></p>
-<p>所以越来越多的编程语言支持 <strong>「自动垃圾回收」</strong>，由运行时识别不再有用的数据，并释放它们占用的内存。内存何时被释放的内存、被释放的内存如何处理等这些问题都不用我们操心，的确很方便。那么自动垃圾回收要怎么区分哪些数据对象是垃圾呢？</p>
-<h2 id="3-内存回收算法"><a href="#3-内存回收算法" class="headerlink" title="3. 内存回收算法"></a>3. 内存回收算法</h2><p>还得从虚拟地址空间来看，可以确定的是程序中用得到的数据一定是从栈、数据段这些根节点追踪得到的数据。虽然能够追踪得到，不代表后续一定会用到，但是从这些根节点追踪不到的数据就一定不会被用到，也就一定是垃圾。</p>
-<h3 id="3-1-标记清扫法"><a href="#3-1-标记清扫法" class="headerlink" title="3.1 标记清扫法"></a>3.1 标记清扫法</h3><p>所以目前主流的垃圾回收算法都是使用 <strong>「可达性」</strong> 近似等价于 <strong>「存活性」</strong>，要识别存活对象，可以把栈、数据段上的数据对象作为 root，基于它们进一步追踪，把能追踪到的数据都进行标记，剩下的追踪不到的就是垃圾了，这就是「标记清扫算法」的核心思想</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357107.webp"></p>
-<p>三色抽象就可以清晰地展现追踪式垃圾回收过程中对象状态的变化过程，垃圾回收开始时所有数据都为白色，然后把直接追踪到的 root 节点都标记为灰色，代表基于当前节点展开的追踪还未完成。当基于某个节点的追踪任务完成后，便会把该节点标记为黑色，表示它是存活数据，而且无需基于它再次进行追踪了。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357108.webp"></p>
-<p>基于黑色节点找到的所有节点都被标记为灰色，表示还要基于它们进一步展开追踪。当没有灰色节点时，就意味着标记工作可以结束了。此时有用数据都为黑色，垃圾都为白色，接下来回收这些白色对象的内存即可。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357109.webp"></p>
-<p>标记清扫算法实现起来相对简单，但是比较容易造成内存碎片化。而面对大量不连续的小分块内存，要找到合适的内存分块的代价更高，也会造成很多小块内存无法使用的情况。</p>
-<p>这一问题可以基于 BiBOP（Big Bag Of Pages）的思想，把内存块划分为多种大小规格，对相同规格的内存块进行统一管理，这样可以更快地匹配到大小合适的空闲内存，规格类型划分的合理也有助于提高内存使用率。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357110.webp"></p>
-<h3 id="3-2-标记整理法"><a href="#3-2-标记整理法" class="headerlink" title="3.2 标记整理法"></a>3.2 标记整理法</h3><p>除此之外，还有人提出通过移动数据来减少碎片化的方法，例如在标记整理算法中，标记阶段与标记清扫算法相同，但是会在完成标记工作后移动非垃圾数据，使它们尽可能紧凑地放在内存中。虽然标记整理算法有效解决了内存碎片化的问题，但是带来的多次扫描与移动开销也不容小觑。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357111.webp"></p>
-<h3 id="3-3-复制式回收法"><a href="#3-3-复制式回收法" class="headerlink" title="3.3 复制式回收法"></a>3.3 复制式回收法</h3><p>还有一种复制式回收算法也会移动数据，它会把堆内存划分成两个相等的空间：From 和 To，程序执行时使用 From。From 空间垃圾回收执行时会扫描 From 空间，把能追踪到的数据复制到 To 空间。当所有有用的数据都复制到 To 空间后，把 From 和 To 空间的角色交换一下，原来的 To 空间用作 From，原来的 From 空间则可以全部回收作为新的 To 空间。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357112.webp"></p>
-<p>这种复制式回收也不会带来碎片化问题，但是只有一半的堆内存可以被使用。为了提高对内存的使用率，通常会和其他垃圾回收算法搭配使用，只在一部分堆内存中使用复制式回收，例如在分代回收中就经常搭配使用复制式回收。</p>
-<h3 id="3-4-分代回收法"><a href="#3-4-分代回收法" class="headerlink" title="3.4 分代回收法"></a>3.4 分代回收法</h3><p>分代回收的提出主要是基于弱分代假说，大部分对象都会在年轻时死亡。如果我们把新创建的对象称为 <strong>「新生代对象」</strong>，把经受住特定次数的 GC 而依然存活的对象称为 <strong>「老年代对象」</strong>。基于弱分代假说，大部分对象会在最初经历的垃圾回收中死亡。</p>
-<p>也就是说，新生代对象成为垃圾的概率高于老年代对象，所以可以把数据划分为新生代和老年代，降低老年代执行垃圾回收的频率，不用每次都处理所有数据，将明显提升垃圾回收执行的效率。而且新生代和老年代还可以分别采用不同的回收策略，进一步提升回收效益并减少开销。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357113.webp"></p>
-<h3 id="3-5-引用计数法"><a href="#3-5-引用计数法" class="headerlink" title="3.5 引用计数法"></a>3.5 引用计数法</h3><p>到目前为止，我们介绍的多为追踪式回收，需要扫描堆内存来识别垃圾对象，而引用计数式垃圾回收则有所不同。引用计数指的是一个数据对象被引用的次数，程序执行过程中会更新对象的引用计数，当引用计数更新为 0 时，就表示这个对象不再有用，可以回收它占用的内存了。所以在引用计数法中，垃圾识别的任务已经分摊到每一次对数据对象的操作中了。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357114.webp"></p>
-<p>虽然引用计数法可以及时回收无用内存，但是高频率的更新引用技术也会造成不小的开销。而且若是 a 引用了 b，b 也引用了 a，形成循环引用。当 a 和 b 的引用计数更新到只剩彼此的相互引用时，引用计数便无法更新到 0，也就不能回收对应的内存了。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357115.webp"></p>
-<h2 id="4-增量式垃圾回收"><a href="#4-增量式垃圾回收" class="headerlink" title="4. 增量式垃圾回收"></a>4. 增量式垃圾回收</h2><p>到目前为止，我们的介绍还都是在暂停用户程序，只专注于进行垃圾回收的前提下展开的，也就是所谓的 STW（stop the world）。这首当其冲的问题就是，用户程序可以接受长时间的暂停吗？</p>
-<p>实际上我们总是希望能够尽量缩短暂停的时间，可以将垃圾回收工作分多次完成，也就是用户程序与垃圾回收交替执行。这被称为 <strong>「增量式垃圾回收」</strong>，可以缩短每次暂停的时间，但是这也带来了额外的问题，交替执行的过程中保不齐垃圾回收程序前脚刚标记了一个黑色对象，用户程序后脚又修改了它，要是放任不管，垃圾回收程序就会把存活数据误判为垃圾。</p>
-<p>这里我们要再次用到三色抽象了，因为它不仅可以简洁地展示追踪式垃圾回收的推进过程，还可以帮助推演回收期的正确性。在三色抽象中，黑色对象已经处理完毕，不会被再次扫描，而灰色对象还会被回收器继续处理。所以若出现黑色对象到白色对象的引用，同时没有任何灰色对象可以抵达这个白色对象，它就会被判定为垃圾，但实际上它应该是存活数据。</p>
-<p>三色抽象清晰地描述了垃圾回收中把存活对象误判为垃圾的情况。</p>
-<ul>
-<li>如果能够做到不出现黑色对象到白色对象的引用，就必然不会出现这样的错误了，这被称为 <strong>「强三色不变式」</strong>。</li>
-<li>若把条件放宽一点，允许出现黑色对象到白色对象的引用，但是可以保证通过灰色对象可以抵达该白色对象，就也可以避免错误的回收，这被称为 <strong>「弱三色不变式」</strong>。</li>
-</ul>
-<p>实现强弱三色不变式的通常做法是建立读写屏障，写屏障会在写操作中插入指令，目的是把数据对象的修改通知到垃圾回收器，所以写屏障通常都要有一个记录集。而记录集是采用顺序存储还是使用哈希表，记录精确到被修改的对象还是只记录其所在的页等问题，就是写屏障的具体实现要考虑的了。</p>
-<ul>
-<li><strong>「强三色不变式」</strong> 提醒我们关注白色指针，向黑色对象的写入操作，无论如何不允许出现黑色对象到白色对象的引用。因此可以把白色指针置为灰色，也可以把写入的黑色对象退回到灰色，这些都属于 <strong>「插入写屏障」</strong>。</li>
-<li><strong>「弱三色不变式」</strong> 则提醒我们关注对那些到白色对象路径的破坏行为，例如要删除灰色对象到白色对象的引用时，可以把白色对象着为灰色，这种写屏障属于 <strong>「删除写屏障」</strong>。</li>
-</ul>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357116.webp"></p>
-<p>再来看看读屏障，非移动式垃圾回收器中天然的不需要读屏障，但如果像复制式回收器这样会移动数据来避免碎片化，那么 GC 和用户程序交替执行时，读数据便也不那么安全了。</p>
-<p>例如回收器已经把 a 复制到 To 空间去了，之后交替执行的用户程序却读取了 From 空间中的陈旧对象，而回收器后续复制 b 到 To 空间时， b 的新副本持有的便是 a 的陈旧对象指针。当 From 空间整体被回收，对原 From 空间中 a 的访问便会出错。这种情况下就要建立读屏障，确保用户程序不会访问到已经存在新副本的陈旧对象。例如在检测到引用对象已经存在新副本时，转而读取 To 空间的新副本。</p>
-<h2 id="5-并行-并发垃圾回收"><a href="#5-并行-并发垃圾回收" class="headerlink" title="5. 并行&#x2F;并发垃圾回收"></a>5. 并行&#x2F;并发垃圾回收</h2><p>至此，我们的讨论都还没有超出单核的范畴，而实际应用中不得不考虑多核的场景，暂停用户程序的前提下，多线程并行执行垃圾回收程序，这被称为 <strong>「并行垃圾回收」</strong> 。原本由一个线程全权负责的任务，现在需要分几份交给多个线程，那么分工不均就会导致有的线程忙死，有的线程闲死，而实现较好的负载均衡却会增加线程间的同步开销。</p>
-<p>并行场景下，同步似乎是不可回避的问题，否则就连一轮垃圾回收何时结束也很难愉快地决定。有些垃圾回收器在并行场景下还得规避重复处理数据的问题。例如复制式回收期在并行场景下，必须要避免数据对象被不同线程重复复制，否则可能造成数据不一致。</p>
-<p>并发垃圾回收指的是用户程序与垃圾回收程序并发执行，在多核场景下就会存在用户程序和垃圾回收程序并行执行的情况。这和并行垃圾回收中只考虑垃圾回收程序的并行执行是不同的。就拿写屏障来说，多核并发场景下，用户程序和回收器可能会同时使用写屏障记录器，所以并发写屏障的设计还要考虑到用户程序之间以及与垃圾回收程序之间的竞争问题。</p>
-<p>如果没有任何 STW 的事件，那么垃圾回收开始的消息便很难准确、及时地通知到所有线程，可能导致某些线程开启写屏障的动作有所延迟而发生错误。所以实际应用中在某些阶段采取 STW 的方式，在其他阶段支持并发的 <strong>「主体并发式垃圾回收」</strong> 更容易实现。若在此基础上再支持增量式回收，那便属于 <strong>「主体并发增量式回收」</strong>。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357117.webp"></p>
-<h2 id="6-问题解决"><a href="#6-问题解决" class="headerlink" title="6. 问题解决"></a>6. 问题解决</h2><p>go 语言的 GC 在准备阶段会为每个 P 创建一个 mark worker 协程，把对应的 g 指针存储到 P 中。这些后台 mark worker 创建后很快陷入休眠，等待到标记阶段得到调度执行。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357118.webp"></p>
-<p>接下来第一次 STW，GC 进入 _GCMark 阶段：</p>
-<ul>
-<li>全局变量 gcphase 记录 GC 阶段标识</li>
-<li>全局变量 writeBarrier 记录是否开启写屏障</li>
-<li>全局变量 gcBlackenEnabled 用于标识是否允许进行 GC 标记工作，将它置为 1 表示允许</li>
-</ul>
-<p>在 STW 的情况下开启写屏障，等所有准备工作做好以后，start the world 所有 P 都会知道写屏障已经开启，然后这些后台 mark worker 可以得到调度执行，展开标记工作。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357119.webp"></p>
-<p>当没有标记任务时，第二次 STW，GC 进入 _GCMarkTermination 阶段，确认标记工作确实已经完成，然后停止标记工作，将 gcBlackenEnabled 置为 0。</p>
-<p>接下来进入 _GCOff 阶段，关闭写屏障， start the world 进入清扫阶段。进入 _GCOff 阶段之前，新分配的对象会直接标记为黑色。进入 _GCOff 阶段之后，再新分配的对象就是白色的了。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357120.webp"></p>
-<p>执行清扫工作的协程由 runtime.main 在 gcenable 中创建，对应 g 指针存储在全局变量 sweep 中。到清扫阶段，这个后台的 sweeper 会被加入到 runq 中，它得到调度执行时会执行清扫任务。因为清扫工作也是增量进行的，所以每一轮 GC 开始之前，还要先确保完成上一轮 GC 未完成的清扫工作。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357121.webp"></p>
-<p>这样大致看下来，似乎只是有两次必要的 STW 标记与清扫工作并发增量执行的 GC 而已，下面我们重点关注几个问题。</p>
-<h3 id="6-1-Mark"><a href="#6-1-Mark" class="headerlink" title="6.1 Mark"></a>6.1 Mark</h3><blockquote>
-<p>在 GC 标记工作中，如何确定 BSS 段、数据段以及协程栈上的 root 节点数据对象是否是 GC 感兴趣的指针，以及这些指针是否指向堆内存？</p>
-</blockquote>
-<p>第一个问题关乎 GC 标记工作，依照标记清扫算法，标记工作要从扫描 BSS 段、数据段以及协程栈上的这些 root 节点开始，追踪到堆上的节点。那怎么确定这些数据对象是否是 GC 感兴趣的指针呢？</p>
-<p>go 语言在编译阶段会生成 BSS 段、数据段等对应的元数据，存储在可执行文件中。通过各模块对应的 modeldata 可以获得 gcdatamask、gcbssmask 等信息，它们会被用于判断特定 root 结点是否为指针。</p>
-<p>协程栈也有对应的元数据存储在 stackmap 中，扫描协程栈时，通过对应元数据可以知道栈上的局部变量、参数、返回值等对象中哪些是存活的指针。</p>
-<p>确定了 root 节点是否为指针，还要再进一步判断这些指针是否指向堆内存。如果指向堆内存，就得把它们加入到 GC 工作队列中进行进一步的扫描。堆上这些数据对象自然也有对应的元数据，但我们首先要了解下堆内存大致是什么结构。</p>
-<p>mheap 管理着虚拟地址空间中一大段连续的内存，通常所谓的从堆内存分配就是指从这里分配，这段内存以 8K 为一页，多个页组成一个 span，多个 span 组成一个 arena。span 对应的数据结构是 mspan，每个 span 都只存储一种大小的元素。</p>
-<ul>
-<li>span 存储元素的大小规格覆盖了小于等于 32K 的 66 种大小，对应编号 1 ~ 66，记录在 mspan.spanclass 中。</li>
-<li>大于 32K 的大对象直接在 mheap 中分配，对应 spanclass 记录的编号为 0，这样一共有 67 种。</li>
-</ul>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357122.webp"></p>
-<p>除了会按存储元素大小对 span 进行分类以外，还会同时按照存储元素是否含有指针来分类。这一分类信息也存储在 spanclass 中，所以元素大小类型相同的 span 还会分为两种，含有指针的属于 scan 类型，不含指针的属于 no-scan 类型，最终 span 分类一共有 67 乘以 2 &#x3D; 134 种。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357123.webp"></p>
-<p>分配内存时怎么确定是否含有指针呢？每种类型元数据都有一个 ptrdata 字段，根据它可以决定数据对象应该分配到哪种 span 中。</p>
-<ul>
-<li>例如一个 uintptr 类型的对象 a，对应类型元数据中 ptrdata 等于 0，所以会被分配到 noscan 类型的 span 中，nonscan 类型的 span 不会被 GC 扫描。即使 a 存储的是堆上某个对象的地址，这个对象也不会被垃圾回收追踪到。</li>
-<li>而指针类型对应的元数据中，ptrdata 不等于 0，会被分配到 scan 类型的 span 中，这类 span 会被 GC 扫描。</li>
-</ul>
-<p>如果协程都直接向 mheap 申请内存，那么同步开销就太大了，所以 go 语言实现了全局与本地 span 缓存， mheap.central 提供全局 span 缓存，按照 spanclass 类型区分，共 134 个 mcentral，每个 mcentral 管理一种类型的 mspan，并且会将有空闲空间和没有空闲空间的 mspan 分别管理，每个 P 都有一个 mcache 用作本地 span 缓存。同样按照 spanclass 类型区分共 134 个 mspan 链表。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357124.webp"></p>
-<p>堆内存管理结构大致如此，接下来就看看有哪些 GC 标记用得到的元数据信息。</p>
-<p>mheap 中每个 hrena 对应一个 HeapArena 记录 arena 的元数据信息，其中有一个 bitmap，bitmap 中一个字节可以标记 arena 中连续四个指针大小的内存。每个 word 对应的两个比特中：</p>
-<ul>
-<li>低位比特用于标记是否为指针，0 为非指针，1 为指针。</li>
-<li>高位比特用于标记是否需要继续扫描，高位比特为 1 就代表扫描完当前 word，并不能完成当前数据对象的扫描。</li>
-</ul>
-<p>bitmap 的信息在分配内存时设置，会用到对应类型元数据中的 gcdata 信息。 HeapArena 中还有一个 span 字段，它是一个新的 mspan 类型的数组，用于记录当前 arena 中每一页对应到哪一个 span。基于 HeapArena 记录的元数据信息，我们只要知道一个对象的地址，就可以根据 bitmap 信息扫描它内部是否含有指针。</p>
-<p>也可以根据对象地址计算出它在哪一页，然后通过 span 信息查到该对象存在哪一个 span 中，而每个 span 都对应两个位图标记记录在 mspan 中。</p>
-<p>allocBits 中每一位用于标记一个对象存储单元是否已分配，gcmarkBits 中每一位用于标记一个对象是否存活。有了这些元数据和位图标记，我们就能知道哪些数据对象应该被标记为灰色，也就是把其对应的 gcmarkBits 标记为 1，并把它加入到工作队列中。</p>
-<h3 id="6-2-Gcw-wbBuf"><a href="#6-2-Gcw-wbBuf" class="headerlink" title="6.2 Gcw &amp; wbBuf"></a>6.2 Gcw &amp; wbBuf</h3><blockquote>
-<p>分配内存时怎样确定数据对象是否含有指针，以及如何避免协程直接向 mheap 申请内存带来的同步开销过大问题？</p>
-</blockquote>
-<p>依据每种类型元数据中的 ptrdata 字段确定：</p>
-<ul>
-<li>predata 等于 0（如 uintptr 类型对象）对应的数据对象会被分配到 no scan 类型的 span 中，该类型 span 不会被 GC 扫描；</li>
-<li>ptrdata 不等于 0 的指针类型对应的数据对象会被分配到 scan 类型的 span 中，会被 GC 扫描。</li>
-</ul>
-<p>go 语言实现了全局与本地 span 缓存，mheap 的 central 提供全局 span 缓存（按 spanclass 类型区分共 134 个 mcentral，分别管理一种类型的 m pan，并区分有空闲空间和无空闲空间的 mspan），每个 p 都有一个 mcache 用作本地 span 缓存（同样按 spanclass 类型区分共 134 个 mspan 链表堆）。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713213357125.webp"></p>
-<h3 id="6-3-CPU-Utilization"><a href="#6-3-CPU-Utilization" class="headerlink" title="6.3 CPU Utilization"></a>6.3 CPU Utilization</h3><blockquote>
-<p>GC 初始化创建的 Mworker 在调度时启动数量如何确定，怎样控制 GC 对 CPU 的使用率，以及解决计算启动数量时产生的误差问题？</p>
-</blockquote>
-<p>GC 在初始化阶段根据当前 gcmaxprocs 数值乘以 CPU 目标使用率（默认 25%）计算需要启动的 mockworker 数量，对计算结果进行加 0.5 的 rounding 处理。引入不同工作模式，dedicated 模式的 worker 执行标记任务直到被抢占，fractional 模式的 worker 除被抢占外，还能在达到 fractional 部分目标时主动让出。</p>
-<p>全局变量 gcController 记录可启动的 dedicated 模式 worker 数量和 fractional utilization goal，调度器根据 dedicated 模式 worker 数量是否达到上限，决定设置为 dedicated 模式或在需要时设置为 fractional 模式。</p>
-<p>P 记录累计执行 fractional worker 的时间与当前 worker 开始工作的时间，gcController 记录本轮 GC 标记工作开始的时间，通过检查当前批累计在 fractional 模式下的工作时间与本轮 GC 标记工作已执行时间的比率是否达到 fractional utilization goal，控制 worker 是否让出，从而控制 CPU 使用率。</p>
-<h3 id="6-4-Memory-Alloc"><a href="#6-4-Memory-Alloc" class="headerlink" title="6.4 Memory Alloc"></a>6.4 Memory Alloc</h3><blockquote>
-<p>如何避免 GC 执行过程中内存分配压力过大，以及协程和后台 Markworker 在内存分配时与 GC 相关的工作和债务如何处理？</p>
-</blockquote>
-<p>实现 GC assist 机制，协程分配内存且 GC 标记工作未完成时，按申请内存大小负担相应标记工作（借贷偿还机制）。当前 g 中 GC assist bytes 小于 0 时负债，大于 0 时有结余，负债的 g 申请内存前需辅助 GC 完成标记工作偿还债务。</p>
-<p>后台 mark worker 每完成一定量标记任务在全局 gcController 存信用，有债务的 g 可从 gcController steal 信用抵消债务，结余可用于下次内存分配。GC 标记阶段检查是否需辅助标记，清扫阶段如直接从 mmap 分配大对象或从本地缓存分配 span 时遇到未清扫情况，可能触发辅助清扫，避免内存分配压力过大导致 GC 来不及回收。</p>
-<h3 id="6-5-Hybrid-Barrier"><a href="#6-5-Hybrid-Barrier" class="headerlink" title="6.5 Hybrid Barrier"></a>6.5 Hybrid Barrier</h3><blockquote>
-<p>在 go 语言中，引入混合写屏障前存在写屏障代价大以及第二次 STW 时重新扫描协程栈时间长的问题，如何解决？</p>
-</blockquote>
-<p>整合插入与删除写屏障为混合写屏障，忽略协程栈上的协程屏障，只在标记结束阶段重新扫描被激活的栈帧。</p>
-<p>利用删除写屏障保障写入栈上的数据对象不会被 hiding（在删除可达路径时标记对象为灰色），利用插入写屏障避免将白色对象写入堆上的黑色对象（写入时标记新指针）。</p>
-<p>判断当前栈是否为灰色，若为已完成扫描的黑色栈则无需插入写屏障再标记，通过这种方式既可以忽略当前栈帧的写屏障，也不用在第二次 STW 时重新扫描所有活跃 g 的栈帧。</p>
 ]]></content>
       <categories>
         <category>编程语言</category>
@@ -10792,329 +10792,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Python-03：基础内容</title>
-    <url>/posts/3d587e7c/</url>
-    <content><![CDATA[<h2 id="1-变量"><a href="#1-变量" class="headerlink" title="1. 变量"></a>1. 变量</h2><h3 id="1-1-常见问题"><a href="#1-1-常见问题" class="headerlink" title="1.1 常见问题"></a>1.1 <strong>常见问题</strong></h3><ol>
-<li><p>变量名不能包含空格，但能使用下划线来分割其中的单词</p>
-</li>
-<li><p>错误情况 <code>NameError : name ‘mesage’ is not defined</code><br> 类似这种变量为定义的一般分两种情况：</p>
-<ul>
-<li>使用变量前忘给它赋值</li>
-<li>输入变量名时拼写不正确</li>
-</ul>
-</li>
-<li><p>任意两个数相除时，结果总是浮点数；无论是哪种运算，只要有操作数是浮点数，得到的结果就是浮点数</p>
-</li>
-<li><p>通常使用全大写来指出应将某个变量视为常量</p>
-</li>
-<li><p>注释用井号（#）标识</p>
-</li>
-<li><p>数字分组</p>
-<p> 数字中的下划线可以方便阅读，且不影响结果</p>
-</li>
-</ol>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">age=<span class="number">14_000_000_000</span></span><br><span class="line"><span class="built_in">print</span>(age)    <span class="comment"># 14000000000</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="1-2-保留字"><a href="#1-2-保留字" class="headerlink" title="1.2 保留字"></a>1.2 <strong>保留字</strong></h3><p>保留字是 Python 语言中一些已经被赋予特定意义的单词，这就要要求开发者在开发程序时，不能用这些保留字作为标识符给变量、函数、类、模板以及其他对象命名。</p>
-<p>Python 包含的保留字可以执行如下命令进行查看：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> keyword</span><br><span class="line">keyword.kwlist</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713182244877.webp" alt="保留字"></p>
-<h2 id="2-输入输出"><a href="#2-输入输出" class="headerlink" title="2. 输入输出"></a>2. 输入输出</h2><h3 id="2-1-print-函数"><a href="#2-1-print-函数" class="headerlink" title="2.1 print( ) 函数"></a>2.1 <strong>print( ) 函数</strong></h3><p>使用 print( ) 函数时，不仅可以输出了一个变量，实际上 print( ) 函数完全可以同时输出多个变量，而且它具有更多丰富的功能。</p>
-<p>print( ) 函数的详细语法格式如下：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span> (value, ..., sep=<span class="string">&#x27;&#x27;</span>, end=<span class="string">&#x27;\n&#x27;</span>, file=sysstdout, flush=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>end 参数</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">将三行print语句用空格连接到一行中</span></span><br><span class="line"><span class="string">输出：a b c</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;a&quot;</span>, end=<span class="string">&quot; &quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;b&quot;</span>, end=<span class="string">&quot; &quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;c&quot;</span>)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>写文件</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">通过print写入demo.txt文件</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">f = <span class="built_in">open</span>(<span class="string">&quot;demo.txt&quot;</span>, <span class="string">&quot;w&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;hello world&#x27;</span>, file=f)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;gdx study python&#x27;</span>, file=f)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>分隔符</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">按照&#x27;:&#x27;进行分隔</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">name = <span class="string">&quot;张三&quot;</span></span><br><span class="line">age = <span class="number">18</span></span><br><span class="line"><span class="built_in">print</span>(name, age, sep=<span class="string">&quot;:&quot;</span>)    <span class="comment"># 张三:18</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-2-input-函数"><a href="#2-2-input-函数" class="headerlink" title="2.2 input( ) 函数"></a>2.2 <strong>input( ) 函数</strong></h3><p>input( ) 是 Python 的内置函数，用于从控制台读取用户输入的内容。</p>
-<p>input( ) 函数的用法为：<code>str=input(tipmsg)</code></p>
-<p>说明：</p>
-<ul>
-<li>str 表示一个字符串类型的变量，input 会将读取到的字符串放入 str 中。</li>
-<li>tipmsg 表示提示信息，它会显示在控制台上，告诉用户应该输入什么样的的内容；如果不写 tipmsg，就不会有任何提示信息。</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">message = <span class="built_in">input</span>(<span class="string">&quot;Tell me something, and i will repeat it back to you:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(message)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>类型转换</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">用input()获得的值是由字符串表示，如果想将输入转化为数值的话要用到int()函数</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">height = <span class="built_in">input</span>()</span><br><span class="line">height = <span class="built_in">int</span>(height)</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>Tips：</strong></p>
-<p>如果获取到一个 int 类型和一个 float 类型变量，并让两个变量相加，则最后得到的是 float 类型的结果。</p>
-</blockquote>
-<h2 id="3-运算符"><a href="#3-运算符" class="headerlink" title="3. 运算符"></a>3. 运算符</h2><h3 id="3-1-比较运算符"><a href="#3-1-比较运算符" class="headerlink" title="3.1 比较运算符"></a>3.1 <strong>比较运算符</strong></h3><p>比较运算符，也称关系运算符，用于对常量、变量或表达式的结果进行大小比较。如果这种比较是成立的，则返回 True（真），反之则返回 False（假）。Python 支持的比较运算符如下表所示。</p>
-<table>
-<thead>
-<tr>
-<th><strong>比较运算符</strong></th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>&gt;</td>
-<td>大于，如果 <code>&gt;</code> 前面的值大于后面的值，则返回 True，否则返回 False。</td>
-</tr>
-<tr>
-<td>&lt;</td>
-<td>小于，如果 <code>&lt;</code> 前面的值小于后面的值，则返回 True，否则返回 False。</td>
-</tr>
-<tr>
-<td>&#x3D;&#x3D;</td>
-<td>等于，如果 <code>==</code> 两边的值相等，则返回 True，否则返回 False。</td>
-</tr>
-<tr>
-<td>&gt;&#x3D;</td>
-<td>大于等于（等价于数学中的 ≥），如果 <code>&gt;=</code> 前面的值大于或者等于后面的值，则返回 True，否则返 False。</td>
-</tr>
-<tr>
-<td>&lt;&#x3D;</td>
-<td>小于等于（等价于数学中的 ≤），如果 <code>&lt;=</code> 前面的值小于或者等于后面的值，则返回 True，否则返 False。</td>
-</tr>
-<tr>
-<td>!&#x3D;</td>
-<td>不等于（等价于数学中的），如果 <code>!=</code> 两边的值不相等，则返回 True，否则返回 False。</td>
-</tr>
-<tr>
-<td>is</td>
-<td>判断两个变量所引用的对象是否相同，如果相同则返回 True，否则返回 False。</td>
-</tr>
-<tr>
-<td>is not</td>
-<td>判断两个变量所引用的对象是否不相同，如果不相同则返回 True，否则返回 False。</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p><strong>Tips：</strong></p>
-<p>当 False 和 True 被当做数值来处理时，会分别转换成 0 和 1 进行运算。</p>
-</blockquote>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;100是否大于100:&quot;</span>, <span class="number">100</span> &gt; <span class="number">100</span>)        <span class="comment"># False</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;200是否大于等于100:&quot;</span>, <span class="number">200</span> &gt;= <span class="number">100</span>)    <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;100是否等于100:&quot;</span>, <span class="number">100</span> <span class="keyword">is</span> <span class="number">100</span>)       <span class="comment"># True</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;34是否等于34.0:&quot;</span>, <span class="number">34</span> == <span class="number">34.0</span>)       <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;34是否是34.0:&quot;</span>, <span class="number">34</span> <span class="keyword">is</span> <span class="number">34.0</span>)       <span class="comment"># False</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;False是否小于True:&quot;</span>, <span class="literal">False</span> &lt; <span class="literal">True</span>)  <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;True是否小于True:&quot;</span>, <span class="literal">True</span> == <span class="literal">True</span>)   <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;True是否大于等于1:&quot;</span>, <span class="literal">True</span> &gt;= <span class="number">1</span>)      <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;True是否大于等于2:&quot;</span>, <span class="literal">True</span> &gt;= <span class="number">2</span>)      <span class="comment"># False</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>Tips：&#x3D;&#x3D; 和 is 的区别</strong><br>=&#x3D; 用来比较两个变量的值是否相等，而 is 则用来比对两个变量引用的是否是同一个对象。<br>	- =&#x3D; 是 Python 标准操作符中的比较操作符，用来比较判断两个对象的 value (值) 是否相等。<br>	- is 也被叫做同一性运算符，这个运算符比较判断的是对象间的唯一身份标识，也就是 id 是否相同。</p>
-</blockquote>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># a和b为整形类型</span></span><br><span class="line">a = <span class="number">1</span></span><br><span class="line">b = <span class="number">1</span></span><br><span class="line"><span class="built_in">print</span>(a <span class="keyword">is</span> b)    <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(a == b)    <span class="comment"># True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># a和b为元组类型</span></span><br><span class="line">a = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">b = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="built_in">print</span>(a <span class="keyword">is</span> b)    <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(a == b)    <span class="comment"># True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># a和b为列表类型</span></span><br><span class="line">a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">b = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="built_in">print</span>(a <span class="keyword">is</span> b)    <span class="comment"># False</span></span><br><span class="line"><span class="built_in">print</span>(a == b)    <span class="comment"># True</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>Tips：可变对象和不可变对象</strong></p>
-<ul>
-<li>整形、浮点数、字符串和元组都属于<strong>不可变对象</strong>，不可变对象是指创建后其值不能被修改的对象。如果要修改不可变对象的值，实际上会创建一个新的对象，并将变量重新指向这个新对象。</li>
-<li>列表、字典和集合属于<strong>可变对象</strong>，可变对象是指在创建后可以扩展修改其值或内容的对象。</li>
-</ul>
-<p>因此，创建两个可变对象后，它们并不属于同一个地址，所以在 is 判断时会返回 False。</p>
-</blockquote>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 对于列表</span></span><br><span class="line">my_list = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] </span><br><span class="line">my_list.append(<span class="number">4</span>)  <span class="comment"># 可以直接修改列表</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 对于字符串</span></span><br><span class="line">my_str = <span class="string">&quot;hello&quot;</span> </span><br><span class="line">my_str += <span class="string">&quot; world&quot;</span>  <span class="comment"># 这里实际上创建了一个新的字符串对象</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="3-2-逻辑运算符"><a href="#3-2-逻辑运算符" class="headerlink" title="3.2 逻辑运算符"></a>3.2 <strong>逻辑运算符</strong></h3><p>高中数学中我们就学过逻辑运算，例如 A1 为真命题，A2 为假命题，那么 “A1 且 A2” 为假，”A1 或 A2” 为真，” 非 A2” 为真。Python 也有类似的逻辑运算，如下表:</p>
-<table>
-<thead>
-<tr>
-<th><strong>逻辑运算符</strong></th>
-<th><strong>含义</strong></th>
-<th><strong>基本格式</strong></th>
-<th><strong>说明</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>and</td>
-<td>逻辑与运算，等价于数学中的 “ 且 “</td>
-<td>a and b</td>
-<td>当 a 和 b 两个表达式都为真时，a and b 的结果才为真，否则为假.</td>
-</tr>
-<tr>
-<td>or</td>
-<td>逻辑与运算，等价于数学中的 “ 或 “</td>
-<td>a or b</td>
-<td>当 a 和 b 两个表达式都为假时，a or b 的结果才是假，否则为真。</td>
-</tr>
-<tr>
-<td>not</td>
-<td>逻辑与运算，等价于数学中的 “ 非 “</td>
-<td>not a</td>
-<td>如果 a 为真，那么 not a 的结果为假；如果 a 为假，那么 not a 的结果为真。相当于对 a 取反。</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p><strong>Tips：</strong></p>
-<p>在 a and b 中，如果 a 为假，那么 b 就不会再去判断，整个表达式直接判定为假。<br>在 a or b 中，如果 a 为真，那么 b 不同也不会去判断，整个表达式直接判定为真。</p>
-</blockquote>
-<h2 id="4-字符串"><a href="#4-字符串" class="headerlink" title="4. 字符串"></a>4. 字符串</h2><h3 id="4-1-格式化输出"><a href="#4-1-格式化输出" class="headerlink" title="4.1 格式化输出"></a>4.1 <strong>格式化输出</strong></h3><ul>
-<li><strong>来自 C 语言的 % 方式</strong></li>
-</ul>
-<p>% 号格式化字符串的方式继承自古老的 C 语言，这在很多编程语言都有类似的实现。%s 是一个占位符，它仅代表一段字符串，并不是拼接的实际内容。实际的拼接内容在一个单独的 % 号后面，放在一个元组里。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;%s %s&#x27;</span> % (<span class="string">&#x27;Hello&#x27;</span>, <span class="string">&#x27;world&#x27;</span>))    <span class="comment"># Hello world</span></span><br></pre></td></tr></table></figure>
-
-<p>类似的占位符还有：%d（代表一个整数）、%f（代表一个浮点数）、%.2f（代表一个保留小数点后两位的浮点数）、%o（代表一个 8 进制数）、%x（代表一个 16 进制数）等等。% 占位符既是这种拼接方式的特点，同时也是其限制因为每种占位符都有特定意义，实际使用起来较为麻烦。</p>
-<ul>
-<li><strong>format( ) 拼接方式</strong></li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">username = <span class="string">&quot;gdx&quot;</span></span><br><span class="line">age = <span class="number">22</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 正常用法</span></span><br><span class="line">s1 = <span class="string">&#x27;Hello! My name is &#123;&#125;, i am &#123;&#125;.&#x27;</span>.<span class="built_in">format</span>(username, age)</span><br><span class="line"><span class="built_in">print</span>(s1)    <span class="comment"># Hello! My name is gdx, i am 22.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 带数字编号</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#123;0&#125; &#123;1&#125;&#x27;</span>.<span class="built_in">format</span>(username, age))             <span class="comment"># gdx 22</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#123;0&#125; &#123;1&#125; &#123;0&#125;&#x27;</span>.<span class="built_in">format</span>(username, age))         <span class="comment"># gdx 22 gdx</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 带关键字</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#123;name&#125; &#123;age&#125; &#123;name&#125;&#x27;</span>.<span class="built_in">format</span>(name=<span class="string">&#x27;gdx&#x27;</span>, age=<span class="number">22</span>))  <span class="comment"># gdx 22 gdx</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 转换成百分比 - 也适用于下面f-string的方法</span></span><br><span class="line">total = <span class="number">100</span></span><br><span class="line">score = <span class="number">83</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;your score: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(score/total))         <span class="comment"># your score: 0.83</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;your score: &#123;:.1%&#125;&quot;</span>.<span class="built_in">format</span>(score/total))     <span class="comment"># your score: 83.0%</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 转换成百分比 - 也可以通过.xf的形式转换</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;your score: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="number">1</span>/<span class="number">3</span>*<span class="number">100</span>))         <span class="comment"># your score: 33.33333333333333</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;your score: &#123;:.2f&#125;%&quot;</span>.<span class="built_in">format</span>(<span class="number">1</span>/<span class="number">3</span>*<span class="number">100</span>))     <span class="comment"># your score: 33.33%</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 转换进制</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="number">10</span>))      <span class="comment"># 十进制 - 10</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#123;:o&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="number">10</span>))    <span class="comment"># 八进制 - 12</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#123;:x&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="number">10</span>))    <span class="comment"># 十六进制 - a</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取字典元素</span></span><br><span class="line">info = &#123;</span><br><span class="line">    <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;张三&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;age&#x27;</span>: <span class="number">19</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;名称：&#123;info[name]&#125;，年级：&#123;info[age]&#125;&quot;</span>.<span class="built_in">format</span>(info=info))</span><br></pre></td></tr></table></figure>
-
-<p>我们还可以通过 format 格式化输出来完成一些小 demo，例如下面我打印一个乘法口诀表，就可以通过 format 很方便的打印出来。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">10</span>):</span><br><span class="line">    line = <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, i + <span class="number">1</span>):</span><br><span class="line">        line += <span class="string">&quot;&#123;left&#125; * &#123;right&#125; = &#123;result&#125; &quot;</span>.<span class="built_in">format</span>(left=i, right=j, result=i * j)</span><br><span class="line">    <span class="built_in">print</span>(line)</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713182244878.webp"></p>
-<ul>
-<li><strong>f-string 方法（推荐）</strong></li>
-</ul>
-<p>f-string 方式出自 PEP 498（Literal String Interpolation，字面字符串插值），从 Python3.6 版本引入。其特点是在字符串前加 f 标识，字符串中间则用花括号 { } 包裹其他字符串变量。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 常规使用</span></span><br><span class="line">name = <span class="string">&#x27;world&#x27;</span></span><br><span class="line">myname= <span class="string">&#x27;python_cat&#x27;</span></span><br><span class="line">words = <span class="string">f&#x27;Hello <span class="subst">&#123;name&#125;</span>. My name is <span class="subst">&#123;myname&#125;</span>.&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(words)    <span class="comment"># Hello world. My name is python_cat.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印字典值</span></span><br><span class="line">one_dict = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;gdx&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">22</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;姓名：<span class="subst">&#123;one_dict.get(<span class="string">&#x27;name&#x27;</span>)&#125;</span>，年龄：<span class="subst">&#123;one_dict.get(<span class="string">&#x27;age&#x27;</span>)&#125;</span>&quot;</span>)    <span class="comment"># 姓名：gdx，年龄：22</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 进制转换</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;<span class="number">10</span>&#125;</span>&#x27;</span>)      <span class="comment"># 十进制 - 10</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;<span class="number">10</span>:o&#125;</span>&#x27;</span>)    <span class="comment"># 八进制 - 12</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;<span class="number">10</span>:x&#125;</span>&#x27;</span>)    <span class="comment"># 十六进制 - a</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;<span class="number">10</span>:b&#125;</span>&#x27;</span>)    <span class="comment"># 二进制 - 1010</span></span><br></pre></td></tr></table></figure>
-
-<p>除了可以做字符串格式化操作，还可以进行简单的运算，甚至可以是函数方法。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 打印表达式</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;A total number of <span class="subst">&#123;<span class="number">20</span> * <span class="number">8</span> + <span class="number">10</span>&#125;</span>&#x27;</span>)    <span class="comment"># A total number of 170</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 调用函数</span></span><br><span class="line">name = <span class="string">&quot;GDX&quot;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;My name is <span class="subst">&#123;name.lower()&#125;</span>&#x27;</span>)     <span class="comment"># My name is gdx</span></span><br></pre></td></tr></table></figure>
-
-<p>也可以直接获取包中的常量值。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;math.pi&#125;</span>&quot;</span>)      <span class="comment"># 3.141592653589793</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;math.pi:<span class="number">.3</span>f&#125;</span>&quot;</span>)  <span class="comment"># 3.142</span></span><br></pre></td></tr></table></figure>
-
-<p>或者通过 <code>&lt;</code>、<code>&gt;</code> 和 <code>^</code> 号来左右快速填充字符。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">str_format = <span class="string">&quot;hello world&quot;</span></span><br><span class="line"><span class="comment"># 用空格填充</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;str_format:&gt;<span class="number">20</span>&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;str_format:&lt;<span class="number">20</span>&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;str_format:^<span class="number">20</span>&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 用?号填充</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;str_format:?&lt;<span class="number">20</span>&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;str_format:?&gt;<span class="number">20</span>&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;str_format:?^<span class="number">20</span>&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713182244879.webp"></p>
-<h3 id="4-2-改变字符串的大小"><a href="#4-2-改变字符串的大小" class="headerlink" title="4.2 改变字符串的大小"></a>4.2 <strong>改变字符串的大小</strong></h3><p>name&#x3D;’Jack tom’</p>
-<table>
-<thead>
-<tr>
-<th>函数</th>
-<th>结果</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>name.upper( )</td>
-<td>JACK TOM</td>
-</tr>
-<tr>
-<td>name.lower()</td>
-<td>jack tom</td>
-</tr>
-<tr>
-<td>name.title()</td>
-<td>Jack Tom</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p><strong>Tips：</strong></p>
-<p>上面这些函数并不会修改初始值。</p>
-</blockquote>
-<h3 id="4-3-删除空白"><a href="#4-3-删除空白" class="headerlink" title="4.3 删除空白"></a>4.3 <strong>删除空白</strong></h3><table>
-<thead>
-<tr>
-<th><strong>函数</strong></th>
-<th><strong>功能</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>name.lstrip()</td>
-<td>去开头空白</td>
-</tr>
-<tr>
-<td>name.rstrip()</td>
-<td>去尾部空白</td>
-</tr>
-<tr>
-<td>name.strip()</td>
-<td>去开头和尾部空白</td>
-</tr>
-</tbody></table>
-<h2 id="5-枚举类型"><a href="#5-枚举类型" class="headerlink" title="5. 枚举类型"></a>5. 枚举类型</h2><p>从 Python3.x 开始提供了 enum 模块来提供权举的功能，使用时通过 <code>from enum import Enum</code> 来引入。</p>
-<p>枚举的主要优点包括：</p>
-<ol>
-<li>提高代码的可读性和可维护性：使用有意义的名称来表示常量值，而不是直接使用数字或字符串，使代码更易于理解。</li>
-<li>类型安全：枚举值具有特定的类型，减少了错误使用不相关值的可能性。</li>
-</ol>
-<p>例如，我下面定义了一个 Color 的枚举类型，其中包含了自定义名称的三个枚举成员。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> enum <span class="keyword">import</span> Enum</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Color</span>(<span class="title class_ inherited__">Enum</span>):</span><br><span class="line">    RED = <span class="number">1</span></span><br><span class="line">    GREEN = <span class="number">2</span></span><br><span class="line">    BLUE = <span class="number">3</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">print_color</span>(<span class="params">color</span>):</span><br><span class="line">        <span class="keyword">if</span> color == Color.RED.value:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;红色&#x27;</span>)</span><br><span class="line">        <span class="keyword">elif</span> color == Color.GREEN.value:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;绿色&#x27;</span>)</span><br><span class="line">        <span class="keyword">elif</span> color == Color.BLUE.value:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;蓝色&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(Color.RED)            <span class="comment"># Color.RED</span></span><br><span class="line"><span class="built_in">print</span>(Color.RED.name)       <span class="comment"># RED</span></span><br><span class="line"><span class="built_in">print</span>(Color.RED.value)      <span class="comment"># 1</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>Tips：</strong></p>
-<p>枚举值不能修改。</p>
-</blockquote>
-<h2 id="6-静态与动态语言"><a href="#6-静态与动态语言" class="headerlink" title="6. 静态与动态语言"></a>6. 静态与动态语言</h2><ul>
-<li>静态语言：数据类型是在编译期间检查的</li>
-<li>动态语言：运行期间才去做数据类型检查的语言</li>
-</ul>
-<h3 id="6-1-静态语言"><a href="#6-1-静态语言" class="headerlink" title="6.1 静态语言"></a>6.1 <strong>静态语言</strong></h3><p>静态类型语言在编译时就会确定变量的数据类型，类型检查是在编译时进行的。这就意味着在编写代码时，必须明确声明每个变量的类型，而且一旦声明，类型就不能改变。</p>
-<p>代表性的静态语言：C、C++、Java、C# 等</p>
-<p>优点：</p>
-<ol>
-<li>类型检查在编译阶段进行，能够更早地发现类型错误，减少运行时错误的出现，提高程序的可靠性。</li>
-<li>由于在编译时就确定了变量的类型和内存占用，所以程序的运行效率通常较高，特别是在处理大量数据和复杂计算时。</li>
-<li>代码的可读性和可维护性较好，因为明确的类型声明使得代码的意图更加清晰。</li>
-</ol>
-<p>缺点：</p>
-<ol>
-<li>开发过程相对较为繁琐，学习难度稍大，需要在编写代码时明确指定类型，可能会增加一些代码量。</li>
-<li>灵活性相对较差，修改类型可能需要进行大量的代码重构。</li>
-</ol>
-<p>下面举一个 java 实现两数相加的例子，可以发现需要定义的东西比较多，代码量也比较大。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">b</span> <span class="operator">=</span> <span class="number">2</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> a + b;</span><br><span class="line">        System.out.println(sum)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="6-2-动态语言"><a href="#6-2-动态语言" class="headerlink" title="6.2 动态语言"></a>6.2 <strong>动态语言</strong></h3><p>动态类型语言则在运行时才确定变量的类型，即类型检查在代码运行时才进行。在这类语言中，变量的类型可以随时改变，编写代码时更加灵活，但也可能会在运行时出现一些难以预料的类型错误。</p>
-<p>代表性的动态语言：Python、JavaScript、PHP、ruby、lua 等</p>
-<p>优点：</p>
-<ol>
-<li>编写代码更加灵活自由，不需要事先声明变量的类型，可以快速开发和迭代。</li>
-<li>能够更轻松地实现一些高级编程概念，如元编程和动态派发。</li>
-<li>对于一些小型项目或者快速原型开发，能够提高开发效率。</li>
-</ol>
-<p>缺点：</p>
-<ol>
-<li>由于类型检查在运行时进行，可能会在运行时出现一些难以发现的类型错误。</li>
-<li>运行效率可能相对较低，因为需要在运行时进行类型推断和转换。</li>
-<li>代码的可读性在某些情况下可能会受到影响，因为不明确的类型可能会让其他人理解代码的意图变得困难。</li>
-</ol>
-<h2 id="7-类型标注"><a href="#7-类型标注" class="headerlink" title="7. 类型标注"></a>7. 类型标注</h2><p><strong>typing</strong></p>
-<blockquote>
-<p>官方文档：<a href="https://docs.python.org/zh-cn/3/library/typing.html">https://docs.python.org/zh-cn/3/library/typing.html</a></p>
-</blockquote>
-<p>Python 是一门弱类型的语言，很多时候我们可能不清楚函数参数类型或者返回值类型，很有可能导致一些类型没有指定方法，typing 模块可以很好的解决这个问题。它的作用主要有以下几点：</p>
-<ul>
-<li>类型检查：在编译时进行类型检查，防止运行时出现参数和返回值类型不符合的情况。</li>
-<li>开发文档附加说明：作为开发文档的一部分，方便使用者调用时传入和返回参数类型。</li>
-<li>提高代码可读性：让开发者在阅读代码时更容易理解变量或对象的类型，从而提高代码的可读性和可维护性。</li>
-</ul>
-<blockquote>
-<p><strong>Tips：</strong></p>
-<p>typing 不会影响程序的运行，它只是用作提醒，不会产生类型的错误。</p>
-</blockquote>
-<p>类型标注的语法：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 函数类型标注</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">函数名</span>(<span class="params">参数: 数据类型</span>) -&gt; 返回值类型：</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 变量类型标注</span></span><br><span class="line">变量名: 数据类型=值</span><br></pre></td></tr></table></figure>
-
-<p>typing 模块只有在 Python3.5 以上的版本中才可以使用，Pycharm 目前支持 typing 检查。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">List</span>, <span class="built_in">int</span>, <span class="type">Dict</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 没有类型标注，不清楚变量a的类型及函数返回值类型是什么</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">len_list1</span>(<span class="params">a</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">len</span>(a)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加了类型标注，明确说明变量和函数返回值是一个List的类型</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">len_list2</span>(<span class="params">a: <span class="type">List</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">len</span>(a)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(len_list2([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]))  <span class="comment"># 3</span></span><br><span class="line"><span class="built_in">print</span>(len_list2(<span class="string">&quot;123&quot;</span>))      <span class="comment"># 3</span></span><br></pre></td></tr></table></figure>
-
-<p>我们看上面这个例子的打印结果也印证了上面 typing 不会影响程序运行的结果，但是我们可以在 <code>print(len_list2(&quot;123&quot;))</code> 这行代码下看到一条黄线提示，当鼠标放在这行代码上就能看到 typing 的提示信息，提醒你当前传入的值不是期望的 list 类型。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713182244880.webp"></p>
-<p>类型标注的用法还有很多，我们再来看一些其它类型标注的例子。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 复合类型标注</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test1</span>(<span class="params"><span class="built_in">id</span>: <span class="built_in">int</span>, score: <span class="type">List</span>[<span class="built_in">int</span>], name: <span class="type">Dict</span>[<span class="built_in">str</span>: <span class="built_in">str</span>]</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># 指定序列类型</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test2</span>(<span class="params">seq: <span class="type">Sequence</span></span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> seq:</span><br><span class="line">        <span class="built_in">print</span>(i)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 类型别名定义 - 简化类型名称</span></span><br><span class="line">Vector = <span class="built_in">list</span>[<span class="built_in">float</span>]</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test3</span>(<span class="params"><span class="built_in">id</span>, names: Vector</span>) -&gt; Vector:</span><br><span class="line">    <span class="keyword">return</span> [<span class="built_in">id</span> * name <span class="keyword">for</span> name <span class="keyword">in</span> names]</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 明确说明函数无返回值</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test4</span>(<span class="params"><span class="built_in">id</span>: <span class="built_in">int</span></span>) -&gt; NotReturn:</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># 明确说明变量可接受任意类型</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test5</span>(<span class="params">a: <span class="type">Any</span></span>):</span><br><span class="line">    <span class="built_in">print</span>(a)</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 针对无传入参数场景</span></span><br><span class="line"><span class="comment"># 下列arg2类型标注为str类型，但arg2这个参数是可以不传递值的，且如果不传递，它将是None</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test6</span>(<span class="params">arg1: <span class="built_in">int</span>, agr2: <span class="type">Optional</span>[<span class="built_in">str</span>]=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># 联合类型 - 允许多类型</span></span><br><span class="line"><span class="comment"># 下列arg2指明传入的参数类型可以是List和Dict中的任意一种</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test7</span>(<span class="params">arg1: <span class="built_in">int</span>, agr2: union[<span class="type">List</span>, <span class="type">Dict</span>]</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># 自定义多类型</span></span><br><span class="line">MyType = TypeVar(<span class="string">&quot;MyType&quot;</span>, <span class="built_in">int</span>, <span class="built_in">str</span>, <span class="type">List</span>)    <span class="comment"># 允许是int、str和List中的类型</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test8</span>(<span class="params">a: MyType</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>Tips：</strong></p>
-<p>Python 中常见的序列类型包括：列表（list）、元组（tuple）、字符串（str）、字节序列（bytes）和字节数组（bytearray）。</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>编程语言</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-        <tag>Python系列</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Python-04：数据结构</title>
     <url>/posts/80f1aceb/</url>
     <content><![CDATA[<h2 id="1-字符串切片"><a href="#1-字符串切片" class="headerlink" title="1. 字符串切片"></a>1. 字符串切片</h2><p>从本质上讲，字符串是由多个字符构成的，字符之间是有顺序的，这个顺序号称为索引（index）。</p>
@@ -11632,6 +11309,329 @@
 <li>结果是一个 set( ) 集合</li>
 </ol>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 自动去重</span></span><br><span class="line">list1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">5</span>]</span><br><span class="line">set1 = &#123;i <span class="keyword">for</span> i <span class="keyword">in</span> list1&#125;</span><br><span class="line"><span class="built_in">print</span>(set1)  <span class="comment"># &#123;1, 2, 3, 4, 5&#125;</span></span><br><span class="line"></span><br><span class="line">set2 = &#123;i * <span class="number">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> list1&#125;</span><br><span class="line"><span class="built_in">print</span>(set2)  <span class="comment"># &#123;2, 4, 6, 8, 10&#125;</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>编程语言</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Python系列</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python-03：基础内容</title>
+    <url>/posts/3d587e7c/</url>
+    <content><![CDATA[<h2 id="1-变量"><a href="#1-变量" class="headerlink" title="1. 变量"></a>1. 变量</h2><h3 id="1-1-常见问题"><a href="#1-1-常见问题" class="headerlink" title="1.1 常见问题"></a>1.1 <strong>常见问题</strong></h3><ol>
+<li><p>变量名不能包含空格，但能使用下划线来分割其中的单词</p>
+</li>
+<li><p>错误情况 <code>NameError : name ‘mesage’ is not defined</code><br> 类似这种变量为定义的一般分两种情况：</p>
+<ul>
+<li>使用变量前忘给它赋值</li>
+<li>输入变量名时拼写不正确</li>
+</ul>
+</li>
+<li><p>任意两个数相除时，结果总是浮点数；无论是哪种运算，只要有操作数是浮点数，得到的结果就是浮点数</p>
+</li>
+<li><p>通常使用全大写来指出应将某个变量视为常量</p>
+</li>
+<li><p>注释用井号（#）标识</p>
+</li>
+<li><p>数字分组</p>
+<p> 数字中的下划线可以方便阅读，且不影响结果</p>
+</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">age=<span class="number">14_000_000_000</span></span><br><span class="line"><span class="built_in">print</span>(age)    <span class="comment"># 14000000000</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-保留字"><a href="#1-2-保留字" class="headerlink" title="1.2 保留字"></a>1.2 <strong>保留字</strong></h3><p>保留字是 Python 语言中一些已经被赋予特定意义的单词，这就要要求开发者在开发程序时，不能用这些保留字作为标识符给变量、函数、类、模板以及其他对象命名。</p>
+<p>Python 包含的保留字可以执行如下命令进行查看：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> keyword</span><br><span class="line">keyword.kwlist</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713182244877.webp" alt="保留字"></p>
+<h2 id="2-输入输出"><a href="#2-输入输出" class="headerlink" title="2. 输入输出"></a>2. 输入输出</h2><h3 id="2-1-print-函数"><a href="#2-1-print-函数" class="headerlink" title="2.1 print( ) 函数"></a>2.1 <strong>print( ) 函数</strong></h3><p>使用 print( ) 函数时，不仅可以输出了一个变量，实际上 print( ) 函数完全可以同时输出多个变量，而且它具有更多丰富的功能。</p>
+<p>print( ) 函数的详细语法格式如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span> (value, ..., sep=<span class="string">&#x27;&#x27;</span>, end=<span class="string">&#x27;\n&#x27;</span>, file=sysstdout, flush=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>end 参数</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">将三行print语句用空格连接到一行中</span></span><br><span class="line"><span class="string">输出：a b c</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;a&quot;</span>, end=<span class="string">&quot; &quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;b&quot;</span>, end=<span class="string">&quot; &quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;c&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>写文件</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">通过print写入demo.txt文件</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">f = <span class="built_in">open</span>(<span class="string">&quot;demo.txt&quot;</span>, <span class="string">&quot;w&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;hello world&#x27;</span>, file=f)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;gdx study python&#x27;</span>, file=f)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>分隔符</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">按照&#x27;:&#x27;进行分隔</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">name = <span class="string">&quot;张三&quot;</span></span><br><span class="line">age = <span class="number">18</span></span><br><span class="line"><span class="built_in">print</span>(name, age, sep=<span class="string">&quot;:&quot;</span>)    <span class="comment"># 张三:18</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-input-函数"><a href="#2-2-input-函数" class="headerlink" title="2.2 input( ) 函数"></a>2.2 <strong>input( ) 函数</strong></h3><p>input( ) 是 Python 的内置函数，用于从控制台读取用户输入的内容。</p>
+<p>input( ) 函数的用法为：<code>str=input(tipmsg)</code></p>
+<p>说明：</p>
+<ul>
+<li>str 表示一个字符串类型的变量，input 会将读取到的字符串放入 str 中。</li>
+<li>tipmsg 表示提示信息，它会显示在控制台上，告诉用户应该输入什么样的的内容；如果不写 tipmsg，就不会有任何提示信息。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">message = <span class="built_in">input</span>(<span class="string">&quot;Tell me something, and i will repeat it back to you:&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(message)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>类型转换</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">用input()获得的值是由字符串表示，如果想将输入转化为数值的话要用到int()函数</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line">height = <span class="built_in">input</span>()</span><br><span class="line">height = <span class="built_in">int</span>(height)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Tips：</strong></p>
+<p>如果获取到一个 int 类型和一个 float 类型变量，并让两个变量相加，则最后得到的是 float 类型的结果。</p>
+</blockquote>
+<h2 id="3-运算符"><a href="#3-运算符" class="headerlink" title="3. 运算符"></a>3. 运算符</h2><h3 id="3-1-比较运算符"><a href="#3-1-比较运算符" class="headerlink" title="3.1 比较运算符"></a>3.1 <strong>比较运算符</strong></h3><p>比较运算符，也称关系运算符，用于对常量、变量或表达式的结果进行大小比较。如果这种比较是成立的，则返回 True（真），反之则返回 False（假）。Python 支持的比较运算符如下表所示。</p>
+<table>
+<thead>
+<tr>
+<th><strong>比较运算符</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&gt;</td>
+<td>大于，如果 <code>&gt;</code> 前面的值大于后面的值，则返回 True，否则返回 False。</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>小于，如果 <code>&lt;</code> 前面的值小于后面的值，则返回 True，否则返回 False。</td>
+</tr>
+<tr>
+<td>&#x3D;&#x3D;</td>
+<td>等于，如果 <code>==</code> 两边的值相等，则返回 True，否则返回 False。</td>
+</tr>
+<tr>
+<td>&gt;&#x3D;</td>
+<td>大于等于（等价于数学中的 ≥），如果 <code>&gt;=</code> 前面的值大于或者等于后面的值，则返回 True，否则返 False。</td>
+</tr>
+<tr>
+<td>&lt;&#x3D;</td>
+<td>小于等于（等价于数学中的 ≤），如果 <code>&lt;=</code> 前面的值小于或者等于后面的值，则返回 True，否则返 False。</td>
+</tr>
+<tr>
+<td>!&#x3D;</td>
+<td>不等于（等价于数学中的），如果 <code>!=</code> 两边的值不相等，则返回 True，否则返回 False。</td>
+</tr>
+<tr>
+<td>is</td>
+<td>判断两个变量所引用的对象是否相同，如果相同则返回 True，否则返回 False。</td>
+</tr>
+<tr>
+<td>is not</td>
+<td>判断两个变量所引用的对象是否不相同，如果不相同则返回 True，否则返回 False。</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Tips：</strong></p>
+<p>当 False 和 True 被当做数值来处理时，会分别转换成 0 和 1 进行运算。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;100是否大于100:&quot;</span>, <span class="number">100</span> &gt; <span class="number">100</span>)        <span class="comment"># False</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;200是否大于等于100:&quot;</span>, <span class="number">200</span> &gt;= <span class="number">100</span>)    <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;100是否等于100:&quot;</span>, <span class="number">100</span> <span class="keyword">is</span> <span class="number">100</span>)       <span class="comment"># True</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;34是否等于34.0:&quot;</span>, <span class="number">34</span> == <span class="number">34.0</span>)       <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;34是否是34.0:&quot;</span>, <span class="number">34</span> <span class="keyword">is</span> <span class="number">34.0</span>)       <span class="comment"># False</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;False是否小于True:&quot;</span>, <span class="literal">False</span> &lt; <span class="literal">True</span>)  <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;True是否小于True:&quot;</span>, <span class="literal">True</span> == <span class="literal">True</span>)   <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;True是否大于等于1:&quot;</span>, <span class="literal">True</span> &gt;= <span class="number">1</span>)      <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;True是否大于等于2:&quot;</span>, <span class="literal">True</span> &gt;= <span class="number">2</span>)      <span class="comment"># False</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Tips：&#x3D;&#x3D; 和 is 的区别</strong><br>=&#x3D; 用来比较两个变量的值是否相等，而 is 则用来比对两个变量引用的是否是同一个对象。<br>	- =&#x3D; 是 Python 标准操作符中的比较操作符，用来比较判断两个对象的 value (值) 是否相等。<br>	- is 也被叫做同一性运算符，这个运算符比较判断的是对象间的唯一身份标识，也就是 id 是否相同。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># a和b为整形类型</span></span><br><span class="line">a = <span class="number">1</span></span><br><span class="line">b = <span class="number">1</span></span><br><span class="line"><span class="built_in">print</span>(a <span class="keyword">is</span> b)    <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(a == b)    <span class="comment"># True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># a和b为元组类型</span></span><br><span class="line">a = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">b = (<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="built_in">print</span>(a <span class="keyword">is</span> b)    <span class="comment"># True</span></span><br><span class="line"><span class="built_in">print</span>(a == b)    <span class="comment"># True</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># a和b为列表类型</span></span><br><span class="line">a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line">b = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]</span><br><span class="line"><span class="built_in">print</span>(a <span class="keyword">is</span> b)    <span class="comment"># False</span></span><br><span class="line"><span class="built_in">print</span>(a == b)    <span class="comment"># True</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Tips：可变对象和不可变对象</strong></p>
+<ul>
+<li>整形、浮点数、字符串和元组都属于<strong>不可变对象</strong>，不可变对象是指创建后其值不能被修改的对象。如果要修改不可变对象的值，实际上会创建一个新的对象，并将变量重新指向这个新对象。</li>
+<li>列表、字典和集合属于<strong>可变对象</strong>，可变对象是指在创建后可以扩展修改其值或内容的对象。</li>
+</ul>
+<p>因此，创建两个可变对象后，它们并不属于同一个地址，所以在 is 判断时会返回 False。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 对于列表</span></span><br><span class="line">my_list = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] </span><br><span class="line">my_list.append(<span class="number">4</span>)  <span class="comment"># 可以直接修改列表</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 对于字符串</span></span><br><span class="line">my_str = <span class="string">&quot;hello&quot;</span> </span><br><span class="line">my_str += <span class="string">&quot; world&quot;</span>  <span class="comment"># 这里实际上创建了一个新的字符串对象</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-逻辑运算符"><a href="#3-2-逻辑运算符" class="headerlink" title="3.2 逻辑运算符"></a>3.2 <strong>逻辑运算符</strong></h3><p>高中数学中我们就学过逻辑运算，例如 A1 为真命题，A2 为假命题，那么 “A1 且 A2” 为假，”A1 或 A2” 为真，” 非 A2” 为真。Python 也有类似的逻辑运算，如下表:</p>
+<table>
+<thead>
+<tr>
+<th><strong>逻辑运算符</strong></th>
+<th><strong>含义</strong></th>
+<th><strong>基本格式</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>and</td>
+<td>逻辑与运算，等价于数学中的 “ 且 “</td>
+<td>a and b</td>
+<td>当 a 和 b 两个表达式都为真时，a and b 的结果才为真，否则为假.</td>
+</tr>
+<tr>
+<td>or</td>
+<td>逻辑与运算，等价于数学中的 “ 或 “</td>
+<td>a or b</td>
+<td>当 a 和 b 两个表达式都为假时，a or b 的结果才是假，否则为真。</td>
+</tr>
+<tr>
+<td>not</td>
+<td>逻辑与运算，等价于数学中的 “ 非 “</td>
+<td>not a</td>
+<td>如果 a 为真，那么 not a 的结果为假；如果 a 为假，那么 not a 的结果为真。相当于对 a 取反。</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Tips：</strong></p>
+<p>在 a and b 中，如果 a 为假，那么 b 就不会再去判断，整个表达式直接判定为假。<br>在 a or b 中，如果 a 为真，那么 b 不同也不会去判断，整个表达式直接判定为真。</p>
+</blockquote>
+<h2 id="4-字符串"><a href="#4-字符串" class="headerlink" title="4. 字符串"></a>4. 字符串</h2><h3 id="4-1-格式化输出"><a href="#4-1-格式化输出" class="headerlink" title="4.1 格式化输出"></a>4.1 <strong>格式化输出</strong></h3><ul>
+<li><strong>来自 C 语言的 % 方式</strong></li>
+</ul>
+<p>% 号格式化字符串的方式继承自古老的 C 语言，这在很多编程语言都有类似的实现。%s 是一个占位符，它仅代表一段字符串，并不是拼接的实际内容。实际的拼接内容在一个单独的 % 号后面，放在一个元组里。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;%s %s&#x27;</span> % (<span class="string">&#x27;Hello&#x27;</span>, <span class="string">&#x27;world&#x27;</span>))    <span class="comment"># Hello world</span></span><br></pre></td></tr></table></figure>
+
+<p>类似的占位符还有：%d（代表一个整数）、%f（代表一个浮点数）、%.2f（代表一个保留小数点后两位的浮点数）、%o（代表一个 8 进制数）、%x（代表一个 16 进制数）等等。% 占位符既是这种拼接方式的特点，同时也是其限制因为每种占位符都有特定意义，实际使用起来较为麻烦。</p>
+<ul>
+<li><strong>format( ) 拼接方式</strong></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">username = <span class="string">&quot;gdx&quot;</span></span><br><span class="line">age = <span class="number">22</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 正常用法</span></span><br><span class="line">s1 = <span class="string">&#x27;Hello! My name is &#123;&#125;, i am &#123;&#125;.&#x27;</span>.<span class="built_in">format</span>(username, age)</span><br><span class="line"><span class="built_in">print</span>(s1)    <span class="comment"># Hello! My name is gdx, i am 22.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 带数字编号</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#123;0&#125; &#123;1&#125;&#x27;</span>.<span class="built_in">format</span>(username, age))             <span class="comment"># gdx 22</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#123;0&#125; &#123;1&#125; &#123;0&#125;&#x27;</span>.<span class="built_in">format</span>(username, age))         <span class="comment"># gdx 22 gdx</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 带关键字</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#123;name&#125; &#123;age&#125; &#123;name&#125;&#x27;</span>.<span class="built_in">format</span>(name=<span class="string">&#x27;gdx&#x27;</span>, age=<span class="number">22</span>))  <span class="comment"># gdx 22 gdx</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 转换成百分比 - 也适用于下面f-string的方法</span></span><br><span class="line">total = <span class="number">100</span></span><br><span class="line">score = <span class="number">83</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;your score: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(score/total))         <span class="comment"># your score: 0.83</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;your score: &#123;:.1%&#125;&quot;</span>.<span class="built_in">format</span>(score/total))     <span class="comment"># your score: 83.0%</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 转换成百分比 - 也可以通过.xf的形式转换</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;your score: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(<span class="number">1</span>/<span class="number">3</span>*<span class="number">100</span>))         <span class="comment"># your score: 33.33333333333333</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;your score: &#123;:.2f&#125;%&quot;</span>.<span class="built_in">format</span>(<span class="number">1</span>/<span class="number">3</span>*<span class="number">100</span>))     <span class="comment"># your score: 33.33%</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 转换进制</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#123;&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="number">10</span>))      <span class="comment"># 十进制 - 10</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#123;:o&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="number">10</span>))    <span class="comment"># 八进制 - 12</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;&#123;:x&#125;&#x27;</span>.<span class="built_in">format</span>(<span class="number">10</span>))    <span class="comment"># 十六进制 - a</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取字典元素</span></span><br><span class="line">info = &#123;</span><br><span class="line">    <span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;张三&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;age&#x27;</span>: <span class="number">19</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;名称：&#123;info[name]&#125;，年级：&#123;info[age]&#125;&quot;</span>.<span class="built_in">format</span>(info=info))</span><br></pre></td></tr></table></figure>
+
+<p>我们还可以通过 format 格式化输出来完成一些小 demo，例如下面我打印一个乘法口诀表，就可以通过 format 很方便的打印出来。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">10</span>):</span><br><span class="line">    line = <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, i + <span class="number">1</span>):</span><br><span class="line">        line += <span class="string">&quot;&#123;left&#125; * &#123;right&#125; = &#123;result&#125; &quot;</span>.<span class="built_in">format</span>(left=i, right=j, result=i * j)</span><br><span class="line">    <span class="built_in">print</span>(line)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713182244878.webp"></p>
+<ul>
+<li><strong>f-string 方法（推荐）</strong></li>
+</ul>
+<p>f-string 方式出自 PEP 498（Literal String Interpolation，字面字符串插值），从 Python3.6 版本引入。其特点是在字符串前加 f 标识，字符串中间则用花括号 { } 包裹其他字符串变量。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 常规使用</span></span><br><span class="line">name = <span class="string">&#x27;world&#x27;</span></span><br><span class="line">myname= <span class="string">&#x27;python_cat&#x27;</span></span><br><span class="line">words = <span class="string">f&#x27;Hello <span class="subst">&#123;name&#125;</span>. My name is <span class="subst">&#123;myname&#125;</span>.&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(words)    <span class="comment"># Hello world. My name is python_cat.</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印字典值</span></span><br><span class="line">one_dict = &#123;<span class="string">&quot;name&quot;</span>: <span class="string">&quot;gdx&quot;</span>, <span class="string">&quot;age&quot;</span>: <span class="number">22</span>&#125;</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;姓名：<span class="subst">&#123;one_dict.get(<span class="string">&#x27;name&#x27;</span>)&#125;</span>，年龄：<span class="subst">&#123;one_dict.get(<span class="string">&#x27;age&#x27;</span>)&#125;</span>&quot;</span>)    <span class="comment"># 姓名：gdx，年龄：22</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 进制转换</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;<span class="number">10</span>&#125;</span>&#x27;</span>)      <span class="comment"># 十进制 - 10</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;<span class="number">10</span>:o&#125;</span>&#x27;</span>)    <span class="comment"># 八进制 - 12</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;<span class="number">10</span>:x&#125;</span>&#x27;</span>)    <span class="comment"># 十六进制 - a</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;<span class="number">10</span>:b&#125;</span>&#x27;</span>)    <span class="comment"># 二进制 - 1010</span></span><br></pre></td></tr></table></figure>
+
+<p>除了可以做字符串格式化操作，还可以进行简单的运算，甚至可以是函数方法。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 打印表达式</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;A total number of <span class="subst">&#123;<span class="number">20</span> * <span class="number">8</span> + <span class="number">10</span>&#125;</span>&#x27;</span>)    <span class="comment"># A total number of 170</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 调用函数</span></span><br><span class="line">name = <span class="string">&quot;GDX&quot;</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;My name is <span class="subst">&#123;name.lower()&#125;</span>&#x27;</span>)     <span class="comment"># My name is gdx</span></span><br></pre></td></tr></table></figure>
+
+<p>也可以直接获取包中的常量值。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;math.pi&#125;</span>&quot;</span>)      <span class="comment"># 3.141592653589793</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;math.pi:<span class="number">.3</span>f&#125;</span>&quot;</span>)  <span class="comment"># 3.142</span></span><br></pre></td></tr></table></figure>
+
+<p>或者通过 <code>&lt;</code>、<code>&gt;</code> 和 <code>^</code> 号来左右快速填充字符。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">str_format = <span class="string">&quot;hello world&quot;</span></span><br><span class="line"><span class="comment"># 用空格填充</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;str_format:&gt;<span class="number">20</span>&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;str_format:&lt;<span class="number">20</span>&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;str_format:^<span class="number">20</span>&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 用?号填充</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;str_format:?&lt;<span class="number">20</span>&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;str_format:?&gt;<span class="number">20</span>&#125;</span>&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;str_format:?^<span class="number">20</span>&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713182244879.webp"></p>
+<h3 id="4-2-改变字符串的大小"><a href="#4-2-改变字符串的大小" class="headerlink" title="4.2 改变字符串的大小"></a>4.2 <strong>改变字符串的大小</strong></h3><p>name&#x3D;’Jack tom’</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>name.upper( )</td>
+<td>JACK TOM</td>
+</tr>
+<tr>
+<td>name.lower()</td>
+<td>jack tom</td>
+</tr>
+<tr>
+<td>name.title()</td>
+<td>Jack Tom</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Tips：</strong></p>
+<p>上面这些函数并不会修改初始值。</p>
+</blockquote>
+<h3 id="4-3-删除空白"><a href="#4-3-删除空白" class="headerlink" title="4.3 删除空白"></a>4.3 <strong>删除空白</strong></h3><table>
+<thead>
+<tr>
+<th><strong>函数</strong></th>
+<th><strong>功能</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>name.lstrip()</td>
+<td>去开头空白</td>
+</tr>
+<tr>
+<td>name.rstrip()</td>
+<td>去尾部空白</td>
+</tr>
+<tr>
+<td>name.strip()</td>
+<td>去开头和尾部空白</td>
+</tr>
+</tbody></table>
+<h2 id="5-枚举类型"><a href="#5-枚举类型" class="headerlink" title="5. 枚举类型"></a>5. 枚举类型</h2><p>从 Python3.x 开始提供了 enum 模块来提供权举的功能，使用时通过 <code>from enum import Enum</code> 来引入。</p>
+<p>枚举的主要优点包括：</p>
+<ol>
+<li>提高代码的可读性和可维护性：使用有意义的名称来表示常量值，而不是直接使用数字或字符串，使代码更易于理解。</li>
+<li>类型安全：枚举值具有特定的类型，减少了错误使用不相关值的可能性。</li>
+</ol>
+<p>例如，我下面定义了一个 Color 的枚举类型，其中包含了自定义名称的三个枚举成员。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> enum <span class="keyword">import</span> Enum</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Color</span>(<span class="title class_ inherited__">Enum</span>):</span><br><span class="line">    RED = <span class="number">1</span></span><br><span class="line">    GREEN = <span class="number">2</span></span><br><span class="line">    BLUE = <span class="number">3</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">print_color</span>(<span class="params">color</span>):</span><br><span class="line">        <span class="keyword">if</span> color == Color.RED.value:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;红色&#x27;</span>)</span><br><span class="line">        <span class="keyword">elif</span> color == Color.GREEN.value:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;绿色&#x27;</span>)</span><br><span class="line">        <span class="keyword">elif</span> color == Color.BLUE.value:</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&#x27;蓝色&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(Color.RED)            <span class="comment"># Color.RED</span></span><br><span class="line"><span class="built_in">print</span>(Color.RED.name)       <span class="comment"># RED</span></span><br><span class="line"><span class="built_in">print</span>(Color.RED.value)      <span class="comment"># 1</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Tips：</strong></p>
+<p>枚举值不能修改。</p>
+</blockquote>
+<h2 id="6-静态与动态语言"><a href="#6-静态与动态语言" class="headerlink" title="6. 静态与动态语言"></a>6. 静态与动态语言</h2><ul>
+<li>静态语言：数据类型是在编译期间检查的</li>
+<li>动态语言：运行期间才去做数据类型检查的语言</li>
+</ul>
+<h3 id="6-1-静态语言"><a href="#6-1-静态语言" class="headerlink" title="6.1 静态语言"></a>6.1 <strong>静态语言</strong></h3><p>静态类型语言在编译时就会确定变量的数据类型，类型检查是在编译时进行的。这就意味着在编写代码时，必须明确声明每个变量的类型，而且一旦声明，类型就不能改变。</p>
+<p>代表性的静态语言：C、C++、Java、C# 等</p>
+<p>优点：</p>
+<ol>
+<li>类型检查在编译阶段进行，能够更早地发现类型错误，减少运行时错误的出现，提高程序的可靠性。</li>
+<li>由于在编译时就确定了变量的类型和内存占用，所以程序的运行效率通常较高，特别是在处理大量数据和复杂计算时。</li>
+<li>代码的可读性和可维护性较好，因为明确的类型声明使得代码的意图更加清晰。</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li>开发过程相对较为繁琐，学习难度稍大，需要在编写代码时明确指定类型，可能会增加一些代码量。</li>
+<li>灵活性相对较差，修改类型可能需要进行大量的代码重构。</li>
+</ol>
+<p>下面举一个 java 实现两数相加的例子，可以发现需要定义的东西比较多，代码量也比较大。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">b</span> <span class="operator">=</span> <span class="number">2</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">sum</span> <span class="operator">=</span> a + b;</span><br><span class="line">        System.out.println(sum)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-2-动态语言"><a href="#6-2-动态语言" class="headerlink" title="6.2 动态语言"></a>6.2 <strong>动态语言</strong></h3><p>动态类型语言则在运行时才确定变量的类型，即类型检查在代码运行时才进行。在这类语言中，变量的类型可以随时改变，编写代码时更加灵活，但也可能会在运行时出现一些难以预料的类型错误。</p>
+<p>代表性的动态语言：Python、JavaScript、PHP、ruby、lua 等</p>
+<p>优点：</p>
+<ol>
+<li>编写代码更加灵活自由，不需要事先声明变量的类型，可以快速开发和迭代。</li>
+<li>能够更轻松地实现一些高级编程概念，如元编程和动态派发。</li>
+<li>对于一些小型项目或者快速原型开发，能够提高开发效率。</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li>由于类型检查在运行时进行，可能会在运行时出现一些难以发现的类型错误。</li>
+<li>运行效率可能相对较低，因为需要在运行时进行类型推断和转换。</li>
+<li>代码的可读性在某些情况下可能会受到影响，因为不明确的类型可能会让其他人理解代码的意图变得困难。</li>
+</ol>
+<h2 id="7-类型标注"><a href="#7-类型标注" class="headerlink" title="7. 类型标注"></a>7. 类型标注</h2><p><strong>typing</strong></p>
+<blockquote>
+<p>官方文档：<a href="https://docs.python.org/zh-cn/3/library/typing.html">https://docs.python.org/zh-cn/3/library/typing.html</a></p>
+</blockquote>
+<p>Python 是一门弱类型的语言，很多时候我们可能不清楚函数参数类型或者返回值类型，很有可能导致一些类型没有指定方法，typing 模块可以很好的解决这个问题。它的作用主要有以下几点：</p>
+<ul>
+<li>类型检查：在编译时进行类型检查，防止运行时出现参数和返回值类型不符合的情况。</li>
+<li>开发文档附加说明：作为开发文档的一部分，方便使用者调用时传入和返回参数类型。</li>
+<li>提高代码可读性：让开发者在阅读代码时更容易理解变量或对象的类型，从而提高代码的可读性和可维护性。</li>
+</ul>
+<blockquote>
+<p><strong>Tips：</strong></p>
+<p>typing 不会影响程序的运行，它只是用作提醒，不会产生类型的错误。</p>
+</blockquote>
+<p>类型标注的语法：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 函数类型标注</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">函数名</span>(<span class="params">参数: 数据类型</span>) -&gt; 返回值类型：</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 变量类型标注</span></span><br><span class="line">变量名: 数据类型=值</span><br></pre></td></tr></table></figure>
+
+<p>typing 模块只有在 Python3.5 以上的版本中才可以使用，Pycharm 目前支持 typing 检查。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> <span class="type">List</span>, <span class="built_in">int</span>, <span class="type">Dict</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 没有类型标注，不清楚变量a的类型及函数返回值类型是什么</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">len_list1</span>(<span class="params">a</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">len</span>(a)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加了类型标注，明确说明变量和函数返回值是一个List的类型</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">len_list2</span>(<span class="params">a: <span class="type">List</span></span>) -&gt; <span class="built_in">int</span>:</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">len</span>(a)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(len_list2([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]))  <span class="comment"># 3</span></span><br><span class="line"><span class="built_in">print</span>(len_list2(<span class="string">&quot;123&quot;</span>))      <span class="comment"># 3</span></span><br></pre></td></tr></table></figure>
+
+<p>我们看上面这个例子的打印结果也印证了上面 typing 不会影响程序运行的结果，但是我们可以在 <code>print(len_list2(&quot;123&quot;))</code> 这行代码下看到一条黄线提示，当鼠标放在这行代码上就能看到 typing 的提示信息，提醒你当前传入的值不是期望的 list 类型。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250713182244880.webp"></p>
+<p>类型标注的用法还有很多，我们再来看一些其它类型标注的例子。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 复合类型标注</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test1</span>(<span class="params"><span class="built_in">id</span>: <span class="built_in">int</span>, score: <span class="type">List</span>[<span class="built_in">int</span>], name: <span class="type">Dict</span>[<span class="built_in">str</span>: <span class="built_in">str</span>]</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># 指定序列类型</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test2</span>(<span class="params">seq: <span class="type">Sequence</span></span>):</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> seq:</span><br><span class="line">        <span class="built_in">print</span>(i)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 类型别名定义 - 简化类型名称</span></span><br><span class="line">Vector = <span class="built_in">list</span>[<span class="built_in">float</span>]</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test3</span>(<span class="params"><span class="built_in">id</span>, names: Vector</span>) -&gt; Vector:</span><br><span class="line">    <span class="keyword">return</span> [<span class="built_in">id</span> * name <span class="keyword">for</span> name <span class="keyword">in</span> names]</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 明确说明函数无返回值</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test4</span>(<span class="params"><span class="built_in">id</span>: <span class="built_in">int</span></span>) -&gt; NotReturn:</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># 明确说明变量可接受任意类型</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test5</span>(<span class="params">a: <span class="type">Any</span></span>):</span><br><span class="line">    <span class="built_in">print</span>(a)</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 针对无传入参数场景</span></span><br><span class="line"><span class="comment"># 下列arg2类型标注为str类型，但arg2这个参数是可以不传递值的，且如果不传递，它将是None</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test6</span>(<span class="params">arg1: <span class="built_in">int</span>, agr2: <span class="type">Optional</span>[<span class="built_in">str</span>]=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># 联合类型 - 允许多类型</span></span><br><span class="line"><span class="comment"># 下列arg2指明传入的参数类型可以是List和Dict中的任意一种</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test7</span>(<span class="params">arg1: <span class="built_in">int</span>, agr2: union[<span class="type">List</span>, <span class="type">Dict</span>]</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"><span class="comment"># 自定义多类型</span></span><br><span class="line">MyType = TypeVar(<span class="string">&quot;MyType&quot;</span>, <span class="built_in">int</span>, <span class="built_in">str</span>, <span class="type">List</span>)    <span class="comment"># 允许是int、str和List中的类型</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">test8</span>(<span class="params">a: MyType</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Tips：</strong></p>
+<p>Python 中常见的序列类型包括：列表（list）、元组（tuple）、字符串（str）、字节序列（bytes）和字节数组（bytearray）。</p>
+</blockquote>
 ]]></content>
       <categories>
         <category>编程语言</category>
@@ -13962,9 +13962,9 @@
       </tags>
   </entry>
   <entry>
-    <title>Python-13：学习路线</title>
-    <url>/posts/851d62ff/</url>
-    <content><![CDATA[<p><img src="https://gcore.jsdelivr.net/gh/AlwaysFyo/ImageHost/Typora/20250524225815931.png"></p>
+    <title>Python-14：Python3 in one pic</title>
+    <url>/posts/f371c6c/</url>
+    <content><![CDATA[<p><img src="https://gcore.jsdelivr.net/gh/AlwaysFyo/ImageHost/Typora/20250524225516187.webp"></p>
 ]]></content>
       <categories>
         <category>编程语言</category>
@@ -13975,9 +13975,9 @@
       </tags>
   </entry>
   <entry>
-    <title>Python-14：Python3 in one pic</title>
-    <url>/posts/f371c6c/</url>
-    <content><![CDATA[<p><img src="https://gcore.jsdelivr.net/gh/AlwaysFyo/ImageHost/Typora/20250524225516187.webp"></p>
+    <title>Python-13：学习路线</title>
+    <url>/posts/851d62ff/</url>
+    <content><![CDATA[<p><img src="https://gcore.jsdelivr.net/gh/AlwaysFyo/ImageHost/Typora/20250524225815931.png"></p>
 ]]></content>
       <categories>
         <category>编程语言</category>
@@ -16261,48 +16261,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Mock 测试</title>
-    <url>/posts/5d0c8add/</url>
-    <content><![CDATA[<blockquote>
-<p>作为一个动词，mock 是模拟、模仿的意思; 作为一个名词，mock 是能够模仿真实对象行为的模拟对象。</p>
-</blockquote>
-<h2 id="初识-Mock"><a href="#初识-Mock" class="headerlink" title="初识 Mock"></a>初识 Mock</h2><p>在软件测试中，mock 所模拟的对象是什么呢?</p>
-<p>它一定不是我们所测试的对象，而是 SUT 的依赖 (dependency)。换句话说，mock 的作用是模拟 SUT 依赖对象的行为。</p>
-<p>测试的对象一般称之为 SUT(Software Under Test)</p>
-<p>被测试对象是 A，A 依赖的是 B，B 依赖的是 C。而我们要 mock 的是 B 的行为。</p>
-<p> A: 被测试对象</p>
-<p> B: 直接依赖对象</p>
-<p> C: 间接依赖对象</p>
-<p><strong>为什么需要模拟 B 的行为呢?</strong></p>
-<ul>
-<li>提高 A 的测试覆盖率。A 依赖 B，本质上依赖的是 B 的返回结果，也就是说 B 的返回结果会影响 A 的行为。通过 mock B 我们可以构造各种正常和异常的来自 B 的返回结果，从而更充分测试 A 的行为。</li>
-<li>避免 B 的因素从而对 A 产生影响。依赖真实的 B 去测试 A 可能有很多问题：B 的开发没有完成时无法测试 A;B 有阻塞性 bug 时无法测试 A;B 的依赖 C 有阻塞性 bug 时无法测试 A;</li>
-<li>提高 A 的测试效率。B 的真实行为可能很慢，而 B 的模拟行为是非常快的，因此可以加快 A 的测试执行速度。</li>
-</ul>
-<h2 id="Mock-种族"><a href="#Mock-种族" class="headerlink" title="Mock 种族"></a>Mock 种族</h2><p><img src="https://s4.51cto.com/oss/202103/01/7d0b4d787d765cfa5d605d7d83b26e9f.png"></p>
-<p>从下往上依次解释一下：</p>
-<ul>
-<li>方法级别 mock：mock 的对象是一个函数调用，例如获取系统环境变量。</li>
-<li>类级别 mock：mock 的对象是一个类，例如一个 HTTP server。</li>
-<li>接口级别 mock：mock 的对象是一个 API 接口。</li>
-<li>服务级别 mock：mock 的对象是整个服务。比如前端工程师自测试时，可以讲后端整个服务都 mock 掉，这其实等同于将后端的所有接口都 mock。</li>
-</ul>
-<h2 id="接口-Mock-注入的五种方式"><a href="#接口-Mock-注入的五种方式" class="headerlink" title="接口 Mock 注入的五种方式"></a>接口 Mock 注入的五种方式</h2><p>在使用 mock 进行接口测试时，一般要做两件事情，即打桩和调桩。</p>
-<p>其实打桩就是创建 mock 桩，指定 API 请求内容及其映射的 mock 响应内容; 所谓调桩就是被测服务来请求 mock 桩并接收 mock 响应。</p>
-<p>事实上，在打桩和调桩之间还隐藏着一件不显山露水、但是及其重要的事情，那就是 mock 桩的注入 (mock injection)。</p>
-<p><strong>什么是 mock 注入?</strong></p>
-<p> mock 的本质就是用模拟桩来替换真实的依赖。所谓 mock 桩注入就是阻断被测服务与真实服务之间的链路，建立被测服务与 mock 之间的链路过程。</p>
-<p><img src="https://s2.51cto.com/oss/202103/01/acc6643dd23562ff3e199e5010d94ef1.png"></p>
-]]></content>
-      <categories>
-        <category>软件测试</category>
-      </categories>
-      <tags>
-        <tag>软件测试</tag>
-        <tag>Mock</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Postman 接口测试工具学习</title>
     <url>/posts/d9924db5/</url>
     <content><![CDATA[<h2 id="一、接口测试"><a href="#一、接口测试" class="headerlink" title="一、接口测试"></a>一、接口测试</h2><blockquote>
@@ -16668,6 +16626,48 @@
       <tags>
         <tag>工具相关</tag>
         <tag>Postman</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mock 测试</title>
+    <url>/posts/5d0c8add/</url>
+    <content><![CDATA[<blockquote>
+<p>作为一个动词，mock 是模拟、模仿的意思; 作为一个名词，mock 是能够模仿真实对象行为的模拟对象。</p>
+</blockquote>
+<h2 id="初识-Mock"><a href="#初识-Mock" class="headerlink" title="初识 Mock"></a>初识 Mock</h2><p>在软件测试中，mock 所模拟的对象是什么呢?</p>
+<p>它一定不是我们所测试的对象，而是 SUT 的依赖 (dependency)。换句话说，mock 的作用是模拟 SUT 依赖对象的行为。</p>
+<p>测试的对象一般称之为 SUT(Software Under Test)</p>
+<p>被测试对象是 A，A 依赖的是 B，B 依赖的是 C。而我们要 mock 的是 B 的行为。</p>
+<p> A: 被测试对象</p>
+<p> B: 直接依赖对象</p>
+<p> C: 间接依赖对象</p>
+<p><strong>为什么需要模拟 B 的行为呢?</strong></p>
+<ul>
+<li>提高 A 的测试覆盖率。A 依赖 B，本质上依赖的是 B 的返回结果，也就是说 B 的返回结果会影响 A 的行为。通过 mock B 我们可以构造各种正常和异常的来自 B 的返回结果，从而更充分测试 A 的行为。</li>
+<li>避免 B 的因素从而对 A 产生影响。依赖真实的 B 去测试 A 可能有很多问题：B 的开发没有完成时无法测试 A;B 有阻塞性 bug 时无法测试 A;B 的依赖 C 有阻塞性 bug 时无法测试 A;</li>
+<li>提高 A 的测试效率。B 的真实行为可能很慢，而 B 的模拟行为是非常快的，因此可以加快 A 的测试执行速度。</li>
+</ul>
+<h2 id="Mock-种族"><a href="#Mock-种族" class="headerlink" title="Mock 种族"></a>Mock 种族</h2><p><img src="https://s4.51cto.com/oss/202103/01/7d0b4d787d765cfa5d605d7d83b26e9f.png"></p>
+<p>从下往上依次解释一下：</p>
+<ul>
+<li>方法级别 mock：mock 的对象是一个函数调用，例如获取系统环境变量。</li>
+<li>类级别 mock：mock 的对象是一个类，例如一个 HTTP server。</li>
+<li>接口级别 mock：mock 的对象是一个 API 接口。</li>
+<li>服务级别 mock：mock 的对象是整个服务。比如前端工程师自测试时，可以讲后端整个服务都 mock 掉，这其实等同于将后端的所有接口都 mock。</li>
+</ul>
+<h2 id="接口-Mock-注入的五种方式"><a href="#接口-Mock-注入的五种方式" class="headerlink" title="接口 Mock 注入的五种方式"></a>接口 Mock 注入的五种方式</h2><p>在使用 mock 进行接口测试时，一般要做两件事情，即打桩和调桩。</p>
+<p>其实打桩就是创建 mock 桩，指定 API 请求内容及其映射的 mock 响应内容; 所谓调桩就是被测服务来请求 mock 桩并接收 mock 响应。</p>
+<p>事实上，在打桩和调桩之间还隐藏着一件不显山露水、但是及其重要的事情，那就是 mock 桩的注入 (mock injection)。</p>
+<p><strong>什么是 mock 注入?</strong></p>
+<p> mock 的本质就是用模拟桩来替换真实的依赖。所谓 mock 桩注入就是阻断被测服务与真实服务之间的链路，建立被测服务与 mock 之间的链路过程。</p>
+<p><img src="https://s2.51cto.com/oss/202103/01/acc6643dd23562ff3e199e5010d94ef1.png"></p>
+]]></content>
+      <categories>
+        <category>软件测试</category>
+      </categories>
+      <tags>
+        <tag>软件测试</tag>
+        <tag>Mock</tag>
       </tags>
   </entry>
   <entry>
@@ -18572,6 +18572,199 @@
       </tags>
   </entry>
   <entry>
+    <title>前端低带宽测试方案</title>
+    <url>/posts/55ef89fe/</url>
+    <content><![CDATA[<h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h2><h3 id="1-1-背景"><a href="#1-1-背景" class="headerlink" title="1.1 背景"></a>1.1 背景</h3><p>各行业线都有反馈网络因素导致的项目问题，因用户网络带宽低，导致客户端登录耗时超过 6 秒。</p>
+<p>针对此类场景，联合前端、体验、测试等角色共同分析根因，对前端页面进行分类，不同类型定义不同的性能规格。</p>
+<h3 id="1-2-适用范围"><a href="#1-2-适用范围" class="headerlink" title="1.2 适用范围"></a>1.2 适用范围</h3><p>该方案适用所有软件产品涉及的前端 eb、客户端、APP。</p>
+<h3 id="1-3-名词解释"><a href="#1-3-名词解释" class="headerlink" title="1.3 名词解释"></a>1.3 名词解释</h3><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250719094114401.webp"></p>
+<table>
+<thead>
+<tr>
+<th>名词</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>响应时间</td>
+<td>指的是从前端发起一个请求开始，到前端接收到从服务端返回的响应结束，这个过程所耗费的时间，单位为秒或毫秒</td>
+</tr>
+<tr>
+<td>首绘时间（FP）</td>
+<td>是时间线上的第一个 “ 时间点 “，它代表浏览器第一次向屏幕传输像素的时间，也就是页面在屏幕上首次发生视觉变化的时间</td>
+</tr>
+<tr>
+<td>内容首绘（FCP）</td>
+<td>它代表浏览器第一次向屏幕绘制 “ 内容 “。只有首次绘制文本、图片（包含背景图）、非白色的 canvas 或 SVG 时才被算作 FCP</td>
+</tr>
+<tr>
+<td>首次有效绘制（FMP）</td>
+<td>表示页面的 “ 主要内容 “ 开始出现在屏幕上的时间点。它是我们测量用户加载体验的主要指标</td>
+</tr>
+<tr>
+<td>可见时间（LCP）</td>
+<td>表示可视区 “ 内容 “ 最大的可见元素开始出现在屏幕上的时间点</td>
+</tr>
+<tr>
+<td>可用时间（TTI）</td>
+<td>表示网页第一次完全达到可交互状态的时间点。可交互状态指的是页面上的 UI 组件是可以交互的（可以响应按钮的点击或在文本框输入文字等）</td>
+</tr>
+<tr>
+<td>动画补全时间</td>
+<td>表示网页已完全加载完毕，整个界面所有的功能完备、各插件全部加载、动画（若有）流畅播放；即上图中，从点击功能到 CLS 所消耗的时间</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p><strong>FP 与 FCP 主要区别</strong></p>
+<ul>
+<li>FP 是当浏览器开始绘制内容到屏幕上的时候，只要在视觉上开始发生变化，无论是什么内容触发的视觉变化，在这一刻，这个时间点，叫做 FP。</li>
+<li>FCP 指的是浏览器首次绘制来自 DOM 的内容。例如：文本，图片，SVG，canvas 元素等，这个时间点叫 FCP</li>
+</ul>
+<h2 id="2-测试方案"><a href="#2-测试方案" class="headerlink" title="2. 测试方案"></a>2. 测试方案</h2><h3 id="2-1-低带宽定义"><a href="#2-1-低带宽定义" class="headerlink" title="2.1 低带宽定义"></a>2.1 低带宽定义</h3><p>本方案不具体定义带宽处于何种情况下算是低带宽。各产品对应的最低带宽需求由产品经理根据产品的实际生产环境要求定义增加到产品基础的配置要求中，测试团队基于该指标测试交互响应速度。</p>
+<p>若产品中包含 APP、web、客户端等多种前端访问类型，APP 与 Web 的低带宽指标需要分开给出。</p>
+<p>各产品在提需求申请时，提供的产品基础配置表中，需要包含 PC 机的最低配置需求、APP&#x2F;Web 最低带宽指标;</p>
+<h3 id="2-2-页面分类及响应时间"><a href="#2-2-页面分类及响应时间" class="headerlink" title="2.2 页面分类及响应时间"></a>2.2 页面分类及响应时间</h3><h4 id="2-2-1-页面分类"><a href="#2-2-1-页面分类" class="headerlink" title="2.2.1 页面分类"></a>2.2.1 页面分类</h4><p>不同的前端页面，可以有不同的响应时间要求，对前端页面进行分类，具体如下:</p>
+<ul>
+<li>高效页面: 登录页、基础框架页、门户首页</li>
+<li>常规页面: 基础功能、地图</li>
+<li>可容忍延迟页面: 平台端 dashboard、大屏可视化界面、3D 地图</li>
+<li>特殊页面: 后端服务重启页面、安装部署启动时间、平台重启时间</li>
+<li>其他: 执行过程中如遇页面类型争议的，可由 UED、前端、测试共同评审确定页面类型</li>
+</ul>
+<h4 id="2-2-2-页面响应时间"><a href="#2-2-2-页面响应时间" class="headerlink" title="2.2.2 页面响应时间"></a>2.2.2 页面响应时间</h4><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>类型</strong></td>
+<td><strong>可见时间</strong></td>
+<td></td>
+<td><strong>可用时间</strong></td>
+<td></td>
+<td><strong>动画补全时间</strong></td>
+<td><strong>备注</strong></td>
+</tr>
+<tr>
+<td><strong>最优时间</strong></td>
+<td><strong>最低标准</strong></td>
+<td><strong>最优时间</strong></td>
+<td><strong>最低标准</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>高效页面</td>
+<td>&#x2F;</td>
+<td>500ms</td>
+<td>1s</td>
+<td>2s</td>
+<td>3s</td>
+<td></td>
+</tr>
+<tr>
+<td>常规页面</td>
+<td>&#x2F;</td>
+<td>500ms</td>
+<td>1s</td>
+<td>3s</td>
+<td>3s</td>
+<td></td>
+</tr>
+<tr>
+<td>可容忍延迟页面</td>
+<td>&#x2F;</td>
+<td>1s</td>
+<td>2s</td>
+<td>5s</td>
+<td>5s</td>
+<td></td>
+</tr>
+<tr>
+<td>特殊页面</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>注：</p>
+<ul>
+<li>若页面响应超过定义的最低标准，则需要提单并优化。</li>
+<li>测试时主要关注 “ 可用时间 “。</li>
+</ul>
+<h3 id="2-3-故障等级约定"><a href="#2-3-故障等级约定" class="headerlink" title="2.3 故障等级约定"></a>2.3 故障等级约定</h3><p>对于页面响应，在环境满足产品最低带宽要求下，若响应时间超过约定的最低响应时间，则需要测试提单、研发优化修改。</p>
+<p>具体故障等级约定如下：</p>
+<ul>
+<li>满足最低标准不提单；</li>
+<li>超过最低标准，但不超过 50% 响应时间，提 “ 轻微 “ 等级；</li>
+<li>超过最低标准 50% 但不超过 100% 响应时间，提 “ 一般 “ 等级；</li>
+<li>超过最低标准 100% 响应时间，提 “ 严重 “ 等级。</li>
+</ul>
+<h2 id="3-前端性能验证工具"><a href="#3-前端性能验证工具" class="headerlink" title="3. 前端性能验证工具"></a>3. 前端性能验证工具</h2><h3 id="3-1-Chrome-浏览器的-LightHouse"><a href="#3-1-Chrome-浏览器的-LightHouse" class="headerlink" title="3.1 Chrome 浏览器的 LightHouse"></a>3.1 Chrome 浏览器的 LightHouse</h3><p>打开 Chrome 浏览器的开发者工具（点击 F12），点击 LightHouse。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250719094114402.webp"></p>
+<p>然后点击 Analyze page load 即可看到本页面的性能统计。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250719094114403.webp"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250719094114405.webp"></p>
+<p>内容首绘时间和可用时间都在里面有明确的统计。</p>
+<h3 id="3-2-LightHouse-使用简介"><a href="#3-2-LightHouse-使用简介" class="headerlink" title="3.2 LightHouse 使用简介"></a>3.2 LightHouse 使用简介</h3><h4 id="3-2-1-三种模式"><a href="#3-2-1-三种模式" class="headerlink" title="3.2.1 三种模式"></a>3.2.1 三种模式</h4><p>三种模式介绍如下：</p>
+<ul>
+<li>导航模式（默认）<ul>
+<li>获取性能分数和所有性能指标。</li>
+<li>评估渐进式 Web 应用功能。</li>
+<li>在页面加载后立即分析可访问性。</li>
+</ul>
+</li>
+<li>时间跨度模式<ul>
+<li>测量某个时间范围内的布局偏移和 JavaScript 执行时间，包括交互。</li>
+<li>发现性能机会，以改善长期存在的页面和 SPA 的体验。</li>
+</ul>
+</li>
+<li>快照模式<ul>
+<li>分析当前状态的页面。</li>
+<li>查找 SPA 或复杂表单深处的可访问性问题。</li>
+<li>评估隐藏在交互后面的菜单和 UI 元素的最佳实践。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-2-2-报告解读"><a href="#3-2-2-报告解读" class="headerlink" title="3.2.2 报告解读"></a>3.2.2 报告解读</h4><p> 点击 Analyze page load 后，生成的报告如上截图，对于打分部分：</p>
+<ul>
+<li>0 - 49（慢）：红色</li>
+<li>50 - 89（平均值）： 橙色</li>
+<li>90 - 100（快）： 绿色</li>
+</ul>
+<p>一般情况下，只要打分不在 0 – 49 范围内，则无须做优化处理。</p>
+<p>常见的问题种类：</p>
+<ul>
+<li>Performance：性能检测，如网页的加载速度、响时间等。</li>
+<li>Accessibility：铺助检测，如网页的可访问性问题，HTML 代码标签之类的优化等。</li>
+<li>Best Practices：实践性检测，如网页安全性，如是否开启 HTTPS、网页存在的漏洞等。</li>
+<li>SEO：Search Engine Optimisation 搜索引擎优化检测，如网页 title 是否符合搜索引擎的优化标准等。</li>
+<li>PWA：检测对 Progressive Web App 的性能影响。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>软件测试</category>
+      </categories>
+      <tags>
+        <tag>性能测试</tag>
+        <tag>软件测试</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Unittest 单元测试框架（二）</title>
     <url>/posts/56a458a0/</url>
     <content><![CDATA[<h2 id="1-数据驱动"><a href="#1-数据驱动" class="headerlink" title="1. 数据驱动"></a>1. 数据驱动</h2><h3 id="1-1-测试数据参数化"><a href="#1-1-测试数据参数化" class="headerlink" title="1.1 测试数据参数化"></a>1.1 测试数据参数化</h3><p><strong>参数化测试</strong> 是一种 “ 数据驱动测试 “ (Data-DrivenTest)，在同一个方法上测试不同的参数，以覆盖所有可能的预期分支的结果。它的测试数据可以与测试行为分离，被放入到文件、数据库或者外部介质中，再由测试程序读取。</p>
@@ -18763,199 +18956,6 @@
         <tag>软件测试</tag>
         <tag>自动化测试</tag>
         <tag>Unittest系列</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>前端低带宽测试方案</title>
-    <url>/posts/55ef89fe/</url>
-    <content><![CDATA[<h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h2><h3 id="1-1-背景"><a href="#1-1-背景" class="headerlink" title="1.1 背景"></a>1.1 背景</h3><p>各行业线都有反馈网络因素导致的项目问题，因用户网络带宽低，导致客户端登录耗时超过 6 秒。</p>
-<p>针对此类场景，联合前端、体验、测试等角色共同分析根因，对前端页面进行分类，不同类型定义不同的性能规格。</p>
-<h3 id="1-2-适用范围"><a href="#1-2-适用范围" class="headerlink" title="1.2 适用范围"></a>1.2 适用范围</h3><p>该方案适用所有软件产品涉及的前端 eb、客户端、APP。</p>
-<h3 id="1-3-名词解释"><a href="#1-3-名词解释" class="headerlink" title="1.3 名词解释"></a>1.3 名词解释</h3><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250719094114401.webp"></p>
-<table>
-<thead>
-<tr>
-<th>名词</th>
-<th>说明</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>响应时间</td>
-<td>指的是从前端发起一个请求开始，到前端接收到从服务端返回的响应结束，这个过程所耗费的时间，单位为秒或毫秒</td>
-</tr>
-<tr>
-<td>首绘时间（FP）</td>
-<td>是时间线上的第一个 “ 时间点 “，它代表浏览器第一次向屏幕传输像素的时间，也就是页面在屏幕上首次发生视觉变化的时间</td>
-</tr>
-<tr>
-<td>内容首绘（FCP）</td>
-<td>它代表浏览器第一次向屏幕绘制 “ 内容 “。只有首次绘制文本、图片（包含背景图）、非白色的 canvas 或 SVG 时才被算作 FCP</td>
-</tr>
-<tr>
-<td>首次有效绘制（FMP）</td>
-<td>表示页面的 “ 主要内容 “ 开始出现在屏幕上的时间点。它是我们测量用户加载体验的主要指标</td>
-</tr>
-<tr>
-<td>可见时间（LCP）</td>
-<td>表示可视区 “ 内容 “ 最大的可见元素开始出现在屏幕上的时间点</td>
-</tr>
-<tr>
-<td>可用时间（TTI）</td>
-<td>表示网页第一次完全达到可交互状态的时间点。可交互状态指的是页面上的 UI 组件是可以交互的（可以响应按钮的点击或在文本框输入文字等）</td>
-</tr>
-<tr>
-<td>动画补全时间</td>
-<td>表示网页已完全加载完毕，整个界面所有的功能完备、各插件全部加载、动画（若有）流畅播放；即上图中，从点击功能到 CLS 所消耗的时间</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<p><strong>FP 与 FCP 主要区别</strong></p>
-<ul>
-<li>FP 是当浏览器开始绘制内容到屏幕上的时候，只要在视觉上开始发生变化，无论是什么内容触发的视觉变化，在这一刻，这个时间点，叫做 FP。</li>
-<li>FCP 指的是浏览器首次绘制来自 DOM 的内容。例如：文本，图片，SVG，canvas 元素等，这个时间点叫 FCP</li>
-</ul>
-<h2 id="2-测试方案"><a href="#2-测试方案" class="headerlink" title="2. 测试方案"></a>2. 测试方案</h2><h3 id="2-1-低带宽定义"><a href="#2-1-低带宽定义" class="headerlink" title="2.1 低带宽定义"></a>2.1 低带宽定义</h3><p>本方案不具体定义带宽处于何种情况下算是低带宽。各产品对应的最低带宽需求由产品经理根据产品的实际生产环境要求定义增加到产品基础的配置要求中，测试团队基于该指标测试交互响应速度。</p>
-<p>若产品中包含 APP、web、客户端等多种前端访问类型，APP 与 Web 的低带宽指标需要分开给出。</p>
-<p>各产品在提需求申请时，提供的产品基础配置表中，需要包含 PC 机的最低配置需求、APP&#x2F;Web 最低带宽指标;</p>
-<h3 id="2-2-页面分类及响应时间"><a href="#2-2-页面分类及响应时间" class="headerlink" title="2.2 页面分类及响应时间"></a>2.2 页面分类及响应时间</h3><h4 id="2-2-1-页面分类"><a href="#2-2-1-页面分类" class="headerlink" title="2.2.1 页面分类"></a>2.2.1 页面分类</h4><p>不同的前端页面，可以有不同的响应时间要求，对前端页面进行分类，具体如下:</p>
-<ul>
-<li>高效页面: 登录页、基础框架页、门户首页</li>
-<li>常规页面: 基础功能、地图</li>
-<li>可容忍延迟页面: 平台端 dashboard、大屏可视化界面、3D 地图</li>
-<li>特殊页面: 后端服务重启页面、安装部署启动时间、平台重启时间</li>
-<li>其他: 执行过程中如遇页面类型争议的，可由 UED、前端、测试共同评审确定页面类型</li>
-</ul>
-<h4 id="2-2-2-页面响应时间"><a href="#2-2-2-页面响应时间" class="headerlink" title="2.2.2 页面响应时间"></a>2.2.2 页面响应时间</h4><table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>类型</strong></td>
-<td><strong>可见时间</strong></td>
-<td></td>
-<td><strong>可用时间</strong></td>
-<td></td>
-<td><strong>动画补全时间</strong></td>
-<td><strong>备注</strong></td>
-</tr>
-<tr>
-<td><strong>最优时间</strong></td>
-<td><strong>最低标准</strong></td>
-<td><strong>最优时间</strong></td>
-<td><strong>最低标准</strong></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>高效页面</td>
-<td>&#x2F;</td>
-<td>500ms</td>
-<td>1s</td>
-<td>2s</td>
-<td>3s</td>
-<td></td>
-</tr>
-<tr>
-<td>常规页面</td>
-<td>&#x2F;</td>
-<td>500ms</td>
-<td>1s</td>
-<td>3s</td>
-<td>3s</td>
-<td></td>
-</tr>
-<tr>
-<td>可容忍延迟页面</td>
-<td>&#x2F;</td>
-<td>1s</td>
-<td>2s</td>
-<td>5s</td>
-<td>5s</td>
-<td></td>
-</tr>
-<tr>
-<td>特殊页面</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<p>注：</p>
-<ul>
-<li>若页面响应超过定义的最低标准，则需要提单并优化。</li>
-<li>测试时主要关注 “ 可用时间 “。</li>
-</ul>
-<h3 id="2-3-故障等级约定"><a href="#2-3-故障等级约定" class="headerlink" title="2.3 故障等级约定"></a>2.3 故障等级约定</h3><p>对于页面响应，在环境满足产品最低带宽要求下，若响应时间超过约定的最低响应时间，则需要测试提单、研发优化修改。</p>
-<p>具体故障等级约定如下：</p>
-<ul>
-<li>满足最低标准不提单；</li>
-<li>超过最低标准，但不超过 50% 响应时间，提 “ 轻微 “ 等级；</li>
-<li>超过最低标准 50% 但不超过 100% 响应时间，提 “ 一般 “ 等级；</li>
-<li>超过最低标准 100% 响应时间，提 “ 严重 “ 等级。</li>
-</ul>
-<h2 id="3-前端性能验证工具"><a href="#3-前端性能验证工具" class="headerlink" title="3. 前端性能验证工具"></a>3. 前端性能验证工具</h2><h3 id="3-1-Chrome-浏览器的-LightHouse"><a href="#3-1-Chrome-浏览器的-LightHouse" class="headerlink" title="3.1 Chrome 浏览器的 LightHouse"></a>3.1 Chrome 浏览器的 LightHouse</h3><p>打开 Chrome 浏览器的开发者工具（点击 F12），点击 LightHouse。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250719094114402.webp"></p>
-<p>然后点击 Analyze page load 即可看到本页面的性能统计。</p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250719094114403.webp"></p>
-<p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250719094114405.webp"></p>
-<p>内容首绘时间和可用时间都在里面有明确的统计。</p>
-<h3 id="3-2-LightHouse-使用简介"><a href="#3-2-LightHouse-使用简介" class="headerlink" title="3.2 LightHouse 使用简介"></a>3.2 LightHouse 使用简介</h3><h4 id="3-2-1-三种模式"><a href="#3-2-1-三种模式" class="headerlink" title="3.2.1 三种模式"></a>3.2.1 三种模式</h4><p>三种模式介绍如下：</p>
-<ul>
-<li>导航模式（默认）<ul>
-<li>获取性能分数和所有性能指标。</li>
-<li>评估渐进式 Web 应用功能。</li>
-<li>在页面加载后立即分析可访问性。</li>
-</ul>
-</li>
-<li>时间跨度模式<ul>
-<li>测量某个时间范围内的布局偏移和 JavaScript 执行时间，包括交互。</li>
-<li>发现性能机会，以改善长期存在的页面和 SPA 的体验。</li>
-</ul>
-</li>
-<li>快照模式<ul>
-<li>分析当前状态的页面。</li>
-<li>查找 SPA 或复杂表单深处的可访问性问题。</li>
-<li>评估隐藏在交互后面的菜单和 UI 元素的最佳实践。</li>
-</ul>
-</li>
-</ul>
-<h4 id="3-2-2-报告解读"><a href="#3-2-2-报告解读" class="headerlink" title="3.2.2 报告解读"></a>3.2.2 报告解读</h4><p> 点击 Analyze page load 后，生成的报告如上截图，对于打分部分：</p>
-<ul>
-<li>0 - 49（慢）：红色</li>
-<li>50 - 89（平均值）： 橙色</li>
-<li>90 - 100（快）： 绿色</li>
-</ul>
-<p>一般情况下，只要打分不在 0 – 49 范围内，则无须做优化处理。</p>
-<p>常见的问题种类：</p>
-<ul>
-<li>Performance：性能检测，如网页的加载速度、响时间等。</li>
-<li>Accessibility：铺助检测，如网页的可访问性问题，HTML 代码标签之类的优化等。</li>
-<li>Best Practices：实践性检测，如网页安全性，如是否开启 HTTPS、网页存在的漏洞等。</li>
-<li>SEO：Search Engine Optimisation 搜索引擎优化检测，如网页 title 是否符合搜索引擎的优化标准等。</li>
-<li>PWA：检测对 Progressive Web App 的性能影响。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>软件测试</category>
-      </categories>
-      <tags>
-        <tag>性能测试</tag>
-        <tag>软件测试</tag>
       </tags>
   </entry>
   <entry>
@@ -19760,199 +19760,6 @@
       </tags>
   </entry>
   <entry>
-    <title>性能测试模型</title>
-    <url>/posts/67935705/</url>
-    <content><![CDATA[<h2 id="性能测试过程模型-PTGM"><a href="#性能测试过程模型-PTGM" class="headerlink" title="性能测试过程模型 PTGM"></a>性能测试过程模型 PTGM</h2><p>PTGM 是英文 performance test general model 的缩写，表示为性能测试过程通用模型。</p>
-<p>主要包括六个阶段</p>
-<ol>
-<li>测试前期的准备</li>
-<li>测试工具的引入</li>
-<li>测试计划</li>
-<li>测试设计与开发</li>
-<li>测试执行与管理</li>
-<li>测试分析<br><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250719095140610.webp"></li>
-</ol>
-<h3 id="测试前期准备"><a href="#测试前期准备" class="headerlink" title="测试前期准备"></a>测试前期准备</h3><p>测试前期准备阶段至少要完成两面的工作：</p>
-<ul>
-<li>保证系统稳定</li>
-<li>建立合适的测试团队</li>
-</ul>
-<p>测试前期准备阶段包含以下活动：</p>
-<ol>
-<li><p>系统基础功能验证</p>
-<p> 如果性能测试本身属于验收测试的一部分，只需要把性能测试安排在功能验收测试完成之后即可；如果性能测试不在验收测试阶段进行，则必须保证在性能测试之前至少进行一次系统的功能覆盖测试。</p>
-</li>
-<li><p>组建测试团队</p>
-<p> 根据项目的大致情况确定人员的需要的技能，从组织中挑选合适的人员组成测试组。</p>
-</li>
-<li><p>测试工具需求确认</p>
-<p> 根据对被测系统的了解和对测试过程的初步规划，给出测试工具应用具备的功能列表，具体的思考建议如下表所示。</p>
-</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>被测系统环境</td>
-<td>测试工具功能需求建议</td>
-</tr>
-<tr>
-<td>操作系统环境</td>
-<td>测试工具是否能运行在本操作系统上</td>
-</tr>
-<tr>
-<td>测试工具是否支持对本操作系统的监控</td>
-<td></td>
-</tr>
-<tr>
-<td>应用服务器环境</td>
-<td>测试工具是否支持对本应用服务器的监控</td>
-</tr>
-<tr>
-<td>数据库环境</td>
-<td>测试工具是否支持本数据库的监控</td>
-</tr>
-<tr>
-<td>应用使用的协议</td>
-<td>本系统使用哪些协议</td>
-</tr>
-<tr>
-<td>哪些协议需要在性能测试中通过工具进行录制和产生负载</td>
-<td></td>
-</tr>
-<tr>
-<td>测试工具能否支持进行录制和产生负载的协议</td>
-<td></td>
-</tr>
-<tr>
-<td>网络环境</td>
-<td>是否需要测试工具支持防火墙</td>
-</tr>
-<tr>
-<td>是否需要测试工具支持负载均衡</td>
-<td></td>
-</tr>
-<tr>
-<td>测试管理支持</td>
-<td>测试工具是否能够提供方便的测试结果分析和管理</td>
-</tr>
-</tbody></table>
-<ol start="4">
-<li><p>性能预备测试（可选活动）</p>
-<p> 性能预备测试，是指在正式测试之前，通过简单的探索性测试或其他方法，对系统的性能表现进行初步了解。预备测试也就是我们平日工作中性能测试正式开展前的调研测试。</p>
-</li>
-</ol>
-<h3 id="测试工具引入阶段"><a href="#测试工具引入阶段" class="headerlink" title="测试工具引入阶段"></a>测试工具引入阶段</h3><ol>
-<li><p>选择工具</p>
-<p> 性能测试一定会使用自动化测试手段和自动化测试工具。</p>
-</li>
-<li><p>工具应用的技能培训</p>
-<p> 该活动对项目组的相关参与者进行工具的应用技能培训，以使测试活动参与者具备测试需要的技能。</p>
-</li>
-<li><p>确定工具的应用过程</p>
-<p> 该活动需要确定性能测试工具在测试中的具体应用范围，工具使用过程中的问题解决方法等内容。具体来说，哪些工作使用工具完成，测试工具在使用过程中的问题由谁来解决？</p>
-</li>
-</ol>
-<h3 id="测试计划阶段"><a href="#测试计划阶段" class="headerlink" title="测试计划阶段"></a>测试计划阶段</h3><p>测试计划阶段用于生成指导整个测试执行的计划。该阶段主要完成测试目标的确定和测试时间的拟定。</p>
-<p>此阶段的工作分解为以下活动：</p>
-<ol>
-<li>性能测试领域分析</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>应用领域</td>
-<td>性能测试目标</td>
-<td>性能目标</td>
-</tr>
-<tr>
-<td>能力验证</td>
-<td>验证系统在给定环境中的性能能力</td>
-<td>重点关注的关键业务响应时间，吞吐量</td>
-</tr>
-<tr>
-<td>规划能力</td>
-<td>验证系统的性能扩展力，找出系统能力扩充的关键点，给出改善其性能扩展能力的建议</td>
-<td>业务的性能瓶颈</td>
-</tr>
-<tr>
-<td>性能调优</td>
-<td>提高系统的性能表现</td>
-<td>重点关注的关键业务响应时间，吞吐量</td>
-</tr>
-<tr>
-<td>发现缺陷</td>
-<td>发现系统中缺陷</td>
-<td>无</td>
-</tr>
-</tbody></table>
-<ol start="2">
-<li><p>用户活动剖析与业务建模</p>
-<p> 用户活动剖析与业务建模活动用来寻找用户的关键性能关注点。用户对系统性能的关注往往集中在少数几个业务活动上，在确定性能目标之前，需要先把用户的关注点找出来，从而确定最贴切用户要求的性能目标。</p>
-</li>
-<li><p>确定性能目标</p>
-<p> 性能测试目标根据性能测试需求和用户活动分析结果来确定。确定性能测试的目标的一般步骤是首先从需求和设计中分析出性能测试需求，结合用户活动剖析与业务建模的结果，最终确定性能测试的目标。</p>
-</li>
-<li><p>制定测试时间计划</p>
-<p> 该活动给出性能测试的各个活动起止时间，为性能测试的执行给出时间上的估算。</p>
-</li>
-</ol>
-<h3 id="测试设计与开发阶段"><a href="#测试设计与开发阶段" class="headerlink" title="测试设计与开发阶段"></a>测试设计与开发阶段</h3><p>性能测试的设计与开发阶段包括测试环境设计，测试场景设计，测试用例设计，以及脚本，辅助工具开发活动。</p>
-<ol>
-<li><p>测试环境设计</p>
-<p> 测试环境设计是测试设计中不可缺少的环节。性能测试的结果与测试环境之间的关联非常大。无论是哪种领域内的性能测试，都必须首先确定测试的环境。</p>
-</li>
-<li><p>测试场景设计</p>
-<p> 测试场景设计活动用于设计测试活动需要使用的场景。</p>
-</li>
-<li><p>测试用例的设计</p>
-<p> 测试用例是对测试场景的进一步细化，细化的内容包括场景中涉及业务的操作序列描述，场景需要的环境部署。</p>
-</li>
-<li><p>脚本和辅助工具开发</p>
-<p> 脚本和辅助工具的开发是测试执行之前的最后步骤，测试脚本是业务操作的体现，一个脚本一般是一个业务的过程描述。</p>
-</li>
-</ol>
-<h3 id="测试执行与管理"><a href="#测试执行与管理" class="headerlink" title="测试执行与管理"></a>测试执行与管理</h3><p>测试执行与管理过程用于建立合适的测试环境，部署测试脚本和测试场景，执行测试并记录测试结果。</p>
-<ol>
-<li><p>建立测试环境</p>
-<p> 该活动用于搭建需要的测试环境，在设计完用例之后就会开始改活动。该活动是一个持续性的活动，在测试过程中，可能会根据测试需求进行环境上的调整。</p>
-</li>
-<li><p>部署测试脚本和测试场景</p>
-<p> 在建立合适的测试环境之后，接下来的工作是部署测试脚本和测试场景。对脚本和场景的部署需要熟悉测试工具的人员来完成，在本过程模型中，该活动由测试实施人员进行。在场景部署完成后，一般需要一个确认步骤，在该步骤，测试设计人员确认场景部署与预期的设计一致。沟通和确认工作在实际的测试过程很重要。</p>
-</li>
-<li><p>执行测试和记录结果</p>
-</li>
-</ol>
-<h3 id="测试分析"><a href="#测试分析" class="headerlink" title="测试分析"></a>测试分析</h3><p>测试过程分析过程用于对测试结果进行分析，根据测试的目的和目标给出测试结论。</p>
-<p>性能测试的挑战性很大程度上体现在对测试结果的分析，可以说，每次性能测试结果的分析需要测试分析人员具有相当程度的对软件性能，软件架构和各性能指标的了解。</p>
-<p>实际性能测试工程师需要配合开发人员协同定位性能测试过程的异常。</p>
-<h2 id="敏捷性能测试模型-APTM"><a href="#敏捷性能测试模型-APTM" class="headerlink" title="敏捷性能测试模型 APTM"></a>敏捷性能测试模型 APTM</h2><p>敏捷测试这个术语通常指敏捷开发方法中测试相关的部分。敏捷开发方法是一组软件开发方法的集合，它鼓励协作、交互、面向可交付的产出，通过迭代的方式实现小步快走，目标是在需求不断变化的情况下能够按时交付满足用户需求的产品。敏捷性能测试中的活动通常需要工具与环境的支持。在敏捷体系中，持续集成环境表现为通过持续构建的方式保证开发工程师的代码能够经常性地进行集成，在集成过程中尽可能早地发现问题。总体来说，APTM 中主要活动如下：</p>
-<ol>
-<li>识别性能测试任务优先级</li>
-<li>设置环境与执行测试</li>
-<li>分析测试结果与报告</li>
-<li>在下一次迭代中重复步骤 1-3</li>
-</ol>
-]]></content>
-      <categories>
-        <category>软件测试</category>
-      </categories>
-      <tags>
-        <tag>性能测试</tag>
-        <tag>软件测试</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>性能监控平台</title>
     <url>/posts/19643a07/</url>
     <content><![CDATA[<h2 id="InfluxDB"><a href="#InfluxDB" class="headerlink" title="InfluxDB"></a>InfluxDB</h2><h3 id="InfluxDB-简介"><a href="#InfluxDB-简介" class="headerlink" title="InfluxDB 简介"></a>InfluxDB 简介</h3><ul>
@@ -20164,6 +19971,199 @@
       </tags>
   </entry>
   <entry>
+    <title>性能测试模型</title>
+    <url>/posts/67935705/</url>
+    <content><![CDATA[<h2 id="性能测试过程模型-PTGM"><a href="#性能测试过程模型-PTGM" class="headerlink" title="性能测试过程模型 PTGM"></a>性能测试过程模型 PTGM</h2><p>PTGM 是英文 performance test general model 的缩写，表示为性能测试过程通用模型。</p>
+<p>主要包括六个阶段</p>
+<ol>
+<li>测试前期的准备</li>
+<li>测试工具的引入</li>
+<li>测试计划</li>
+<li>测试设计与开发</li>
+<li>测试执行与管理</li>
+<li>测试分析<br><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250719095140610.webp"></li>
+</ol>
+<h3 id="测试前期准备"><a href="#测试前期准备" class="headerlink" title="测试前期准备"></a>测试前期准备</h3><p>测试前期准备阶段至少要完成两面的工作：</p>
+<ul>
+<li>保证系统稳定</li>
+<li>建立合适的测试团队</li>
+</ul>
+<p>测试前期准备阶段包含以下活动：</p>
+<ol>
+<li><p>系统基础功能验证</p>
+<p> 如果性能测试本身属于验收测试的一部分，只需要把性能测试安排在功能验收测试完成之后即可；如果性能测试不在验收测试阶段进行，则必须保证在性能测试之前至少进行一次系统的功能覆盖测试。</p>
+</li>
+<li><p>组建测试团队</p>
+<p> 根据项目的大致情况确定人员的需要的技能，从组织中挑选合适的人员组成测试组。</p>
+</li>
+<li><p>测试工具需求确认</p>
+<p> 根据对被测系统的了解和对测试过程的初步规划，给出测试工具应用具备的功能列表，具体的思考建议如下表所示。</p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>被测系统环境</td>
+<td>测试工具功能需求建议</td>
+</tr>
+<tr>
+<td>操作系统环境</td>
+<td>测试工具是否能运行在本操作系统上</td>
+</tr>
+<tr>
+<td>测试工具是否支持对本操作系统的监控</td>
+<td></td>
+</tr>
+<tr>
+<td>应用服务器环境</td>
+<td>测试工具是否支持对本应用服务器的监控</td>
+</tr>
+<tr>
+<td>数据库环境</td>
+<td>测试工具是否支持本数据库的监控</td>
+</tr>
+<tr>
+<td>应用使用的协议</td>
+<td>本系统使用哪些协议</td>
+</tr>
+<tr>
+<td>哪些协议需要在性能测试中通过工具进行录制和产生负载</td>
+<td></td>
+</tr>
+<tr>
+<td>测试工具能否支持进行录制和产生负载的协议</td>
+<td></td>
+</tr>
+<tr>
+<td>网络环境</td>
+<td>是否需要测试工具支持防火墙</td>
+</tr>
+<tr>
+<td>是否需要测试工具支持负载均衡</td>
+<td></td>
+</tr>
+<tr>
+<td>测试管理支持</td>
+<td>测试工具是否能够提供方便的测试结果分析和管理</td>
+</tr>
+</tbody></table>
+<ol start="4">
+<li><p>性能预备测试（可选活动）</p>
+<p> 性能预备测试，是指在正式测试之前，通过简单的探索性测试或其他方法，对系统的性能表现进行初步了解。预备测试也就是我们平日工作中性能测试正式开展前的调研测试。</p>
+</li>
+</ol>
+<h3 id="测试工具引入阶段"><a href="#测试工具引入阶段" class="headerlink" title="测试工具引入阶段"></a>测试工具引入阶段</h3><ol>
+<li><p>选择工具</p>
+<p> 性能测试一定会使用自动化测试手段和自动化测试工具。</p>
+</li>
+<li><p>工具应用的技能培训</p>
+<p> 该活动对项目组的相关参与者进行工具的应用技能培训，以使测试活动参与者具备测试需要的技能。</p>
+</li>
+<li><p>确定工具的应用过程</p>
+<p> 该活动需要确定性能测试工具在测试中的具体应用范围，工具使用过程中的问题解决方法等内容。具体来说，哪些工作使用工具完成，测试工具在使用过程中的问题由谁来解决？</p>
+</li>
+</ol>
+<h3 id="测试计划阶段"><a href="#测试计划阶段" class="headerlink" title="测试计划阶段"></a>测试计划阶段</h3><p>测试计划阶段用于生成指导整个测试执行的计划。该阶段主要完成测试目标的确定和测试时间的拟定。</p>
+<p>此阶段的工作分解为以下活动：</p>
+<ol>
+<li>性能测试领域分析</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>应用领域</td>
+<td>性能测试目标</td>
+<td>性能目标</td>
+</tr>
+<tr>
+<td>能力验证</td>
+<td>验证系统在给定环境中的性能能力</td>
+<td>重点关注的关键业务响应时间，吞吐量</td>
+</tr>
+<tr>
+<td>规划能力</td>
+<td>验证系统的性能扩展力，找出系统能力扩充的关键点，给出改善其性能扩展能力的建议</td>
+<td>业务的性能瓶颈</td>
+</tr>
+<tr>
+<td>性能调优</td>
+<td>提高系统的性能表现</td>
+<td>重点关注的关键业务响应时间，吞吐量</td>
+</tr>
+<tr>
+<td>发现缺陷</td>
+<td>发现系统中缺陷</td>
+<td>无</td>
+</tr>
+</tbody></table>
+<ol start="2">
+<li><p>用户活动剖析与业务建模</p>
+<p> 用户活动剖析与业务建模活动用来寻找用户的关键性能关注点。用户对系统性能的关注往往集中在少数几个业务活动上，在确定性能目标之前，需要先把用户的关注点找出来，从而确定最贴切用户要求的性能目标。</p>
+</li>
+<li><p>确定性能目标</p>
+<p> 性能测试目标根据性能测试需求和用户活动分析结果来确定。确定性能测试的目标的一般步骤是首先从需求和设计中分析出性能测试需求，结合用户活动剖析与业务建模的结果，最终确定性能测试的目标。</p>
+</li>
+<li><p>制定测试时间计划</p>
+<p> 该活动给出性能测试的各个活动起止时间，为性能测试的执行给出时间上的估算。</p>
+</li>
+</ol>
+<h3 id="测试设计与开发阶段"><a href="#测试设计与开发阶段" class="headerlink" title="测试设计与开发阶段"></a>测试设计与开发阶段</h3><p>性能测试的设计与开发阶段包括测试环境设计，测试场景设计，测试用例设计，以及脚本，辅助工具开发活动。</p>
+<ol>
+<li><p>测试环境设计</p>
+<p> 测试环境设计是测试设计中不可缺少的环节。性能测试的结果与测试环境之间的关联非常大。无论是哪种领域内的性能测试，都必须首先确定测试的环境。</p>
+</li>
+<li><p>测试场景设计</p>
+<p> 测试场景设计活动用于设计测试活动需要使用的场景。</p>
+</li>
+<li><p>测试用例的设计</p>
+<p> 测试用例是对测试场景的进一步细化，细化的内容包括场景中涉及业务的操作序列描述，场景需要的环境部署。</p>
+</li>
+<li><p>脚本和辅助工具开发</p>
+<p> 脚本和辅助工具的开发是测试执行之前的最后步骤，测试脚本是业务操作的体现，一个脚本一般是一个业务的过程描述。</p>
+</li>
+</ol>
+<h3 id="测试执行与管理"><a href="#测试执行与管理" class="headerlink" title="测试执行与管理"></a>测试执行与管理</h3><p>测试执行与管理过程用于建立合适的测试环境，部署测试脚本和测试场景，执行测试并记录测试结果。</p>
+<ol>
+<li><p>建立测试环境</p>
+<p> 该活动用于搭建需要的测试环境，在设计完用例之后就会开始改活动。该活动是一个持续性的活动，在测试过程中，可能会根据测试需求进行环境上的调整。</p>
+</li>
+<li><p>部署测试脚本和测试场景</p>
+<p> 在建立合适的测试环境之后，接下来的工作是部署测试脚本和测试场景。对脚本和场景的部署需要熟悉测试工具的人员来完成，在本过程模型中，该活动由测试实施人员进行。在场景部署完成后，一般需要一个确认步骤，在该步骤，测试设计人员确认场景部署与预期的设计一致。沟通和确认工作在实际的测试过程很重要。</p>
+</li>
+<li><p>执行测试和记录结果</p>
+</li>
+</ol>
+<h3 id="测试分析"><a href="#测试分析" class="headerlink" title="测试分析"></a>测试分析</h3><p>测试过程分析过程用于对测试结果进行分析，根据测试的目的和目标给出测试结论。</p>
+<p>性能测试的挑战性很大程度上体现在对测试结果的分析，可以说，每次性能测试结果的分析需要测试分析人员具有相当程度的对软件性能，软件架构和各性能指标的了解。</p>
+<p>实际性能测试工程师需要配合开发人员协同定位性能测试过程的异常。</p>
+<h2 id="敏捷性能测试模型-APTM"><a href="#敏捷性能测试模型-APTM" class="headerlink" title="敏捷性能测试模型 APTM"></a>敏捷性能测试模型 APTM</h2><p>敏捷测试这个术语通常指敏捷开发方法中测试相关的部分。敏捷开发方法是一组软件开发方法的集合，它鼓励协作、交互、面向可交付的产出，通过迭代的方式实现小步快走，目标是在需求不断变化的情况下能够按时交付满足用户需求的产品。敏捷性能测试中的活动通常需要工具与环境的支持。在敏捷体系中，持续集成环境表现为通过持续构建的方式保证开发工程师的代码能够经常性地进行集成，在集成过程中尽可能早地发现问题。总体来说，APTM 中主要活动如下：</p>
+<ol>
+<li>识别性能测试任务优先级</li>
+<li>设置环境与执行测试</li>
+<li>分析测试结果与报告</li>
+<li>在下一次迭代中重复步骤 1-3</li>
+</ol>
+]]></content>
+      <categories>
+        <category>软件测试</category>
+      </categories>
+      <tags>
+        <tag>性能测试</tag>
+        <tag>软件测试</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>性能需求分析思路</title>
     <url>/posts/97d49fd8/</url>
     <content><![CDATA[<h2 id="一、核心业务场景"><a href="#一、核心业务场景" class="headerlink" title="一、核心业务场景"></a>一、核心业务场景</h2><table>
@@ -20329,6 +20329,98 @@
       <tags>
         <tag>性能测试</tag>
         <tag>软件测试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>接口自动化规范</title>
+    <url>/posts/b0a9870a/</url>
+    <content><![CDATA[<h2 id="1-提测评审流程"><a href="#1-提测评审流程" class="headerlink" title="1. 提测评审流程"></a>1. 提测评审流程</h2><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250718212842653.webp"></p>
+<h3 id="需求阶段"><a href="#需求阶段" class="headerlink" title="需求阶段"></a>需求阶段</h3><ol>
+<li>研发：需求澄清和串讲，WBS 计划制定</li>
+<li>测开：测开参与需求澄清，制定自动化测试方案，将自动化开发纳入 WBS 计划，与研发进度对齐</li>
+</ol>
+<h3 id="设计阶段"><a href="#设计阶段" class="headerlink" title="设计阶段"></a>设计阶段</h3><ol>
+<li>研发：接口定义，提供详细接口文档，接口文档上系统</li>
+<li>测开：底层方法实现，接口封装</li>
+</ol>
+<h3 id="开发阶段"><a href="#开发阶段" class="headerlink" title="开发阶段"></a>开发阶段</h3><ol>
+<li>研发：业务开发，前后端联调</li>
+<li>测开：按照用例开发脚本，脚本联调</li>
+</ol>
+<h3 id="测试阶段"><a href="#测试阶段" class="headerlink" title="测试阶段"></a>测试阶段</h3><ol>
+<li>研发：自动化提测，冒烟通过率 &gt;&#x3D; 95% 方可进入测试，其他测试范围包括安装部署、自动化无法覆盖的提测用例</li>
+<li>测开：在测试环境上执行自动化（所有可用脚本）；自动化漏测分析（功能测试发现的 bug），查漏补缺；异常脚本每周分析（连续 5 天失败的脚本）</li>
+</ol>
+<h3 id="关于接口变更"><a href="#关于接口变更" class="headerlink" title="关于接口变更"></a>关于接口变更</h3><ol>
+<li>上系统之后的接口信息变更需提前一周邮件同步测开，测开给出脚本修复计划，若没有提前告知，持续集成失败责任一律由研发承担</li>
+<li>接口频繁变更将计入脚本重构数量</li>
+<li>外部依赖的模块，项目经理在取大版本时需执行一遍对应自动化脚本，存在接口变更提前告知并给出详细变更信息</li>
+</ol>
+<h3 id="关于-Bug"><a href="#关于-Bug" class="headerlink" title="关于 Bug"></a>关于 Bug</h3><ol>
+<li>缺陷管理平台提单，缺陷单简要描述中标注【自动化】，自动化发现选择「是」，提交版本为当前最新提测版本</li>
+<li>调试阶段发现 bug 也要提单，比如接口异常类，接口信息不一致等</li>
+<li>产品测试最后一轮，持续集成非严重影响功能的自动化问题建议延后提交</li>
+<li>自动化发现的缺陷不计入版本提测修复率统计，但会计入最终发布的缺陷指标统计</li>
+<li>研发需在 3 日内修复 bug，无法修复的请给出原因</li>
+</ol>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ol>
+<li>建议提测与持续集成流水分开，避免持续集成结果异常</li>
+<li>持续集成每周需有脚本上架</li>
+<li>开发若长期没有代码更新（至少一周一次），测试将暂停该项目脚本输出</li>
+</ol>
+<h2 id="2-自动化开发规范"><a href="#2-自动化开发规范" class="headerlink" title="2. 自动化开发规范"></a>2. 自动化开发规范</h2><h3 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h3><ol>
+<li>不能有魔鬼数字 <code>XX1</code>，变量名不能随意命名</li>
+<li>无效打印信息要去掉，<code>print xxx</code></li>
+<li>以兼容 python2&#x2F;3 的方式编码，以防后期切换时大量返工</li>
+<li>代码编写需要符合 PEP8 编码规范，PyCharm 中有波浪线的地方需要进行修改</li>
+<li>方法、形参加注释，主要实现什么功能需要有注释说明</li>
+<li>方法一些固定参数尽量使用类变量,不要用传参方式，方法定义 <code>__init__</code> 中</li>
+<li>对于语句的多层嵌套， 一般不允许超过两层， 超过两层不利于代码的阅读</li>
+<li>唯一字符串（角色名、用户名等）使用随机值函数 <code>get_random_string</code> 生成，减少清理失败可能对其他用例的影响</li>
+<li>捕捉异常的时候，使用具体的异常，而不是用一个单纯的 <code>except:xxx</code>，否则连 <code>SystemExit</code> 和 <code>KeyboardInterrupt</code> 也会被捕捉到</li>
+<li><code>try</code> 语句包含的东西越少越好</li>
+<li>对象类型的比较应该使用 <code>isinstance()</code> 而不是直接比较</li>
+<li>对于序列 (字符串，列表，元组)，可以利用空序列为 <code>false</code></li>
+<li>布尔值不要用&#x3D;&#x3D;和 is 来比较，直接用 if is_true:..</li>
+</ol>
+<h3 id="框架"><a href="#框架" class="headerlink" title="框架"></a>框架</h3><ol>
+<li>自动化框架的 <code>data</code> 层不允许包含复杂的业务逻辑，编写业务流程中用到的数据模板即可</li>
+<li>自动化框架的 <code> api</code> 层多用于处理接口的封装， 复用性较强的方法也可以封装在该层，<code>api</code> 层可以依赖于 <code>data</code> 和 <code>base</code> 层，禁止依赖于 <code>scripts</code></li>
+<li><code>Scripts</code> 层是用例层，主要编写用例的验证，封装的该层的用例方法不允许相互调用，这样容易导致用例执行异常</li>
+</ol>
+<h3 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h3><ol>
+<li><code>setup</code> 方法都要有对应的 <code>tear_down</code> 方法</li>
+<li>可复用的对设备、人员等操作，<code>suite</code> 的 <code>setup</code> 添加，多用例共用提高效率，同时 <code>tear_down</code> 需有清理操作，避免对其他用例干扰，例如：人员、设备添加后删除；参数修改后恢复默认；</li>
+<li>根据环境变化的变量不能写死，比如当前登录的用户信息，要通过接口获取用户信息</li>
+<li>真实设备操作，例如：数据下发，云台控制，需校验设备中数据，可使用横向库方法</li>
+<li>自动化脚本不允许直接操作数据库，不能删除的数据，就留在系统中，但要保证其他用例不使用该数据或者不能对其他用例产生影响</li>
+<li>增、删、改专用用例，需要充分验证效果<ul>
+<li>人员&#x2F;设备添加用例：人员&#x2F;设备添加，接口返回成功后，需用其他接口（例如：分页查询接口）查询添加成功，并校验关键字段信息，如人员姓名、编号（设备 IP、端口、名称）等</li>
+<li>人员&#x2F;设备删除用例：人员&#x2F;设备删除，接口返回成功后，需用其他接口（例如：分页查询接口）校验删除成功</li>
+</ul>
+</li>
+<li>依赖于数据的用例，必须先新增数据，再使用该数据验证用例，不推荐使用系统中已经存在的数据</li>
+<li>脚本验证不管成功与否，通过接口删除对产生的数据进行删除， 无法删除的除外</li>
+<li>接口验证需要对前端展示的所有字段都要验证</li>
+<li>频率较高的长耗时操作，例如：部分设备添加后等待上线耗时较长，可用循环查询判断的方式（非睡眠 <code>sleep</code> 等待）</li>
+<li>对于一些异常操作的用例，比如：停止 DP 服务，这种用例归到一类并打上特殊标签，后期统一跑，优先级降低</li>
+<li><code>Robot framework</code> 里的脚本编号格式，示例：<code>01系统管理</code> –&gt;<code> 01登录</code> –&gt; <code>01_01_01_正常登录</code>  -&gt; <code>01_01_02_错误密码登录</code></li>
+</ol>
+<h3 id="自动化文本用例"><a href="#自动化文本用例" class="headerlink" title="自动化文本用例"></a>自动化文本用例</h3><ol>
+<li>用例中需包含验证结果的 sql 语句</li>
+<li>接口传参的一些主要参数在用例中体现</li>
+<li>自动化用例是按照 wetest 里自动化为是，脚本编号有值，且能找到对应的一条脚本，才会被执行，所以一条功能用例必须只能对应一条脚本用例</li>
+<li>如果一条功能用例，自动化只能覆盖一半，那就将用例拆成两条，把能自动化的用例自动化标记为是，不能实现就标记为否，最终文本用例只有一个版本</li>
+<li>部分特殊用例（如隔天验证效果用例），采用修改服务器时间等特殊方法，需确认服务器是否需要重启，若耗时过长，用例可以加标签，根据需要使用标签筛选用例测试</li>
+<li>测试用例名称需要体现测试点</li>
+</ol>
+]]></content>
+      <categories>
+        <category>软件测试</category>
+      </categories>
+      <tags>
+        <tag>软件测试</tag>
+        <tag>自动化测试</tag>
       </tags>
   </entry>
   <entry>
@@ -20689,98 +20781,6 @@
 </li>
 </ol>
 <p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250706005041354.webp"></p>
-]]></content>
-      <categories>
-        <category>软件测试</category>
-      </categories>
-      <tags>
-        <tag>软件测试</tag>
-        <tag>自动化测试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>接口自动化规范</title>
-    <url>/posts/b0a9870a/</url>
-    <content><![CDATA[<h2 id="1-提测评审流程"><a href="#1-提测评审流程" class="headerlink" title="1. 提测评审流程"></a>1. 提测评审流程</h2><p><img src="https://cdn.jsdelivr.net/gh/AlwaysYo/ImageHost/Obsidian/20250718212842653.webp"></p>
-<h3 id="需求阶段"><a href="#需求阶段" class="headerlink" title="需求阶段"></a>需求阶段</h3><ol>
-<li>研发：需求澄清和串讲，WBS 计划制定</li>
-<li>测开：测开参与需求澄清，制定自动化测试方案，将自动化开发纳入 WBS 计划，与研发进度对齐</li>
-</ol>
-<h3 id="设计阶段"><a href="#设计阶段" class="headerlink" title="设计阶段"></a>设计阶段</h3><ol>
-<li>研发：接口定义，提供详细接口文档，接口文档上系统</li>
-<li>测开：底层方法实现，接口封装</li>
-</ol>
-<h3 id="开发阶段"><a href="#开发阶段" class="headerlink" title="开发阶段"></a>开发阶段</h3><ol>
-<li>研发：业务开发，前后端联调</li>
-<li>测开：按照用例开发脚本，脚本联调</li>
-</ol>
-<h3 id="测试阶段"><a href="#测试阶段" class="headerlink" title="测试阶段"></a>测试阶段</h3><ol>
-<li>研发：自动化提测，冒烟通过率 &gt;&#x3D; 95% 方可进入测试，其他测试范围包括安装部署、自动化无法覆盖的提测用例</li>
-<li>测开：在测试环境上执行自动化（所有可用脚本）；自动化漏测分析（功能测试发现的 bug），查漏补缺；异常脚本每周分析（连续 5 天失败的脚本）</li>
-</ol>
-<h3 id="关于接口变更"><a href="#关于接口变更" class="headerlink" title="关于接口变更"></a>关于接口变更</h3><ol>
-<li>上系统之后的接口信息变更需提前一周邮件同步测开，测开给出脚本修复计划，若没有提前告知，持续集成失败责任一律由研发承担</li>
-<li>接口频繁变更将计入脚本重构数量</li>
-<li>外部依赖的模块，项目经理在取大版本时需执行一遍对应自动化脚本，存在接口变更提前告知并给出详细变更信息</li>
-</ol>
-<h3 id="关于-Bug"><a href="#关于-Bug" class="headerlink" title="关于 Bug"></a>关于 Bug</h3><ol>
-<li>缺陷管理平台提单，缺陷单简要描述中标注【自动化】，自动化发现选择「是」，提交版本为当前最新提测版本</li>
-<li>调试阶段发现 bug 也要提单，比如接口异常类，接口信息不一致等</li>
-<li>产品测试最后一轮，持续集成非严重影响功能的自动化问题建议延后提交</li>
-<li>自动化发现的缺陷不计入版本提测修复率统计，但会计入最终发布的缺陷指标统计</li>
-<li>研发需在 3 日内修复 bug，无法修复的请给出原因</li>
-</ol>
-<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ol>
-<li>建议提测与持续集成流水分开，避免持续集成结果异常</li>
-<li>持续集成每周需有脚本上架</li>
-<li>开发若长期没有代码更新（至少一周一次），测试将暂停该项目脚本输出</li>
-</ol>
-<h2 id="2-自动化开发规范"><a href="#2-自动化开发规范" class="headerlink" title="2. 自动化开发规范"></a>2. 自动化开发规范</h2><h3 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h3><ol>
-<li>不能有魔鬼数字 <code>XX1</code>，变量名不能随意命名</li>
-<li>无效打印信息要去掉，<code>print xxx</code></li>
-<li>以兼容 python2&#x2F;3 的方式编码，以防后期切换时大量返工</li>
-<li>代码编写需要符合 PEP8 编码规范，PyCharm 中有波浪线的地方需要进行修改</li>
-<li>方法、形参加注释，主要实现什么功能需要有注释说明</li>
-<li>方法一些固定参数尽量使用类变量,不要用传参方式，方法定义 <code>__init__</code> 中</li>
-<li>对于语句的多层嵌套， 一般不允许超过两层， 超过两层不利于代码的阅读</li>
-<li>唯一字符串（角色名、用户名等）使用随机值函数 <code>get_random_string</code> 生成，减少清理失败可能对其他用例的影响</li>
-<li>捕捉异常的时候，使用具体的异常，而不是用一个单纯的 <code>except:xxx</code>，否则连 <code>SystemExit</code> 和 <code>KeyboardInterrupt</code> 也会被捕捉到</li>
-<li><code>try</code> 语句包含的东西越少越好</li>
-<li>对象类型的比较应该使用 <code>isinstance()</code> 而不是直接比较</li>
-<li>对于序列 (字符串，列表，元组)，可以利用空序列为 <code>false</code></li>
-<li>布尔值不要用&#x3D;&#x3D;和 is 来比较，直接用 if is_true:..</li>
-</ol>
-<h3 id="框架"><a href="#框架" class="headerlink" title="框架"></a>框架</h3><ol>
-<li>自动化框架的 <code>data</code> 层不允许包含复杂的业务逻辑，编写业务流程中用到的数据模板即可</li>
-<li>自动化框架的 <code> api</code> 层多用于处理接口的封装， 复用性较强的方法也可以封装在该层，<code>api</code> 层可以依赖于 <code>data</code> 和 <code>base</code> 层，禁止依赖于 <code>scripts</code></li>
-<li><code>Scripts</code> 层是用例层，主要编写用例的验证，封装的该层的用例方法不允许相互调用，这样容易导致用例执行异常</li>
-</ol>
-<h3 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h3><ol>
-<li><code>setup</code> 方法都要有对应的 <code>tear_down</code> 方法</li>
-<li>可复用的对设备、人员等操作，<code>suite</code> 的 <code>setup</code> 添加，多用例共用提高效率，同时 <code>tear_down</code> 需有清理操作，避免对其他用例干扰，例如：人员、设备添加后删除；参数修改后恢复默认；</li>
-<li>根据环境变化的变量不能写死，比如当前登录的用户信息，要通过接口获取用户信息</li>
-<li>真实设备操作，例如：数据下发，云台控制，需校验设备中数据，可使用横向库方法</li>
-<li>自动化脚本不允许直接操作数据库，不能删除的数据，就留在系统中，但要保证其他用例不使用该数据或者不能对其他用例产生影响</li>
-<li>增、删、改专用用例，需要充分验证效果<ul>
-<li>人员&#x2F;设备添加用例：人员&#x2F;设备添加，接口返回成功后，需用其他接口（例如：分页查询接口）查询添加成功，并校验关键字段信息，如人员姓名、编号（设备 IP、端口、名称）等</li>
-<li>人员&#x2F;设备删除用例：人员&#x2F;设备删除，接口返回成功后，需用其他接口（例如：分页查询接口）校验删除成功</li>
-</ul>
-</li>
-<li>依赖于数据的用例，必须先新增数据，再使用该数据验证用例，不推荐使用系统中已经存在的数据</li>
-<li>脚本验证不管成功与否，通过接口删除对产生的数据进行删除， 无法删除的除外</li>
-<li>接口验证需要对前端展示的所有字段都要验证</li>
-<li>频率较高的长耗时操作，例如：部分设备添加后等待上线耗时较长，可用循环查询判断的方式（非睡眠 <code>sleep</code> 等待）</li>
-<li>对于一些异常操作的用例，比如：停止 DP 服务，这种用例归到一类并打上特殊标签，后期统一跑，优先级降低</li>
-<li><code>Robot framework</code> 里的脚本编号格式，示例：<code>01系统管理</code> –&gt;<code> 01登录</code> –&gt; <code>01_01_01_正常登录</code>  -&gt; <code>01_01_02_错误密码登录</code></li>
-</ol>
-<h3 id="自动化文本用例"><a href="#自动化文本用例" class="headerlink" title="自动化文本用例"></a>自动化文本用例</h3><ol>
-<li>用例中需包含验证结果的 sql 语句</li>
-<li>接口传参的一些主要参数在用例中体现</li>
-<li>自动化用例是按照 wetest 里自动化为是，脚本编号有值，且能找到对应的一条脚本，才会被执行，所以一条功能用例必须只能对应一条脚本用例</li>
-<li>如果一条功能用例，自动化只能覆盖一半，那就将用例拆成两条，把能自动化的用例自动化标记为是，不能实现就标记为否，最终文本用例只有一个版本</li>
-<li>部分特殊用例（如隔天验证效果用例），采用修改服务器时间等特殊方法，需确认服务器是否需要重启，若耗时过长，用例可以加标签，根据需要使用标签筛选用例测试</li>
-<li>测试用例名称需要体现测试点</li>
-</ol>
 ]]></content>
       <categories>
         <category>软件测试</category>
